@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logger/logger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final Logger logger = Logger();
 
   @override
   void initState() {
@@ -45,17 +47,15 @@ class _MyHomePageState extends State<MyHomePage> {
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // iOS settings
-    final DarwinInitializationSettings initializationSettingsIOS =
+    const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
           requestAlertPermission: true,
           requestBadgePermission: true,
           requestSoundPermission: true,
-          onDidReceiveLocalNotification: (id, title, body, payload) async {
-          },
         );
 
     // Combine Android and iOS settings
-    final InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -63,24 +63,26 @@ class _MyHomePageState extends State<MyHomePage> {
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        // Navigate to a new screen when the notif is tapped
         if (response.payload != null) {
-          print('Notification: ${response.payload}');
+          logger.d('Notification payload: ${response.payload}');
         }
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return NotificationDetailScreen(payload: response.payload);
-        }));
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => NotificationDetailScreen(payload: response.payload),
+        ));
       },
     );
   }
 
   // Function to show cross-platform notif
   void _showNotification() async {
-    // Android notif details
+    logger.d('Attempt to show notification...');
+
+    // Android notification details
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'id', 'name',
-      channelDescription: 'description',
+      'test_channel_id',
+      'Test Channel',
+      channelDescription: 'A channel for testing notifications',
       importance: Importance.max,
       priority: Priority.high,
     );
@@ -97,8 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Hello World',
-      'Notification Sent!',
+      'Test Notification',
+      'Notification Sent',
       platformChannelSpecifics,
     );
   }

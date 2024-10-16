@@ -45,8 +45,7 @@
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-    
-    <!-- Permissions for notifications -->
+
     <key>NSUserNotificationAlertStyle</key>
     <string>alert</string>
     <key>UIBackgroundModes</key>
@@ -54,5 +53,8 @@
         <string>fetch</string>
         <string>remote-notification</string>
     </array>
+
+    <key>NSLocalNotificationUsageDescription</key>
+    <string>This app requires notification permissions to send alerts.</string>
 </dict>
 </plist>
