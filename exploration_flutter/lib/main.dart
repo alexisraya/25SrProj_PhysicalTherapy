@@ -42,24 +42,26 @@ class _MyHomePageState extends State<MyHomePage> {
     // Initialize the plugin for both Android and iOS
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    // Androidsettings
+    // Android settings
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // iOS settings
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        );
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
     // Combine Android and iOS settings
-    const InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
 
+    // Initialize the notification plugin
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
@@ -71,11 +73,26 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
       },
     );
+
+    _checkPermissions();
   }
 
-  // Function to show cross-platform notif
+  // Check notification permissions
+  void _checkPermissions() async {
+    final bool? result = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+    logger.d('Notification permissions granted: $result');
+  }
+
+  // Function to show cross-platform notifications
   void _showNotification() async {
-    logger.d('Attempt to show notification...');
+    logger.d('Attempting to show notification...');
 
     // Android notification details
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -87,20 +104,25 @@ class _MyHomePageState extends State<MyHomePage> {
       priority: Priority.high,
     );
 
-    // iOS notif details
+    // iOS notification details
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
-        DarwinNotificationDetails();
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
 
-    // Combine platform notif details
+    // Combine platform notification details
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
 
+    // Show the notification
     await flutterLocalNotificationsPlugin.show(
       0,
       'Test Notification',
-      'Notification Sent',
+      'This is a test notification!',
       platformChannelSpecifics,
     );
   }
@@ -121,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
 
 class NotificationDetailScreen extends StatelessWidget {
   final String? payload;

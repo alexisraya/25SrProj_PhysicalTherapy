@@ -18,8 +18,6 @@
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
     <string>$(FLUTTER_BUILD_NAME)</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
     <key>CFBundleVersion</key>
     <string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key>
@@ -45,7 +43,7 @@
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-
+    
     <key>NSUserNotificationAlertStyle</key>
     <string>alert</string>
     <key>UIBackgroundModes</key>
@@ -53,8 +51,7 @@
         <string>fetch</string>
         <string>remote-notification</string>
     </array>
-
-    <key>NSLocalNotificationUsageDescription</key>
+    <key>NSUserNotificationCenterUsageDescription</key>
     <string>This app requires notification permissions to send alerts.</string>
 </dict>
 </plist>
