@@ -5,13 +5,11 @@ import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:http/http.dart' as http;
 import 'package:palette_generator/palette_generator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Always initialize Awesome Notifications
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
   runApp(const MyApp());
@@ -38,7 +36,6 @@ class NotificationController {
         ],
         debug: true);
 
-    // Get initial notification action is optional
     initialAction = await AwesomeNotifications()
         .getInitialNotificationAction(removeFromActionEvents: false);
   }
@@ -49,7 +46,6 @@ class NotificationController {
       ..listen(
           (silentData) => onActionReceivedImplementationMethod(silentData));
 
-    // This initialization only happens on main isolate
     IsolateNameServer.registerPortWithName(
         receivePort!.sendPort, 'notification_action_port');
   }
@@ -64,14 +60,9 @@ class NotificationController {
       ReceivedAction receivedAction) async {
     if (receivedAction.actionType == ActionType.SilentAction ||
         receivedAction.actionType == ActionType.SilentBackgroundAction) {
-      // For background actions, you must hold the execution until the end
       print(
           'Message sent via notification input: "${receivedAction.buttonKeyInput}"');
-      // await executeLongTaskInBackground();
     } else {
-      // this process is only necessary when you need to redirect the user
-      // to a new page or use a valid context, since parallel isolates do not
-      // have valid context, so you need redirect the execution to main isolate
       if (receivePort == null) {
         print(
             'onActionReceivedMethod was called inside a parallel dart isolate.');
