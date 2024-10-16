@@ -8,7 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,19 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
     // Initialize the plugin for both Android and iOS
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-    // Android-specific settings
+    // Androidsettings
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOS-specific settings (renamed to DarwinInitializationSettings)
-    const DarwinInitializationSettings initializationSettingsIOS =
+    // iOS settings
+    final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: true,
-            requestSoundPermission: true);
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+          onDidReceiveLocalNotification: (id, title, body, payload) async {
+          },
+        );
 
     // Combine Android and iOS settings
-    const InitializationSettings initializationSettings = InitializationSettings(
+    final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -61,27 +63,33 @@ class _MyHomePageState extends State<MyHomePage> {
     flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) async {
-        // Handle notification tapped logic here
+        // Navigate to a new screen when the notif is tapped
+        if (response.payload != null) {
+          print('Notification: ${response.payload}');
+        }
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+          return NotificationDetailScreen(payload: response.payload);
+        }));
       },
     );
   }
 
-  // Function to show cross-platform notification
+  // Function to show cross-platform notif
   void _showNotification() async {
-    // Android-specific notification details
+    // Android notif details
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'your_channel_id', 'your_channel_name',
-      channelDescription: 'your_channel_description',
+      'id', 'name',
+      channelDescription: 'description',
       importance: Importance.max,
       priority: Priority.high,
     );
 
-    // iOS-specific notification details
+    // iOS notif details
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
         DarwinNotificationDetails();
 
-    // Combine platform-specific notification details
+    // Combine platform notif details
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
@@ -90,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterLocalNotificationsPlugin.show(
       0,
       'Hello World',
-      'This is your cross-platform notification!',
+      'Notification Sent!',
       platformChannelSpecifics,
     );
   }
@@ -107,6 +115,25 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: _showNotification,
           child: const Text('Send Notification'),
         ),
+      ),
+    );
+  }
+}
+
+
+class NotificationDetailScreen extends StatelessWidget {
+  final String? payload;
+
+  const NotificationDetailScreen({super.key, this.payload});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notification Details'),
+      ),
+      body: Center(
+        child: Text('Notification payload: $payload'),
       ),
     );
   }
