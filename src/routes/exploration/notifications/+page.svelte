@@ -18,4 +18,5 @@
     })
 </script>
 
+<h1>Notifications</h1>
 <button on:click={onClick}>Click Me</button>
