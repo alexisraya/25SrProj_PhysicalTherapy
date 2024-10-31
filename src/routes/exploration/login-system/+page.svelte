@@ -61,7 +61,7 @@
 			Log in
 		</button>
 	{:else}
-		<p>Don't have an account? </p>
+		<p>Don't have an account?</p>
 		<button
 			on:click={() => {
 				register = true;
