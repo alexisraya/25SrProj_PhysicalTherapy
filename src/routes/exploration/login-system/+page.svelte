@@ -22,16 +22,16 @@
 			try {
 				await authHandlers.login(email, password);
                 console.log("SUCCESS");
-                goto('/exploration/hidden-page');
+                goto('/exploration/notifications');
 			} catch (err) {
-                console.log("ERROR");
-				console.log(err);
+                console.error("Login failed:", error);
+            	alert("Login failed. Please check if your email and password are correct.");
 			}
 		}
 	}
     if ($authStore.currentUser) {
         console.log("current user is in");
-        goto('/exploration/hidden-page');
+        goto('/exploration/notifications');
     }
 </script>
 
@@ -52,21 +52,22 @@
 		<button on:click={handleSubmit}>Submit</button>
 	</form>
 	{#if register}
+		<p>Already have an account?</p>
 		<button
 			on:click={() => {
 				register = false;
 			}}
 		>
-			Already have an account?
-			<p>Log in</p>
+			Log in
 		</button>
 	{:else}
+		<p>Don't have an account? </p>
 		<button
 			on:click={() => {
 				register = true;
 			}}
 		>
-			Don't have an account? <p>Sign Up</p>
+			Sign Up
 		</button>
 	{/if}
     <button
@@ -79,16 +80,24 @@
 </div>
 
 <style>
+	p {
+		margin: 0;
+	}
+
 	.container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		align-self: center;
 		justify-content: center;
-		flex: 1;
+		row-gap: 15px;
 	}
 
 	.container form {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		row-gap: 20px;
 	}
 </style>

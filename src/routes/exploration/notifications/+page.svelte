@@ -1,4 +1,15 @@
 <script>
+    import { authStore } from '../../../stores/authStore';
+
+    /**
+     * @type {string}
+     */
+    let email;
+    authStore.subscribe((curr) => {
+        console.log('CURR', curr);
+        email = curr?.currentUser?.email;
+    });
+
     const onClick = () => {
         Notification.requestPermission().then(perm => {
             if (perm === "granted") {
@@ -18,5 +29,8 @@
     })
 </script>
 
+{#if email}
+<h1>Hello {email}</h1>
+{/if}
 <h1>Notifications</h1>
 <button on:click={onClick}>Click Me</button>
