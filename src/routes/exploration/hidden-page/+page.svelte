@@ -4,11 +4,11 @@
 	/**
      * @type {string}
      */
-	let email;
+	let name;
 	authStore.subscribe((curr) => {
 		console.log('CURR', curr);
-		email = curr?.currentUser?.email;
+		// name = curr?.currentUser?.displayName;
 	});
 </script>
 
-<h1>Hello {email}</h1>
+<!-- <h1>Hello {name}</h1> -->
