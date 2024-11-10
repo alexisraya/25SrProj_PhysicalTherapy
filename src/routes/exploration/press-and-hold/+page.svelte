@@ -80,7 +80,8 @@
         outline: none;
         position: relative;
         z-index: 5;
-        }
+        user-select: none;
+    }
     button svg {
         /* transition the rotation of the + sign with a considerable duration
         use a timing function which snaps toward the end
