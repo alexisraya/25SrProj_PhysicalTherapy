@@ -13,10 +13,10 @@
             user = authUser;
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
-            userData = userDoc.data();
-            if (!userData.isTherapist) {
-                goto('/patient-dashboard');
-            }
+                userData = userDoc.data();
+                if (!userData.isTherapist) {
+                    goto('/patient-dashboard');
+                }
             }
         } else {
             goto('/login');

@@ -13,10 +13,11 @@
             user = authUser;
             const userDoc = await getDoc(doc(db, 'users', user.uid));
             if (userDoc.exists()) {
-            userData = userDoc.data();
-            if (userData.isTherapist) {
-                goto('/therapist-dashboard');
-            }
+                userData = userDoc.data();
+                if (userData.isTherapist) {
+                    goto('/therapist-dashboard');
+                }
+                console.log(userData.exercises);
             }
         } else {
             goto('/login');
@@ -32,7 +33,12 @@
 <p>Injury: {userData.injury}</p>
 {/if}
 {#if userData.exercises}
-<p>Exercises: {userData.exercises}</p>
+<p>Exercises:</p>
+{#each userData.exercises as exercise}
+    <p>{exercise.title}</p>
+    <p>{exercise.reps}</p>
+    <p>{exercise.description}</p>
+{/each}
 {/if}
 {:else}
 <p>Loading...</p>
