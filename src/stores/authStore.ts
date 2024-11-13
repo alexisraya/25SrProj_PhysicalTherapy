@@ -30,6 +30,7 @@ export const authHandlers = {
             isTherapist: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
+            userId: user.uid,
             // Add more fields to save it DB
         });
     },
