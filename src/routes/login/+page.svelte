@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-	import { authHandlers, authStore } from "../../../stores/authStore";
+	import { authHandlers, authStore } from "../../stores/authStore";
 
 	let register = false;
 	let firstName = '';
@@ -18,7 +18,7 @@
 			try {
 				await authHandlers.signup(email, password, firstName, lastName);
 				console.log("SIGNUP SUCESSFUL");
-				goto('/exploration/notifications');
+				goto('/therapist-dashboard');
 			} catch (err) {
 				console.log(err);
 			}
@@ -26,7 +26,7 @@
 			try {
 				await authHandlers.login(email, password);
                 console.log("SUCCESS");
-                goto('/exploration/notifications');
+                goto('/therapist-dashboard');
 			} catch (err) {
                 console.error("Login failed:", err);
             	alert("Login failed. Please check if your email and password are correct.");
@@ -35,7 +35,7 @@
 	}
     if ($authStore.currentUser) {
         console.log("current user is in");
-        goto('/exploration/notifications');
+        goto('/therapist-dashboard');
     }
 </script>
 
