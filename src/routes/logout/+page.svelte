@@ -5,6 +5,6 @@
 
     onMount(() => {
         authHandlers.logout();
-        goto('/');
+        goto('/login');
     });
 </script>

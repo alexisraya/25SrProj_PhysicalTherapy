@@ -3,6 +3,7 @@
     import { auth, db } from '$lib/helpers/firebase';
     import { doc, getDoc } from 'firebase/firestore';
     import { goto } from '$app/navigation';
+    import ExerciseItem from '$lib/ExerciseItem.svelte';
 
     let user = null;
     let userData = null;
@@ -25,7 +26,7 @@
         });
     });
 </script>
-  
+<a href="/logout">Log Out</a>
 <h1>Patient Dashboard</h1>
 {#if user && userData}
 <h1>Welcome, {userData.displayName}!</h1>
@@ -34,12 +35,20 @@
 {/if}
 {#if userData.exercises}
 <p>Exercises:</p>
-{#each userData.exercises as exercise}
-    <p>{exercise.title}</p>
-    <p>{exercise.reps}</p>
-    <p>{exercise.description}</p>
-{/each}
+<div class="exercise-container">
+    {#each userData.exercises as exercise}
+        <ExerciseItem title={exercise.title} reps={exercise.reps} description={exercise.description}/>
+    {/each}
+</div>
 {/if}
 {:else}
 <p>Loading...</p>
 {/if}
+
+<style>
+    .exercise-container {
+        width: fit-content;
+        display: flex;
+        column-gap: 45px;
+    }
+</style>

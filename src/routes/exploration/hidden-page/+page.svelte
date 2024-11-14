@@ -1,14 +1,18 @@
 <script>
-	import { authStore } from '../../../stores/authStore';
+	import Modal from "$lib/Modal.svelte";
 
-	/**
-     * @type {string}
-     */
-	let name;
-	authStore.subscribe((curr) => {
-		console.log('CURR', curr);
-		// name = curr?.currentUser?.displayName;
-	});
+	let showModal = false;
 </script>
 
-<!-- <h1>Hello {name}</h1> -->
+<button on:click={() => showModal = true}>
+	Open Modal
+</button>
+
+<Modal 
+	isOpen={showModal} 
+	title="Example Modal"
+	on:close={() => showModal = false}
+>
+	<p>This is the modal content!</p>
+
+</Modal>
