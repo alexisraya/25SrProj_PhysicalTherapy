@@ -1,0 +1,26 @@
+export const typography = {
+    fontFamily: {
+        heading: '"DM Serif Display", serif',
+        body: '"Albert Sans", sans-serif',
+    },
+    fontSizes: {
+        special: '6.75rem',
+        h0: '3.5rem',
+        h1: '3rem',
+        h2: '2rem',
+        h3: '1.625rem',
+        h4: '1rem',
+        h5: '0.875rem',
+        regular: '1rem',
+        small: '0.875rem',
+        xsmall: '0.75rem',
+    },
+    fontWeights: {
+      regular: 400,
+      medium: 500,
+      bold: 600,
+    },
+  };
+  
+  export type Typography = typeof typography;
+  

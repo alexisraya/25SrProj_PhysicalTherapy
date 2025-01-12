@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'Albert Sans';
+    src: url('$lib/assets/fonts/AlbertSans-VariableFont_wght.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Albert Sans';
+    src: url('$lib/assets/fonts/AlbertSans-Italic-VariableFont_wght.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DM Serif Display';
+    src: url('$lib/assets/fonts/DMSerifDisplay-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DM Serif Display';
+    src: url('$lib/assets/fonts/DMSerifDisplay-Italic.woff2') format('woff2');
+    font-weight: 400;
+    font-style: italic;
+}
+
+body {
+    font-family: 'Albert Sans', sans-serif;
+}
