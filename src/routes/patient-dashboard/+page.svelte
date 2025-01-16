@@ -107,8 +107,11 @@
     }
     .program-streak-container--streaks {
         width: 100%;
-        display: flex;
-        justify-content: space-between;
+        /* display: flex;
+        justify-content: space-between; */
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        column-gap: 2px;
     }
     .streak-item {
         display: flex;
@@ -118,7 +121,7 @@
     }
     .streak-item--rect {
         height: 12px;
-        width: 60px;
+        width: 100%;
         background-color: #E9DDF9;
         border-radius: 4px;
     }
