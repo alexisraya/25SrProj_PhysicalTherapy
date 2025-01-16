@@ -15,5 +15,13 @@
 </script>
 
 <ThemeProvider>
-	<slot />
+	<div class="main-container">
+		<slot />
+	</div>
 </ThemeProvider>
+
+<style>
+	.main-container {
+		padding: 0 18px;
+	}
+</style>
