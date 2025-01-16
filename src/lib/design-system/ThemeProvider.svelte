@@ -34,9 +34,9 @@
 </script>
 
 <div>
-  <button on:click={toggleTheme}>
+  <!-- <button on:click={toggleTheme}>
     Toggle Theme to {currentTheme === 'light' ? 'Dark' : 'Light'}
-  </button>
+  </button> -->
   <slot />
 </div>
 
