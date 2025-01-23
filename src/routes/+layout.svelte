@@ -24,4 +24,10 @@
 	.main-container {
 		padding: 0 18px;
 	}
+
+	@media (max-width: 600px) {
+		.main-container {
+		padding: 0;
+		}
+	}
 </style>

@@ -3,18 +3,19 @@
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import ModelBackground from '$lib/assets/ModelBackground.svg';
   
     export let modelPath = ''; // Path to the 3D model
     let container;
   
     onMount(() => {
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
       camera.position.set(0, 0, 100); // Center camera directly on the model
   
       const renderer = new THREE.WebGLRenderer({ alpha: false });
       renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setClearColor(0x212529); // Background color
+      renderer.setClearColor(0x000000, 0); // Black color with 0 opacity (transparent background)
       container.appendChild(renderer.domElement);
   
       // Lighting
@@ -59,7 +60,7 @@
         (gltf) => {
           const model = gltf.scene;
           model.scale.set(40, 40, 40); // Set uniform scale
-          model.position.set(0, -25, 0); // Center the model
+          model.position.set(-5, -33, 0); // Center the model
           scene.add(model);
         },
         undefined,
@@ -106,5 +107,41 @@
     });
 </script>
 
-<div bind:this={container} style="width: 80%; height: 80vh;"></div>
-  
+<div class="three-container">
+  <!-- SVG Background -->
+  <img src={ModelBackground} alt="Background SVG" class="svg-background" />
+
+  <!-- Three.js Canvas -->
+  <div bind:this={container} class="three-canvas"></div>
+</div>
+
+<style>
+  .three-container {
+    position: relative;
+    width: 100%;
+    max-height: 264px; /* Set max height */
+    height: 100%;
+    overflow: hidden; /* Ensure content stays within bounds */
+  }
+
+  .svg-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Place the SVG behind */
+    object-fit: cover; /* Ensure the entire SVG, including the wave, fits */
+    object-position: bottom; /* Focus on the bottom part of the SVG */
+  }
+
+  .three-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Place the Three.js canvas on top */
+    background: transparent; /* Ensure transparency for the canvas */
+  }
+</style>
