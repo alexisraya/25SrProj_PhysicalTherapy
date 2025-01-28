@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import { authStore } from "../stores/authStore";
 	import ThemeProvider from "$lib/design-system/ThemeProvider.svelte";
+	import '../app.css';
 
     onMount(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -21,13 +22,10 @@
 </ThemeProvider>
 
 <style>
+	/* * {
+		line-height: 150%;
+	} */
 	.main-container {
-		padding: 0 18px;
-	}
-
-	@media (max-width: 600px) {
-		.main-container {
 		padding: 0;
-		}
 	}
 </style>

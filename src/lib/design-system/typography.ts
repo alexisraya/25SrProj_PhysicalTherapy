@@ -16,10 +16,14 @@ export const typography = {
         xsmall: '0.75rem',
     },
     fontWeights: {
-      light: 300,
-      regular: 400,
-      medium: 500,
-      bold: 600,
+      light: 200,
+      regular: 300,
+      medium: 400,
+      bold: 500,
+    },
+    lineHeight: {
+      reular: 'auto',
+      expanded: '150%',
     },
   };
   

@@ -3,11 +3,13 @@
   import ExerciseModel from '$lib/ExerciseModel.svelte';
   import Editicon from '$lib/assets/iconography/EditIcon.svg';
   import RightArrow from '$lib/assets/iconography/RightArrow.svg';
+  import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
   import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
 </script>
 
 <div class="page_container">
   <div class="exercise_nav">
+    <img class="back_button" src={LeftArrow} />
     <div class="progress_bar">
       <div class="progress_bar--item"></div>
       <div class="progress_bar--item"></div>
@@ -31,7 +33,7 @@
         </div>
       </div>
       <div class="exercise_text--description">
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular};">
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
           This exercise helps to strengthen your quad muscle. The motion mimics walking up the stairs and will help you achieve your goal. 
         </p>
       </div>
@@ -61,16 +63,27 @@
     align-items: center;
     height: 100vh; /* Use the full viewport height */
   }
+  .exercise_nav {
+    width: 100%;
+    padding: 24px 24px 0 24px;
+    display: flex;
+    background-color: #BB9CF9;
+    align-items: center;
+    justify-content: center;
+  }
+  .back_button {
+    margin-left: 24px;
+  }
   .progress_bar {
-    position: absolute;
+    /* position: absolute;
     left: 0;
-    top: 0;
+    top: 0; */
     width: 100%;
     display: flex;
     column-gap: 8px;
-    padding-top: 24px;
     justify-content: center;
     z-index: 1000;
+    margin-right: 24px;
   }
   .progress_bar--item {
     border-radius: 8px;
@@ -129,5 +142,11 @@
   .hold_to_complete_label {
     display: flex;
     align-items: center;
+  }
+
+	@media (min-width: 600px) {
+		.exercise_text {
+      padding: 0px 42px;
+    }
   }
 </style>

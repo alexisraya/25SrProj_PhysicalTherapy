@@ -59,8 +59,8 @@
         modelPath,
         (gltf) => {
           const model = gltf.scene;
-          model.scale.set(40, 40, 40); // Set uniform scale
-          model.position.set(-5, -33, 0); // Center the model
+          model.scale.set(30, 30, 30); // Set uniform scale
+          model.position.set(0, -33, 0); // Center the model
           scene.add(model);
         },
         undefined,
