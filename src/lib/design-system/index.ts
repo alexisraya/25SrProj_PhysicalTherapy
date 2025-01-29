@@ -8,7 +8,7 @@ export * from './typography';
 export * from './theme';
 
 // Export font store
-export * from './fontStore';
+// export * from './fontStore';
 
 // Export the ThemeProvider component
 export { default as ThemeProvider } from './ThemeProvider.svelte';

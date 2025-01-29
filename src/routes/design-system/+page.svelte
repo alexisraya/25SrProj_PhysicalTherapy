@@ -9,6 +9,7 @@
 </script>
 
 <div class="container">
+    <a href="design-system/component-showcase">Component Showcase</a>
     <div class="typography-container">
         <h2>Typography</h2>
         <p style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.special}; font-weight: {typography.fontWeights.regular};">

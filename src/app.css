@@ -1,27 +1,48 @@
+:root {
+    /* Blue Palette */
+    --color-blue-50: #F1F6F8;
+    --color-blue-1100: #0F1B1F;
+
+    /* Grey Palette */
+    --color-grey-0: #FFFFFF;
+    --color-grey-300: #9BA1A3;
+  
+    /* Other Colors */
+    --color-primary-text: var(--color-blue-1100);
+    --color-secondary-text: var(--color-blue-300);
+  
+    /* Button-specific */
+    --button-primary-bg: var(--color-blue-1100);
+    --button-primary-disabled-bg: var(--color-blue-50);
+    --button-secondary-border: var(--color-blue-110);
+    --button-secondary-disabled-border: var(--color-blue-50);
+  }
+  
+
 @font-face {
     font-family: 'Albert Sans';
-    src: url('$lib/assets/fonts/AlbertSans-VariableFont_wght.woff2') format('woff2');
-    font-weight: 400;
+    src: url('/AlbertSans-VariableFont_wght.woff2') format('woff2');
+    /* font-weight: 400; */
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Albert Sans';
-    src: url('$lib/assets/fonts/AlbertSans-Italic-VariableFont_wght.woff2') format('woff2');
-    font-weight: 400;
+    src: url('/AlbertSans-Italic-VariableFont_wght.woff2') format('woff2');
+    /* font-weight: 400; */
     font-style: italic;
 }
 
 @font-face {
     font-family: 'DM Serif Display';
-    src: url('$lib/assets/fonts/DMSerifDisplay-Regular.woff2') format('woff2');
-    font-weight: 400;
+    src: url('/DMSerifDisplay-Regular.woff2') format('woff2');
+    /* font-weight: 400; */
     font-style: normal;
 }
 
 @font-face {
     font-family: 'DM Serif Display';
-    src: url('$lib/assets/fonts/DMSerifDisplay-Italic.woff2') format('woff2');
+    src: url('/DMSerifDisplay-Italic.woff2') format('woff2');
     font-weight: 400;
     font-style: italic;
 }
