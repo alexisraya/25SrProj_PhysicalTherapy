@@ -1,6 +1,6 @@
 <script>
   import { typography } from '$lib/design-system';
-  import ExerciseModel from '$lib/ExerciseModel.svelte';
+  import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
   import Editicon from '$lib/assets/iconography/EditIcon.svg';
   import RightArrow from '$lib/assets/iconography/RightArrow.svg';
   import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';

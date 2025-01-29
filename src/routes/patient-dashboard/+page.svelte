@@ -34,9 +34,9 @@
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light};">Start your program for today</p>
-        <button>
+        <a href='/your-program'>
             <img src={PlayButton} />
-        </button>
+        </a>
     </div>
     <div class="program-streak-container">
         <div class="program-streak-container--title">

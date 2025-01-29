@@ -68,6 +68,10 @@ export const Colors = {
     900: '#552915',
     1000: '#33180D',
   },
+  grey: {
+    0: '#FFFFFF',
+    300: '#9BA1A3',
+  }
 };
 
 export const lightColors = {
