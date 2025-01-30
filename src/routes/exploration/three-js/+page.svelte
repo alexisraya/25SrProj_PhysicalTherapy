@@ -4,6 +4,7 @@
   import Editicon from '$lib/assets/iconography/EditIcon.svg';
   import RightArrow from '$lib/assets/iconography/RightArrow.svg';
   import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
+  import Character from '$lib/assets/iconography/Character.png';
   import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
   import Button from '$lib/design-system/components/Button.svelte';
 </script>
@@ -48,6 +49,32 @@
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
           This exercise helps to strengthen your quad muscle. The motion mimics walking up the stairs and will help you achieve your goal. 
         </p>
+      </div>
+      <div class="exercise_description--section">
+          <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
+          <div class="select-character-section">
+            <div class="character selected">
+              <img class="character--img selected-img" src={Character} alt="Character" />
+              <div class="character--overlay selected-overlay"></div>
+              <div class="character--name selected-name">
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}" class="selected-name">Name</p>
+              </div>
+            </div>
+            <div class="character">
+              <img src={Character} alt="Character" />
+              <div class="character--overlay"></div>
+              <div class="character--name">
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
+              </div>
+            </div>
+            <div class="character">
+              <img src={Character} alt="Character" />
+              <div class="character--overlay"></div>
+              <div class="character--name">
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
@@ -108,7 +135,7 @@
     border-radius: 8px;
     height: 9px;
     width: 90px;
-    background-color: #000;
+    background-color: var(--color-blue-1100);
   }
   .empty {
     opacity: 40%;
@@ -117,6 +144,7 @@
     position: relative;
     background: rgba(255, 255, 255, 0.50);
     border-radius: 30px;
+    color: var(--color-blue-1100);
     padding: 12px 40px;
     display: flex;
     flex-direction: column;
@@ -124,7 +152,7 @@
     justify-content: center;
   }
   .line{
-    border: 0.5px solid white;
+    border: 0.5px solid var(--color-purple-100);
     height: 28px;
   }
   .edit_btn {
@@ -151,7 +179,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 35vh;
+    min-height: 50vh;
     padding: 16px 24px;
   }
   .exercise_description {
@@ -161,10 +189,60 @@
     row-gap: 24px;
   }
   .exercise_description--section {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     row-gap: 4px;
+  }
+  .exercise_description--section p {
+    color: var(--color-grey-400);
+  }
+  .select-character-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 16px;
+  }
+  .character {
+    border-radius: 8px;
+    position: relative;
+    display: inline-block;
+    width: 99px; /* Adjust as needed */
+  }
+  .character img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  .character--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+  }
+  .character--name {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+  }
+  .selected-img {
+    border: 1px solid var(--color-blue-1100);
+  }
+  .selected-overlay {
+    display: none;
+  }
+  .selected-name {
+    color: #fff !important;
   }
   .buttons {
     background: linear-gradient(to top, #FFF 60%, transparent);

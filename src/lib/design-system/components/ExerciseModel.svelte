@@ -80,7 +80,7 @@
   
       // Mobile-specific controls adjustment
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        controls.enableRotate = false; // Disable rotation for mobile
+        controls.enableRotate = true; // Disable rotation for mobile
         controls.enablePan = false; // Disable panning for mobile
       }
   
