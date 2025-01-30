@@ -6,6 +6,10 @@
     /* Grey Palette */
     --color-grey-0: #FFFFFF;
     --color-grey-300: #9BA1A3;
+    --color-grey-400: #6F7679;
+
+    /* Purple Palette */
+    --color-purple-100: #F2EBFB;
   
     /* Other Colors */
     --color-primary-text: var(--color-blue-1100);

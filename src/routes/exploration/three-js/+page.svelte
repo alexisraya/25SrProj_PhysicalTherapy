@@ -108,7 +108,7 @@
     border-radius: 8px;
     height: 9px;
     width: 90px;
-    background-color: #000;
+    background-color: var(--color-blue-1100);
   }
   .empty {
     opacity: 40%;
@@ -117,6 +117,7 @@
     position: relative;
     background: rgba(255, 255, 255, 0.50);
     border-radius: 30px;
+    color: var(--color-blue-1100);
     padding: 12px 40px;
     display: flex;
     flex-direction: column;
@@ -124,7 +125,7 @@
     justify-content: center;
   }
   .line{
-    border: 0.5px solid white;
+    border: 0.5px solid var(--color-purple-100);
     height: 28px;
   }
   .edit_btn {
@@ -165,6 +166,9 @@
     flex-direction: column;
     align-items: flex-start;
     row-gap: 4px;
+  }
+  .exercise_description--section p {
+    color: var(--color-grey-400);
   }
   .buttons {
     background: linear-gradient(to top, #FFF 60%, transparent);
