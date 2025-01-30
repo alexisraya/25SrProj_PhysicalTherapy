@@ -179,7 +179,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 45vh;
+    min-height: 50vh;
     padding: 16px 24px;
   }
   .exercise_description {
