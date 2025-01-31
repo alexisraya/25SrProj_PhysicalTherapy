@@ -122,10 +122,10 @@
     .streak-item--rect {
         height: 12px;
         width: 100%;
-        background-color: #E9DDF9;
+        background-color: var(--color-purple-200);
         border-radius: 4px;
     }
     .day-one {
-        background-color: #9E80C5;
+        background-color: var(--color-purple-600);
     }
 </style>

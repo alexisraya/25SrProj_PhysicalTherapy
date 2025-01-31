@@ -70,7 +70,12 @@ export const Colors = {
   },
   grey: {
     0: '#FFFFFF',
+    100: '#FFFDFD',
+    200: '#E0D9D6',
     300: '#9BA1A3',
+    400: '#6F7679',
+    500: '#FFFFFF20',
+    600: '#FFFFFF50'
   }
 };
 

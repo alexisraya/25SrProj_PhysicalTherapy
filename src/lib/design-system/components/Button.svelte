@@ -44,7 +44,7 @@
     .secondary {
         background-color: transparent;
         color: var(--button-secondary-border);
-        border: 1px solid #0F1B1F;
+        border: 1px solid var(--color-blue-1100);
     }
 
     /* Disabled Secondary Button Styles */

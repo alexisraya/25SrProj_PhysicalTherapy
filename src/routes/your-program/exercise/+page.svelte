@@ -109,7 +109,7 @@
   }
   .exercise_container--top {
     box-sizing: border-box;
-    background: linear-gradient(to bottom, #BE9AEC, #6C5786);
+    background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -142,7 +142,7 @@
   }
   .exercise_info {
     position: relative;
-    background: rgba(255, 255, 255, 0.50);
+    background: var(--color-grey-opactity-dark);
     border-radius: 30px;
     color: var(--color-blue-1100);
     padding: 12px 40px;
@@ -156,7 +156,7 @@
     height: 28px;
   }
   .edit_btn {
-    background-color: white;
+    background-color: var(--color-grey-0);
     border: none;
     border-radius: 100px;
     display: flex;
@@ -223,7 +223,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--color-grey-opactity-dark);
   }
   .character--name {
     position: absolute;
@@ -232,7 +232,7 @@
     transform: translateX(-50%);
     font-size: 24px;
     font-weight: bold;
-    color: #333;
+    color: var(--color-blue-1100);
     text-align: center;
   }
   .selected-img {
@@ -242,10 +242,10 @@
     display: none;
   }
   .selected-name {
-    color: #fff !important;
+    color: var(--color-grey-0) !important;
   }
   .buttons {
-    background: linear-gradient(to top, #FFF 60%, transparent);
+    background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
     position: sticky;
     bottom: 0;
     display: flex;
