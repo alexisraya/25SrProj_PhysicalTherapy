@@ -20,10 +20,15 @@ export async function populateExerciseLibrary(): Promise<void> {
 
     for (const exercise of exercises) {
         const exerciseRef = doc(db, "exercises", exercise.exerciseId);
-        await setDoc(exerciseRef, exercise);
-    }
+        const existingDoc = await getDoc(exerciseRef);
 
-    console.log("Dummy exercises added to Firestore");
+        if (existingDoc.exists()) {
+            console.warn(`⚠️ Exercise "${exercise.exerciseId}" already exists. Skipping.`);
+        } else {
+            await setDoc(exerciseRef, exercise);
+            console.log(`Added exercise: ${exercise.exerciseName}`);
+        }
+    }
 }
 
 export async function getAllExercisesFromLibrary(): Promise<Exercise[]> {
@@ -31,4 +36,11 @@ export async function getAllExercisesFromLibrary(): Promise<Exercise[]> {
     const exercisesSnap = await getDocs(exercisesRef);
 
     return exercisesSnap.docs.map((doc) => doc.data() as Exercise);
+}
+
+export async function getExerciseFromLibrary(exerciseId: string): Promise<Exercise | null> {
+    const exerciseRef = doc(db, "exercises", exerciseId);
+    const exerciseSnap = await getDoc(exerciseRef);
+
+    return exerciseSnap.exists() ? (exerciseSnap.data() as Exercise) : null;
 }
