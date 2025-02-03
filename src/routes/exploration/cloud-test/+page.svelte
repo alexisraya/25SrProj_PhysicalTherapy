@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import ExerciseModel from '$lib/ExerciseModel.svelte';
+    import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
 
     let model1Url = '';
     let model2Url = '';
