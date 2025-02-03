@@ -1,11 +1,11 @@
 <script>
     import { onMount } from 'svelte';
-    import ExerciseModel from '$lib/ExerciseModel.svelte';
+    import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
 
     let model1Url = '';
     let model2Url = '';
-    let imageUrl = 'https://storage.googleapis.com/exercise_model_bucket/kuromi.img';
-    
+    let imageUrl = 'https://storage.googleapis.com/exercise_model_bucket/kuromi.png';
+
     let imageErrorMessage = '';
     let model1ErrorMessage = '';
     let model2ErrorMessage = '';
@@ -19,6 +19,7 @@
                 model1Url = data1.url;
             } else {
                 model1ErrorMessage = `Failed to fetch first 3D model: ${response1.status}`;
+                console.error(model1ErrorMessage);
             }
 
             const response2 = await fetch('/api?filename=toothpaste.glb');
@@ -28,10 +29,12 @@
                 model2Url = data2.url;
             } else {
                 model2ErrorMessage = `Failed to fetch second 3D model: ${response2.status}`;
+                console.error(model2ErrorMessage);
             }
         } catch (error) {
-            model1ErrorMessage = 'An error occurred while fetching the first 3D model.';
-            model2ErrorMessage = 'An error occurred while fetching the second 3D model.';
+            model1ErrorMessage = 'Error fetching first 3D model.';
+            model2ErrorMessage = 'Error fetching second 3D model.';
+            console.error("Error fetching models:", error);
         }
     });
 </script>
@@ -46,7 +49,9 @@
             <p class="error">{model1ErrorMessage}</p>
         {/if}
         {#if model1Url}
-            <ExerciseModel modelPath={model1Url} showBackground={false} />
+            <div class="model-container">
+                <ExerciseModel modelPath={model1Url} />
+            </div>
         {:else}
             <p>Loading 3D model...</p>
         {/if}
@@ -60,7 +65,9 @@
             <p class="error">{model2ErrorMessage}</p>
         {/if}
         {#if model2Url}
-            <ExerciseModel modelPath={model2Url} showBackground={false} />
+            <div class="model-container">
+                <ExerciseModel modelPath={model2Url} />
+            </div>
         {:else}
             <p>Loading 3D model...</p>
         {/if}
@@ -129,15 +136,21 @@
         border: 1px solid #ccc;
         border-radius: 8px;
     }
-
     .model-section {
         background: #f0f0f0;
         padding: 2rem;
         border-radius: 8px;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
         margin: 0 auto;
         max-width: 90%;
+    }
+    .model-container {
+        width: 600px; /* Forces model to be visible */
+        height: 600px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>

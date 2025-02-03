@@ -10,11 +10,18 @@ node_modules
 .DS_Store
 Thumbs.db
 
+# Google Cloud Service Account Key
+mend-cloud-service.json
+
 # Env
 .env
 .env.*
 !.env.example
 !.env.test
+.env.local
+.env.development
+.env.production
+.env.staging
 
 # Vite
 vite.config.js.timestamp-*
