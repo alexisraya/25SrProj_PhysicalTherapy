@@ -121,7 +121,7 @@
         margin: 3rem auto;
     }
     .error {
-        color: red;
+        color: #ff0000;
         font-weight: bold;
     }
     .image-container {
