@@ -10,8 +10,8 @@
     export let isComplete = false;
 
     export let exerciseName: string;
-    export let exerciseSet: string;
-    export let exerciseEquipment: string
+    export let exerciseSet: string = null;
+    export let exerciseEquipment: string = null;
 </script>
 <div class="exercise-container">
     <div class="exercise-container--left">
@@ -23,16 +23,20 @@
         </div>
         {#if !isComplete}
         <div class="tags-container">
-            <div class="tag">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">
-                    {exerciseSet}
-                </p>
-            </div>
-            <div class="tag">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">
-                    {exerciseEquipment}
-                </p>
-            </div>
+            {#if exerciseSet}
+                <div class="tag">
+                    <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">
+                        {exerciseSet}
+                    </p>
+                </div>
+            {/if}
+            {#if exerciseEquipment}
+                <div class="tag">
+                    <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">
+                        {exerciseEquipment}
+                    </p>
+                </div>
+            {/if}
         </div>
         {/if}
     </div>
