@@ -1,5 +1,7 @@
 <script>
     import Button from "$lib/design-system/components/Button.svelte";
+    import DoubleButton from "$lib/design-system/components/DoubleButton.svelte";
+    import HoldToComplete from "$lib/design-system/components/HoldToComplete.svelte";
 
 </script>
 
@@ -12,6 +14,14 @@
             <Button isDisabled buttonType="primary" cta="Primary Button Disabled"/>
             <Button buttonType="secondary" cta="Secondary Button"/>
             <Button isDisabled buttonType="secondary" cta="Secondary Button Disabled"/>
+        </div>
+        <h2>Double Button</h2>
+        <div class="component-items">
+            <DoubleButton ctaOne="Button 1" ctaTwo="Button 2" />
+        </div>
+        <h2>Hold to Complete</h2>
+        <div class="component-items">
+            <HoldToComplete nextPage=""/>
         </div>
     </div>
 </div>
