@@ -3,6 +3,7 @@
     import { Colors, typography } from '$lib/design-system';
     import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import { goto } from '$app/navigation'; // Import SvelteKit navigation for page transition
+    import { browser } from '$app/environment';
 
     export let nextPage: string;
 
@@ -18,21 +19,25 @@
     // Update max radius when in the browser
     const updateMaxRadius = () => {
         if (typeof window !== 'undefined') {  // Ensure this runs in the browser
-            MAX_RADIUS = Math.max(window.innerWidth, window.innerHeight);
+            MAX_RADIUS = Math.max(window.innerWidth, window.innerHeight) + 100;
         }
     };
 
     // Run this only when the component is mounted (client-side)
     onMount(() => {
-        updateMaxRadius();
-        window.addEventListener('resize', updateMaxRadius);
+        if (browser) {
+            updateMaxRadius();
+            window.addEventListener('resize', updateMaxRadius);
+        }
     });
 
     // Cleanup event listener when the component is destroyed
     onDestroy(() => {
-        window.removeEventListener('resize', updateMaxRadius);
+        if (browser) {
+            window.removeEventListener('resize', updateMaxRadius);
+        }
     });
-    
+
     const startGrowing = (event: MouseEvent | TouchEvent): void => {
         if (buttonRef) {
             const rect = buttonRef.getBoundingClientRect();
@@ -45,7 +50,7 @@
         radius = 0;
 
         growInterval = setInterval(() => {
-            radius += 10; // Adjust growth speed
+            radius += 20; // Adjust growth speed
             if (radius >= MAX_RADIUS && growInterval) {
                 clearInterval(growInterval); // Stop animation at max size
                 hasFilledScreen = true;
@@ -55,7 +60,7 @@
                     if (nextPage) goto(nextPage);
                 }, 300); // Adjust delay as needed
             }
-        }, 50);
+        }, 5);
     };
 
     const stopGrowing = (): void => {
@@ -126,6 +131,7 @@
     }
 
     .full-screen-circle {
+        z-index: 9999999999999;
         position: fixed;
         top: 50%;
         left: 50%;

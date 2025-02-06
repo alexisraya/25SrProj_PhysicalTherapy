@@ -7,6 +7,7 @@
   import Character from '$lib/assets/iconography/Character.png';
   import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
   import Button from '$lib/design-system/components/Button.svelte';
+    import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
 </script>
 
 <div class="page_container">
@@ -83,16 +84,7 @@
     <div class="skip_btn">
       <Button cta="Skip" buttonType="secondary"/>
     </div>
-    <div class="hold_to_complete_container">
-      <div class="hold_to_complete_label">
-          <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">hold to complete</p>
-          <img src={RightArrow} />
-      </div>
-      <!-- NOTE: THIS SHOULD NOT GO TO YOUR-PROGRESS BUT BACK TO THE YOUR PROGRAM IN A DIFF STATE -->
-      <a href="/your-progress"> 
-        <img src={HoldToCompleteButton} />
-      </a>
-    </div>
+    <HoldToComplete nextPage=""/>
   </div>
 </div>
 
@@ -129,7 +121,7 @@
     display: flex;
     column-gap: 8px;
     justify-content: center;
-    z-index: 1000;
+    /* z-index: 1000; */
   }
   .progress_bar--item {
     border-radius: 8px;
