@@ -8,6 +8,7 @@
     import Streak from '$lib/assets/iconography/Streak.svg';
     import homeBackgroundLarge from '$lib/assets/background-images/home-background-large.svg';
     import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
+    import Chart from '$lib/design-system/components/Chart.svelte';
 
     let user = null;
     let userData = null;
@@ -71,6 +72,11 @@
             </div>
         </div>
     </div>
+    <div class="break"/>
+    <div class="metrics-container">
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
+        <Chart />
+    </div>
 </div>
 {:else}
 <p>Loading...</p>
@@ -83,6 +89,12 @@
     button {
         background-color: transparent;
         border: none;
+    }
+    .break {
+        position: relative;
+        width: 100vw;
+        height: 8px;
+        background-color: var(--color-blue-50);
     }
     .background-wave {
         /* position: absolute;
@@ -152,7 +164,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        column-gap: 8px;
+        row-gap: 8px;
     }
     .streak-item--rect {
         height: 12px;
@@ -164,6 +176,12 @@
         background-color: var(--color-purple-600);
     }
 
+    .metrics-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+        align-items: flex-start;
+    }
     @media (min-width: 505px) {
         .background-wave {
             content: url('/background-images/home-background-large.svg');
