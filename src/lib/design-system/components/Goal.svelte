@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { typography } from "$lib/design-system/typography";
+
   export let goalName: string;
   export let isLocked: boolean = false;
   export let hasExtraInfo: boolean = false;
   export let extraInfo: string = "Time";
-  export let isDarkMode: boolean = false;
 
   let backgroundSrc = isLocked 
     ? "/src/lib/assets/iconography/Circle Locked BG.svg" 
@@ -14,23 +15,15 @@
 </script>
 
 <script context="module">
-  export const defaultGoals = {
-      lightMode: [
-          { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false },
-          { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time" },
-          { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false },
-          { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time" }
-      ],
-      darkMode: [
-          { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false, isDarkMode: true },
-          { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time", isDarkMode: true },
-          { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false, isDarkMode: true },
-          { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time", isDarkMode: true }
-      ]
-  };
+  export const defaultGoals = [
+    { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false },
+    { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time" },
+    { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false },
+    { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time" }
+  ];
 </script>
 
-<div class="goal-container {isDarkMode ? 'dark-mode' : ''}">
+<div class="goal-container">
   <div class="goal-icon">
     <img class="bg-image" src={backgroundSrc} alt="Goal background" />
     {#if isLocked}
@@ -46,13 +39,6 @@
 </div>
 
 <style>
-  :root {
-    --blue-110: #0F1B1F;
-    --grey-0: #FFFFFF;
-    --grey-30: #9BA1A3;
-    --font-body: "Albert Sans", sans-serif;
-  }
-
   .goal-container {
     display: flex;
     flex-direction: column;
@@ -88,7 +74,7 @@
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
-    line-height: 150%; /* 18px */
+    line-height: 150%;
     text-align: center;
     color: var(--blue-110);
     margin-bottom: 2px;
@@ -99,17 +85,9 @@
     font-size: 10px;
     font-style: italic;
     font-weight: 400;
-    line-height: 150%; /* 15px */
+    line-height: 150%;
     text-align: center;
     color: var(--grey-30);
     margin-top: 2px;
-  }
-
-  .dark-mode .goal-name {
-    color: var(--grey-0);
-  }
-
-  .dark-mode .goal-extra {
-    color: var(--grey-30);
   }
 </style>

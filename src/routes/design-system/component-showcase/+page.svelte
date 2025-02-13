@@ -21,23 +21,10 @@
     <!-- Goal -->
     <div class="component-section">
         <h2>Goals</h2>
-
-        <!-- Light Mode Goals -->
-        <h3>Light Mode</h3>
         <div class="goal-grid">
-            {#each defaultGoals.lightMode as goal}
+            {#each defaultGoals as goal}
                 <Goal {...goal} />
             {/each}
-        </div>
-
-        <!-- Dark Mode Goals -->
-        <h3>Dark Mode</h3>
-        <div class="dark-mode-section">
-            <div class="goal-grid">
-                {#each defaultGoals.darkMode as goal}
-                    <Goal {...goal} />
-                {/each}
-            </div>
         </div>
     </div>
 </div>
@@ -69,15 +56,5 @@
         gap: 16px;
         justify-content: center;
         padding-top: 10px;
-    }
-
-    .dark-mode-section {
-        background-color: #0F1B1F; /* Blue/110 */
-        padding: 20px;
-        border-radius: 8px;
-    }
-
-    .dark-mode-section h3 {
-        color: #FFFFFF;
     }
 </style>
