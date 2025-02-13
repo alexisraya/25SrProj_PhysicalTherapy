@@ -1,7 +1,8 @@
 <script>
     import Button from "$lib/design-system/components/Button.svelte";
     import Goal from "$lib/design-system/components/Goal.svelte";
-    import { defaultGoals } from "$lib/design-system/components/Goal.svelte";
+    import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
+
 </script>
 
 <div class="container">
@@ -27,10 +28,19 @@
             {/each}
         </div>
     </div>
+    <div class="component-section">
+        <h2>Exercise Card</h2>
+        <div class="component-items">
+            <ExerciseCard exerciseName="Exercise Default" exerciseSet="Text" exerciseEquipment="Text" />
+            <ExerciseCard exerciseName="Exercise Orderable" exerciseSet="Text" exerciseEquipment="Text" orderable/>
+            <ExerciseCard exerciseName="Exercise Edit Mode" exerciseSet="Text" exerciseEquipment="Text" editMode/>
+            <ExerciseCard exerciseName="Exercise Complete" exerciseSet="Text" exerciseEquipment="Text" isComplete/>
+        </div>
+    </div>
 </div>
 
 <style>
-    h1, h2{
+    h1, h2 {
         margin: 0;
     }
 
