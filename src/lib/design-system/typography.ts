@@ -14,6 +14,7 @@ export const typography = {
         regular: '1rem',
         small: '0.875rem',
         xsmall: '0.75rem',
+        xxsmall: '0.625rem',
     },
     fontWeights: {
       light: 200,
