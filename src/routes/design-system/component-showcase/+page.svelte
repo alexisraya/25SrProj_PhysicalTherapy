@@ -1,5 +1,7 @@
 <script>
     import Button from "$lib/design-system/components/Button.svelte";
+    import DoubleButton from "$lib/design-system/components/DoubleButton.svelte";
+    import HoldToComplete from "$lib/design-system/components/HoldToComplete.svelte";
     import Goal from "$lib/design-system/components/Goal.svelte";
     import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
 
@@ -17,6 +19,14 @@
             <Button buttonType="secondary" cta="Secondary Button"/>
             <Button isDisabled buttonType="secondary" cta="Secondary Button Disabled"/>
         </div>
+        <h2>Double Button</h2>
+        <div class="component-items">
+            <DoubleButton ctaOne="Button 1" ctaTwo="Button 2" />
+        </div>
+        <h2>Hold to Complete</h2>
+        <div class="component-items">
+            <HoldToComplete nextPage=""/>
+        </div>
     </div>
 
     <!-- Goal -->
@@ -28,6 +38,8 @@
             {/each}
         </div>
     </div>
+
+    <!-- Exercise Card -->
     <div class="component-section">
         <h2>Exercise Card</h2>
         <div class="component-items">
