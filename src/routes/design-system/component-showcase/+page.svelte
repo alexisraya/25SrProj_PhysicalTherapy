@@ -38,6 +38,8 @@
             {/each}
         </div>
     </div>
+
+    <!-- Exercise Card -->
     <div class="component-section">
         <h2>Exercise Card</h2>
         <div class="component-items">
