@@ -6,6 +6,9 @@
     import { typography } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
     import Streak from '$lib/assets/iconography/Streak.svg';
+    import homeBackgroundLarge from '$lib/assets/background-images/home-background-large.svg';
+    import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
+    import Chart from '$lib/design-system/components/Chart.svelte';
 
     let user = null;
     let userData = null;
@@ -31,13 +34,16 @@
 
 {#if user && userData}
 <div class="header-container">
+    <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light};">Start your program for today</p>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; padding-bottom: 3px;">Start your program for today</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
     </div>
+</div>
+<div class="body-container">
     <div class="program-streak-container">
         <div class="program-streak-container--title">
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Weekly program streak</p>
@@ -66,6 +72,11 @@
             </div>
         </div>
     </div>
+    <div class="break"/>
+    <div class="metrics-container">
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
+        <Chart />
+    </div>
 </div>
 {:else}
 <p>Loading...</p>
@@ -79,17 +90,53 @@
         background-color: transparent;
         border: none;
     }
+    .break {
+        position: relative;
+        width: 100vw;
+        height: 8px;
+        background-color: var(--color-blue-50);
+    }
+    .background-wave {
+        /* position: absolute;
+        top: 0;
+        transform: translateY(-50%);
+        z-index: -1; */
+        position: absolute;
+        top: -75%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: -1;
+        width: 562px;
+    }
     .header-container {
+        /* width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center; */
+        position: relative;
         width: 100%;
+        /* height: 400px; */
+        overflow-x: hidden;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
+        padding-top: 40px;
+    }
+    .body-container {
+        margin: 16px 16px 0 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-items: center;
+        row-gap: 8px;
     }
     .program-streak-container {
         width: 100%;
-        padding: 15px 14px 8px 14px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -117,7 +164,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        column-gap: 8px;
+        row-gap: 8px;
     }
     .streak-item--rect {
         height: 12px;
@@ -127,5 +174,19 @@
     }
     .day-one {
         background-color: var(--color-purple-600);
+    }
+
+    .metrics-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+        align-items: flex-start;
+    }
+    @media (min-width: 505px) {
+        .background-wave {
+            content: url('/background-images/home-background-large.svg');
+            width: 2258px;
+            top: -125%;
+        }
     }
 </style>
