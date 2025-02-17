@@ -4,6 +4,7 @@
     import HoldToComplete from "$lib/design-system/components/HoldToComplete.svelte";
     import Goal from "$lib/design-system/components/Goal.svelte";
     import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
+    import Nav from "$lib/design-system/components/Nav.svelte";
 
 </script>
 

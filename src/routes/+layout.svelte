@@ -4,6 +4,7 @@
     import { authStore } from "../stores/authStore";
 	import ThemeProvider from "$lib/design-system/ThemeProvider.svelte";
 	import '../app.css';
+    import Nav from "$lib/design-system/components/Nav.svelte";
 
     onMount(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -17,6 +18,7 @@
 
 <ThemeProvider>
 	<div class="main-container">
+		<Nav />
 		<slot />
 	</div>
 </ThemeProvider>
