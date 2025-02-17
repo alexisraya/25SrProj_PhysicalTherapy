@@ -5,6 +5,7 @@
     import Goal from "$lib/design-system/components/Goal.svelte";
     import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
     import Nav from "$lib/design-system/components/Nav.svelte";
+    import StatBlock from "$lib/design-system/components/StatBlock.svelte";
 
 </script>
 
@@ -48,6 +49,13 @@
             <ExerciseCard exerciseName="Exercise Orderable" exerciseSet="Text" exerciseEquipment="Text" orderable/>
             <ExerciseCard exerciseName="Exercise Edit Mode" exerciseSet="Text" exerciseEquipment="Text" editMode/>
             <ExerciseCard exerciseName="Exercise Complete" exerciseSet="Text" exerciseEquipment="Text" isComplete/>
+        </div>
+    </div>
+
+    <div class="component-section">
+        <h2>Stat Block</h2>
+        <div class="component-items">
+            <StatBlock statTitle="Stat Title" stat="Stat"/>
         </div>
     </div>
 </div>
