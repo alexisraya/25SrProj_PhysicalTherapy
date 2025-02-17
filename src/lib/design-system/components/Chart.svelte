@@ -91,3 +91,4 @@
   <div style="width: 100%; height: 180px;">
     <canvas bind:this={canvas}></canvas>
   </div>
+  

@@ -10,6 +10,7 @@
 
 <div class="container">
     <a href="design-system/component-showcase">Component Showcase</a>
+    <a href="design-system/icon-showcase">Icon Showcase</a>
     <div class="typography-container">
         <h2>Typography</h2>
         <p style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.special}; font-weight: {typography.fontWeights.regular};">
@@ -111,14 +112,14 @@
         border-radius: 8px;
         padding: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
+        background-color: var(--color-grey-0);
     }
 
     .color-family h3 {
         margin-bottom: 1rem;
         text-transform: capitalize;
         font-size: 1.2rem;
-        color: #333;
+        color: var(--color-blue-1100);
     }
 
     .shades {

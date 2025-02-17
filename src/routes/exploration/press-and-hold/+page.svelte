@@ -29,7 +29,7 @@
 </script>
 
 <h1>Press and Hold Validation</h1>
-<div class="background">
+<div class="press_hold_button_container">
     <button bind:this={button} on:mousedown={toggleActive} on:mouseup={removeActive}>
         <!-- svg describing a plus sign -->
         <svg viewBox="-50 -50 100 100" width="100" height="100">
@@ -59,7 +59,7 @@
         padding: 0;
         margin: 0;
     }
-    .background {
+    .press_hold_button_container {
         height: 50vh;
         display: flex;
         flex-direction: column-reverse;
@@ -67,6 +67,7 @@
         align-items: center;
         color: hsl(0, 0%, 20%);
         background: linear-gradient(to bottom right, var(--gradient-start), var(--gradient-end));
+        cursor: pointer;
     }
     button {
         width: 80px;

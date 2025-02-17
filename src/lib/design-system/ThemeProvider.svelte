@@ -43,8 +43,8 @@
 <style>
   :root {
     /* Default theme variables */
-    --background: #ffffff;
-    --text: #000000;
+    --background: var(--color-grey-0);
+    --text: var(--color-blue-1100);
   }
 
   body {
