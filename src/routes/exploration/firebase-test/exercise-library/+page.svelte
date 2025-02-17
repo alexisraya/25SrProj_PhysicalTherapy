@@ -1,49 +1,32 @@
-// testing if exercise library exists
-
 <script lang="ts">
     import { onMount } from "svelte";
-    import { populateExerciseLibrary, getAllExercisesFromLibrary, type Exercise } from "../../../firebase/exerciseLibraryService";  // ✅ Use relative path
+    import { populateExerciseLibrary, getAllExercisesFromLibrary } from "$firebase/exerciseService";
 
+    let exercises = [];
 
-  
-    let exercises: Exercise[] = [];
-    let isLoading = true;
-  
     async function loadExercises() {
-        isLoading = true;
         exercises = await getAllExercisesFromLibrary();
-        isLoading = false;
+        console.log("📌 Loaded exercises:", exercises);
     }
-  
-    onMount(() => {
-        loadExercises();
-    });
-  
-    async function populateAndReload() {
+
+    async function populate() {
         await populateExerciseLibrary();
-        await loadExercises();
+        await loadExercises();  // ✅ Refresh UI after populating
     }
-  </script>
-  
-  <h1>Exercise Library</h1>
-  
-  <button on:click={populateAndReload}>Populate Dummy Exercises</button>
-  
-  {#if isLoading}
-      <p>Loading exercises...</p>
-  {:else}
-      {#if exercises.length > 0}
-          <ul>
-              {#each exercises as exercise}
-                  <li>
-                      <strong>{exercise.exerciseName}</strong> - {exercise.description}  
-                      <br /> Equipment: {exercise.equipment}  
-                      <br /> Sets: {exercise.defaultSets} | Reps: {exercise.defaultReps}
-                  </li>
-              {/each}
-          </ul>
-      {:else}
-          <p>No exercises found.</p>
-      {/if}
-  {/if}
-  
+
+    onMount(loadExercises);
+</script>
+
+<h1>Exercise Library</h1>
+
+<button on:click={populate}>Populate Exercise Library</button>
+
+{#if exercises.length}
+    <ul>
+        {#each exercises as exercise}
+            <li>{exercise.exerciseName}</li>
+        {/each}
+    </ul>
+{:else}
+    <p>Loading exercises...</p>
+{/if}
