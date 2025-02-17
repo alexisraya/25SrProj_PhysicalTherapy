@@ -5,6 +5,7 @@
 	import ThemeProvider from "$lib/design-system/ThemeProvider.svelte";
 	import '../app.css';
     import Nav from "$lib/design-system/components/Nav.svelte";
+	import { page } from '$app/stores';
 
     onMount(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -18,7 +19,9 @@
 
 <ThemeProvider>
 	<div class="main-container">
+		{#if $page.url.pathname != "/login"}
 		<Nav />
+		{/if}
 		<slot />
 	</div>
 </ThemeProvider>
