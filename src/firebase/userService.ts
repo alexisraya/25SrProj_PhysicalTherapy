@@ -27,7 +27,7 @@ export async function createUser(userId: string, userData: User): Promise<void> 
 
 export async function getUser(userId: string): Promise<User | null> {
     if (!userId) {
-        console.warn("🚨 Invalid userId provided to getUser.");
+        console.warn("Invalid userId provided to getUser.");
         return null;
     }
 
@@ -36,7 +36,7 @@ export async function getUser(userId: string): Promise<User | null> {
     if (userSnap.exists()) {
         return userSnap.data() as User;
     } else {
-        console.warn("⚠️ User not found in Firestore:", userId);
+        console.warn("User not found in Firestore:", userId);
         return null;
     }
 }

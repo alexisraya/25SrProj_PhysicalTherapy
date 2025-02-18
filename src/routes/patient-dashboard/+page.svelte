@@ -14,24 +14,22 @@
     let userData = null;
 
     onMount(async () => {
-    auth.onAuthStateChanged(async (authUser) => {
-        if (!authUser) {
-            goto('/login');
-            return;
-        }
-
-        user = authUser;
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-            userData = userDoc.data();
-
-            if (userData.isTherapist) {
-                console.warn("⚠️ Therapist detected. Redirecting...");
-                goto('/therapist-dashboard');
+        auth.onAuthStateChanged(async (authUser) => {
+        if (authUser) {
+            user = authUser;
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                userData = userDoc.data();
+                if (userData.isTherapist) {
+                    goto('/therapist-dashboard');
+                }
+                console.log(userData.exercises);
             }
+        } else {
+            goto('/login');
         }
+        });
     });
-});
 </script>
 
 {#if user && userData}

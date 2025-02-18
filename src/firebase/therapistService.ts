@@ -13,16 +13,16 @@ export async function createTherapist(therapistId: string, therapistData: Therap
     const therapistRef = doc(db, "therapists", therapistId);
     await setDoc(therapistRef, {
         ...therapistData,
-        therapistId, // ✅ Ensure therapistId is stored explicitly
-        isTherapist: true, // ✅ Ensure this field exists
+        therapistId,
+        isTherapist: true,
     }, { merge: true });
 
-    console.log("✅ Therapist added to Firestore:", therapistId);
+    console.log("Therapist added to Firestore:", therapistId);
 }
 
 export async function getTherapist(therapistId: string): Promise<Therapist | null> {
     if (!therapistId) {
-        console.warn("🚨 Invalid therapistId provided to getTherapist.");
+        console.warn("Invalid therapistId provided to getTherapist.");
         return null;
     }
 
@@ -31,7 +31,7 @@ export async function getTherapist(therapistId: string): Promise<Therapist | nul
     if (therapistSnap.exists()) {
         return therapistSnap.data() as Therapist;
     } else {
-        console.warn("⚠️ Therapist not found in Firestore:", therapistId);
+        console.warn("Therapist not found in Firestore:", therapistId);
         return null;
     }
 }

@@ -25,7 +25,7 @@ export async function populateExerciseLibrary(): Promise<void> {
         await setDoc(exerciseRef, exercise, { merge: true });
     }
 
-    console.log("✅ Exercises added to Firestore");
+    console.log("Exercises added to Firestore");
 }
 
 export async function getAllExercisesFromLibrary(): Promise<Exercise[]> {
