@@ -4,8 +4,9 @@
     import HoldToComplete from "$lib/design-system/components/HoldToComplete.svelte";
     import Goal from "$lib/design-system/components/Goal.svelte";
     import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
-    import Nav from "$lib/design-system/components/Nav.svelte";
     import StatBlock from "$lib/design-system/components/StatBlock.svelte";
+    import CheckInPain from "$lib/design-system/components/CheckInPain.svelte";
+    import CheckInMood from "$lib/design-system/components/CheckInMood.svelte";
 
 </script>
 
@@ -56,6 +57,16 @@
         <h2>Stat Block</h2>
         <div class="component-items">
             <StatBlock statTitle="Stat Title" stat="Stat"/>
+        </div>
+    </div>
+    <div class="component-section">
+        <h2>Check In Pain</h2>
+        <div class="component-items">
+            <CheckInPain />
+        </div>
+        <h2>Check In Mood</h2>
+        <div class="component-items">
+            <CheckInMood />
         </div>
     </div>
 </div>
