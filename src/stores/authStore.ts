@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { auth } from "$lib/helpers/firebase";
+import { assignPatientToTherapist } from "$firebase/therapistService";
 
 const db = getFirestore();
 
@@ -23,15 +24,18 @@ export const authHandlers = {
 
         const userDocRef = doc(db, 'users', user.uid);
         await setDoc(userDocRef, {
+            userId: user.uid,
             firstName: firstName,
             lastName: lastName,
-            email: email,
             displayName: `${firstName} ${lastName}`,
+            email: email,
             isTherapist: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            userId: user.uid,
+            therapistId: "mY8JFfhiJvdFm54wG57ALJmVYit2",
+            assignedExercises: []
         });
+        await assignPatientToTherapist(user.uid);
     },
     logout: async () => {
         await signOut(auth)

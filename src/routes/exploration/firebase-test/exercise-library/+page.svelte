@@ -1,32 +1,29 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { populateExerciseLibrary, getAllExercisesFromLibrary } from "$firebase/exerciseService";
+    import { getAllExercisesFromLibrary, type Exercise } from "$firebase/exerciseService";
 
-    let exercises = [];
+    let exercises: Exercise[] = [];
 
-    async function loadExercises() {
-        exercises = await getAllExercisesFromLibrary();
-        console.log("📌 Loaded exercises:", exercises);
-    }
-
-    async function populate() {
-        await populateExerciseLibrary();
-        await loadExercises();  // ✅ Refresh UI after populating
-    }
-
-    onMount(loadExercises);
+    onMount(async () => {
+        try {
+            exercises = await getAllExercisesFromLibrary();
+            console.log("Fetched exercises:", exercises);
+        } catch (error) {
+            console.error("Error fetching exercises:", error);
+        }
+    });
 </script>
 
 <h1>Exercise Library</h1>
 
-<button on:click={populate}>Populate Exercise Library</button>
-
-{#if exercises.length}
+{#if exercises.length > 0}
     <ul>
         {#each exercises as exercise}
-            <li>{exercise.exerciseName}</li>
+            <li>
+                <strong>{exercise.exerciseName}</strong> ({exercise.exerciseId})
+            </li>
         {/each}
     </ul>
 {:else}
-    <p>Loading exercises...</p>
+    <p>No exercises found.</p>
 {/if}
