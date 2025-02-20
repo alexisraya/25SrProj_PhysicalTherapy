@@ -49,24 +49,18 @@
     }
 </script>
 
-<h1>User Database Test</h1>
+<div class="exercise-view-container">
+    <h2>My Exercises</h2>
 
-{#if isLoading}
-    <p>Loading user data...</p>
-{:else}
-    {#if userData}
-        <div>
-            <p><strong>Name:</strong> {userData.firstName} {userData.lastName}</p>
-            <p><strong>Email:</strong> {userData.email}</p>
-            <p><strong>Is Therapist:</strong> {userData.isTherapist ? "Yes" : "No"}</p>
-        
-            <h2>Assigned Exercises</h2>
+    {#if isLoading}
+        <p>Loading exercises...</p>
+    {:else}
+        {#if userData}
             {#if userData.assignedExercises && userData.assignedExercises.length > 0}
                 <table>
                     <thead>
                         <tr>
                             <th>Exercise</th>
-                            <th>Sets</th>
                             <th>Reps</th>
                             <th>Assigned</th>
                             <th>Status</th>
@@ -77,7 +71,6 @@
                         {#each userData.assignedExercises as exercise, i}
                             <tr>
                                 <td>{exercise.exerciseName}</td>
-                                <td>{exercise.sets || 1}</td>
                                 <td>{exercise.reps}</td>
                                 <td>{formatDate(exercise.assigned)}</td>
                                 <td>
@@ -101,13 +94,20 @@
             {:else}
                 <p>No exercises assigned yet.</p>
             {/if}
-        </div>
-    {:else}
-        <p>No user data found. Try logging in again.</p>
+        {:else}
+            <p>Unable to load exercise data.</p>
+        {/if}
     {/if}
-{/if}
+</div>
 
 <style>
+    .exercise-view-container {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
