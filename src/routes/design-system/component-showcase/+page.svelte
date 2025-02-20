@@ -7,6 +7,8 @@
     import StatBlock from "$lib/design-system/components/StatBlock.svelte";
     import CheckInPain from "$lib/design-system/components/CheckInPain.svelte";
     import CheckInMood from "$lib/design-system/components/CheckInMood.svelte";
+    import XAxisTimeFrameSelectors from "$lib/design-system/components/XAxisTimeFrameSelectors.svelte";
+    import Streak from "$lib/design-system/components/Streak.svelte";
 
 </script>
 
@@ -69,6 +71,16 @@
             <CheckInMood />
         </div>
     </div>
+    <div class="component-section">
+        <h2>X Axis Time Selector</h2>
+        <XAxisTimeFrameSelectors />
+    </div>
+    <div>
+        <h2>Streak Displays</h2>
+        <Streak streakType="home" streakTotalDays={5} streakDaysCompleted={1} />
+        <Streak streakType="program" streakTotalDays={5} streakDaysCompleted={1} />
+        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} />
+    </div>
 </div>
 
 <style>
@@ -84,6 +96,7 @@
         display: flex;
         flex-direction: column;
         row-gap: 16px;
+        margin-bottom: 48px;
     }
 
     .component-items {
