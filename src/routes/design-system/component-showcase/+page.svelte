@@ -9,6 +9,8 @@
     import CheckInMood from "$lib/design-system/components/CheckInMood.svelte";
     import XAxisTimeFrameSelectors from "$lib/design-system/components/XAxisTimeFrameSelectors.svelte";
     import Streak from "$lib/design-system/components/Streak.svelte";
+    import Achievement from "$lib/design-system/components/Achievement.svelte";
+    import AchievmentCard from "$lib/design-system/components/AchievmentCard.svelte";
 
 </script>
 
@@ -44,6 +46,15 @@
         </div>
     </div>
 
+    <!-- Achievements -->
+    <div class="component-section">
+        <h2>Achievement</h2>
+        <Achievement type="program" achievementDescription="You’ve lifted the weight of a polar bear!"/>
+        <Achievement type="milestones" achievementDescription="You’ve lifted the weight of a polar bear!"/>
+        <AchievmentCard achievementTitle="Polar bear" achievementMark="158lbs" />
+        <AchievmentCard isLocked achievementTitle="Female hippo" achievementMark="3000lbs" />
+    </div>
+
     <!-- Exercise Card -->
     <div class="component-section">
         <h2>Exercise Card</h2>
@@ -55,12 +66,15 @@
         </div>
     </div>
 
+    <!-- Stat Block -->
     <div class="component-section">
         <h2>Stat Block</h2>
         <div class="component-items">
             <StatBlock statTitle="Stat Title" stat="Stat"/>
         </div>
     </div>
+
+    <!-- Check Ins -->
     <div class="component-section">
         <h2>Check In Pain</h2>
         <div class="component-items">
@@ -71,10 +85,14 @@
             <CheckInMood />
         </div>
     </div>
+
+    <!-- X Axis Selector -->
     <div class="component-section">
         <h2>X Axis Time Selector</h2>
         <XAxisTimeFrameSelectors />
     </div>
+
+    <!-- Streak Displays -->
     <div>
         <h2>Streak Displays</h2>
         <Streak streakType="home" streakTotalDays={5} streakDaysCompleted={1} />
