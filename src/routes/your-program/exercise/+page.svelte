@@ -20,7 +20,9 @@
         <div class="progress_bar--item empty"></div>
       </div>
     </div>
-    <ExerciseModel modelPath="/meditation_pose_female.glb" />
+    <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" />
+    <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
+    <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
     <div class="exercise_info">
       <button class="edit_btn">
         <img src={Editicon} />
