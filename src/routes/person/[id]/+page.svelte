@@ -11,9 +11,7 @@
     let loading = true;
     let error: string | null = null;
     
-    // Program creation state
-    let selectedExercises: AssignedExercise[] = [];
-    let estimatedTime = 30; // default 30 minutes
+    // Exercise selection state
     let selectedExercise: Exercise | null = null;
     let exerciseValues = {
         sets: 3,
@@ -22,6 +20,10 @@
         seconds: 10,
         weight: 0
     };
+
+    // Program state
+    let newExercises: AssignedExercise[] = [];
+    let estimatedTime = 30;
     let isAssigning = false;
 
     onMount(() => {
@@ -33,11 +35,14 @@
 
             try {
                 const patientId = $page.params.id;
-                console.log("Loading patient details for:", patientId);
-                
                 const patientData = await getUser(patientId);
                 if (patientData) {
                     patient = patientData;
+                    // If patient has existing exercises, initialize new exercises with them
+                    if (patient.assignedExercises?.length > 0) {
+                        newExercises = [...patient.assignedExercises];
+                        estimatedTime = patient.estimatedTime || 30;
+                    }
                 } else {
                     error = "Patient not found";
                 }
@@ -64,8 +69,9 @@
             exerciseName: selectedExercise.exerciseName,
             exerciseType: selectedExercise.exerciseType,
             equipment: selectedExercise.equipment,
-            order: selectedExercises.length,
-            completed: false
+            order: newExercises.length,
+            completed: false,
+            skipped: false
         };
 
         let exerciseToAdd: AssignedExercise;
@@ -92,40 +98,65 @@
             };
         }
 
-        selectedExercises = [...selectedExercises, exerciseToAdd];
+        newExercises = [...newExercises, exerciseToAdd];
+        // Reset selection
+        selectedExercise = null;
     }
 
     function handleRemoveExercise(index: number) {
-        selectedExercises = selectedExercises.filter((_, i) => i !== index);
+        newExercises = newExercises.filter((_, i) => i !== index);
         // Recalculate order
-        selectedExercises = selectedExercises.map((ex, i) => ({
+        newExercises = newExercises.map((ex, i) => ({
             ...ex,
             order: i
         }));
     }
 
     async function handleAssignProgram() {
-        if (!patient || selectedExercises.length === 0) return;
+    if (!patient || !newExercises || newExercises.length === 0 || estimatedTime === undefined) {
+        console.error("Error: Invalid program assignment", { patient, newExercises, estimatedTime });
+        error = "Cannot assign an empty program.";
+        return;
+    }
+    
+    try {
+        isAssigning = true;
+        console.log("Attempting to assign program with values:");
+        console.log("User ID:", patient?.userId);
+        console.log("New Exercises:", newExercises);
+        console.log("Estimated Time:", estimatedTime);
+        console.log("New Exercises Length:", newExercises?.length);
+        console.log("First Exercise (if exists):", newExercises?.[0]);
+
+
+        await assignProgram(patient.userId, newExercises, estimatedTime);
+
+        const updatedPatient = await getUser(patient.userId);
+        if (updatedPatient) {
+            patient = updatedPatient;
+        }
         
-        try {
-            isAssigning = true;
-            await assignProgram(patient.userId, selectedExercises, estimatedTime);
-            
-            // Refresh patient data to show new program
-            const updatedPatient = await getUser(patient.userId);
-            if (updatedPatient) {
-                patient = updatedPatient;
-            }
-            
-            // Clear selection
-            selectedExercises = [];
-            estimatedTime = 30;
-            
-        } catch (err) {
-            console.error('Error assigning program:', err);
-            error = "Failed to assign program";
-        } finally {
-            isAssigning = false;
+        selectedExercise = null;
+        
+    } catch (err) {
+        console.error('Error assigning program:', err);
+        error = "Failed to assign program";
+    } finally {
+        isAssigning = false;
+    }
+}
+
+    function moveExercise(index: number, direction: 'up' | 'down') {
+        if (direction === 'up' && index > 0) {
+            // Swap with previous exercise
+            [newExercises[index - 1], newExercises[index]] = [newExercises[index], newExercises[index - 1]];
+            // Update order values
+            newExercises = newExercises.map((ex, i) => ({ ...ex, order: i }));
+        } else if (direction === 'down' && index < newExercises.length - 1) {
+            // Swap with next exercise
+            [newExercises[index], newExercises[index + 1]] = [newExercises[index + 1], newExercises[index]];
+            // Update order values
+            newExercises = newExercises.map((ex, i) => ({ ...ex, order: i }));
         }
     }
 
@@ -136,94 +167,56 @@
     function formatDate(dateString: string): string {
         return new Date(dateString).toLocaleDateString();
     }
+
+    function getExerciseDetails(exercise: AssignedExercise): string {
+        if (exercise.exerciseType === 'distance') {
+            return `${exercise.sets} sets of ${exercise.steps} steps`;
+        } else if (exercise.exerciseType === 'weight') {
+            return `${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight}lbs`;
+        } else {
+            return `${exercise.reps} times, ${exercise.seconds} seconds each`;
+        }
+    }
 </script>
 
-{#if loading}
-    <div class="loading-container">
-        <p>Loading patient data...</p>
-    </div>
-{:else if error}
-    <div class="error-container">
+<div class="patient-container">
+    <button on:click={goBack} class="back-button">Back to Dashboard</button>
+
+    <h1 class="page-title">Patient Details</h1>
+
+    {#if loading}
+        <p>Loading...</p>
+    {:else if error}
         <p class="error">{error}</p>
-        <button on:click={goBack} class="back-button">Back to Dashboard</button>
-    </div>
-{:else if patient}
-    <div class="patient-container">
-        <button on:click={goBack} class="back-button">Back to Dashboard</button>
-
-        <h1 class="page-title">Patient Details</h1>
-
-        <div class="details-container">
+    {:else if patient}
+        <div class="details-section">
             <p><strong>Name:</strong> {patient.firstName} {patient.lastName}</p>
             <p><strong>Email:</strong> {patient.email}</p>
             <p><strong>Start Date:</strong> {formatDate(patient.createdAt)}</p>
-            
-            <!-- Current Program Section -->
-            {#if patient.currentProgram}
-                <div class="current-program">
-                    <h2>Current Program</h2>
-                    <p>Estimated time: {patient.currentProgram.estimatedTime} minutes</p>
-                    <div class="equipment-list">
-                        <strong>Equipment needed:</strong>
-                        {#each [...new Set(patient.currentProgram.exercises.filter(ex => ex.equipment).map(ex => ex.equipment))] as equipment}
-                            <span class="equipment-tag">{equipment}</span>
-                        {/each}
-                    </div>
-                    
-                    <table class="exercise-table">
-                        <thead>
-                            <tr>
-                                <th>Exercise</th>
-                                <th>Details</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each patient.currentProgram.exercises as exercise}
-                                <tr>
-                                    <td>{exercise.exerciseName}</td>
-                                    <td>
-                                        {#if exercise.exerciseType === 'distance'}
-                                            {exercise.sets} sets of {exercise.steps} steps
-                                        {:else if exercise.exerciseType === 'weight'}
-                                            {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
-                                        {:else}
-                                            {exercise.reps} times, {exercise.seconds} seconds each
-                                        {/if}
-                                    </td>
-                                    <td>
-                                        {#if exercise.completed}
-                                            <span class="status-completed">✓ Completed</span>
-                                        {:else if exercise.skipped}
-                                            <span class="status-skipped">Skipped</span>
-                                        {:else}
-                                            <span class="status-pending">Pending</span>
-                                        {/if}
-                                    </td>
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
-                </div>
-            {/if}
 
-            <!-- Program Creation Section -->
-            <div class="program-creation">
-                <h2>Create New Program</h2>
+            <!-- Program Management Section -->
+            <div class="program-section">
+                <h2>Exercise Program</h2>
                 
+                <!-- Time estimation -->
                 <div class="time-input">
                     <label>
-                        Estimated Program Time (minutes):
+                        Program Time (minutes):
                         <input 
                             type="number" 
                             bind:value={estimatedTime}
                             min="1"
+                            max="120"
                         />
                     </label>
                 </div>
 
+                <!-- Exercise selection -->
                 <div class="exercise-selection">
-                    <select bind:value={selectedExercise}>
+                    <select 
+                        bind:value={selectedExercise}
+                        class="exercise-select"
+                    >
                         <option value={null}>Select an exercise to add</option>
                         {#each availableExercises as exercise}
                             <option value={exercise}>{exercise.exerciseName}</option>
@@ -233,165 +226,228 @@
                     {#if selectedExercise}
                         <div class="exercise-values">
                             {#if isDistanceExercise(selectedExercise)}
-                                <label>
-                                    Sets:
-                                    <input type="number" bind:value={exerciseValues.sets} min="1" />
-                                </label>
-                                <label>
-                                    Steps per set:
-                                    <input type="number" bind:value={exerciseValues.steps} min="1" />
-                                </label>
+                                <div class="value-group">
+                                    <label>
+                                        Sets:
+                                        <input type="number" bind:value={exerciseValues.sets} min="1" />
+                                    </label>
+                                    <label>
+                                        Steps per set:
+                                        <input type="number" bind:value={exerciseValues.steps} min="1" />
+                                    </label>
+                                </div>
                             {:else if isWeightExercise(selectedExercise)}
-                                <label>
-                                    Sets:
-                                    <input type="number" bind:value={exerciseValues.sets} min="1" />
-                                </label>
-                                <label>
-                                    Reps per set:
-                                    <input type="number" bind:value={exerciseValues.reps} min="1" />
-                                </label>
-                                <label>
-                                    Weight (lbs):
-                                    <input type="number" bind:value={exerciseValues.weight} min="0" step="5" />
-                                </label>
+                                <div class="value-group">
+                                    <label>
+                                        Sets:
+                                        <input type="number" bind:value={exerciseValues.sets} min="1" />
+                                    </label>
+                                    <label>
+                                        Reps per set:
+                                        <input type="number" bind:value={exerciseValues.reps} min="1" />
+                                    </label>
+                                    <label>
+                                        Weight (lbs):
+                                        <input type="number" bind:value={exerciseValues.weight} min="0" step="5" />
+                                    </label>
+                                </div>
                             {:else}
-                                <label>
-                                    Times to perform:
-                                    <input type="number" bind:value={exerciseValues.reps} min="1" />
-                                </label>
-                                <label>
-                                    Seconds to hold:
-                                    <input type="number" bind:value={exerciseValues.seconds} min="1" />
-                                </label>
+                                <div class="value-group">
+                                    <label>
+                                        Times to perform:
+                                        <input type="number" bind:value={exerciseValues.reps} min="1" />
+                                    </label>
+                                    <label>
+                                        Seconds to hold:
+                                        <input type="number" bind:value={exerciseValues.seconds} min="1" />
+                                    </label>
+                                </div>
                             {/if}
 
                             <button 
-                                class="add-exercise-btn"
+                                class="add-btn"
                                 on:click={handleAddExercise}
                             >
-                                Add to Program
+                                Add Exercise
                             </button>
                         </div>
                     {/if}
                 </div>
 
-                {#if selectedExercises.length > 0}
-                    <div class="selected-exercises">
-                        <h3>Selected Exercises</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Exercise</th>
-                                    <th>Details</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {#each selectedExercises as exercise, i}
-                                    <tr>
-                                        <td>{exercise.exerciseName}</td>
-                                        <td>
-                                            {#if exercise.exerciseType === 'distance'}
-                                                {exercise.sets} sets of {exercise.steps} steps
-                                            {:else if exercise.exerciseType === 'weight'}
-                                                {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
-                                            {:else}
-                                                {exercise.reps} times, {exercise.seconds} seconds each
-                                            {/if}
-                                        </td>
-                                        <td>
-                                            <button 
-                                                class="remove-btn"
-                                                on:click={() => handleRemoveExercise(i)}
-                                            >
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>
-                                {/each}
-                            </tbody>
-                        </table>
+                <!-- Exercise list -->
+                {#if newExercises.length > 0}
+                    <div class="exercise-list">
+                        <h3>Current Exercises</h3>
+                        {#each newExercises as exercise, i}
+                            <div class="exercise-item">
+                                <div class="exercise-info">
+                                    <h4>{exercise.exerciseName}</h4>
+                                    <p>{getExerciseDetails(exercise)}</p>
+                                    {#if exercise.equipment}
+                                        <small>Equipment: {exercise.equipment}</small>
+                                    {/if}
+                                </div>
+                                <div class="exercise-controls">
+                                    <button 
+                                        class="order-btn"
+                                        disabled={i === 0}
+                                        on:click={() => moveExercise(i, 'up')}
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        class="order-btn"
+                                        disabled={i === newExercises.length - 1}
+                                        on:click={() => moveExercise(i, 'down')}
+                                    >
+                                        ↓
+                                    </button>
+                                    <button 
+                                        class="remove-btn"
+                                        on:click={() => handleRemoveExercise(i)}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        {/each}
 
                         <button 
-                            class="assign-program-btn"
+                            class="save-btn"
                             on:click={handleAssignProgram}
                             disabled={isAssigning}
                         >
-                            {isAssigning ? 'Assigning Program...' : 'Assign Program'}
+                            {isAssigning ? 'Saving...' : 'Save Program'}
                         </button>
                     </div>
+                {:else}
+                    <p class="no-exercises">No exercises assigned yet. Add some exercises above.</p>
                 {/if}
             </div>
         </div>
-    </div>
-{:else}
-    <div class="error-container">
-        <p>Patient not found</p>
-        <button on:click={goBack} class="back-button">Back to Dashboard</button>
-    </div>
-{/if}
+    {:else}
+        <p>No patient data found</p>
+    {/if}
+</div>
 
 <style>
-    /* ... Keeping existing styles ... */
-    
-    .current-program {
-        margin-top: 2rem;
+    .patient-container {
+        max-width: 800px;
+        margin: 0 auto;
         padding: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
     }
 
-    .program-creation {
-        margin-top: 2rem;
-        padding: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-    }
-
-    .equipment-tag {
-        background-color: #f3f4f6;
-        padding: 0.25rem 0.5rem;
+    .back-button {
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #e5e7eb;
+        border: none;
         border-radius: 0.25rem;
-        margin-right: 0.5rem;
+        cursor: pointer;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .details-section {
+        margin-bottom: 2rem;
+    }
+
+    .program-section {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
     }
 
     .time-input {
         margin-bottom: 1rem;
     }
 
-    .exercise-selection {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+    .exercise-select {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
     }
 
-    .exercise-values {
+    .value-group {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
-        padding: 1rem;
-        background-color: #f9fafb;
-        border-radius: 0.5rem;
+        margin-bottom: 1rem;
     }
 
-    .add-exercise-btn {
-        grid-column: 1 / -1;
+    .value-group label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .value-group input {
         padding: 0.5rem;
-        background-color: #3b82f6;
+        border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
+    }
+
+    .exercise-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .exercise-info h4 {
+        margin: 0;
+        margin-bottom: 0.25rem;
+    }
+
+    .exercise-info p {
+        margin: 0;
+        color: #6b7280;
+    }
+
+    .exercise-info small {
+        color: #9ca3af;
+    }
+
+    .exercise-controls {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .order-btn {
+        padding: 0.25rem 0.5rem;
+        background-color: #e5e7eb;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+
+    .order-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .remove-btn {
+        padding: 0.25rem 0.5rem;
+        background-color: #ef4444;
         color: white;
         border: none;
         border-radius: 0.25rem;
         cursor: pointer;
     }
 
-    .selected-exercises {
-        margin-top: 1.5rem;
-    }
-
-    .assign-program-btn {
-        margin-top: 1rem;
-        padding: 0.75rem 1.5rem;
-        background-color: #059669;
+    .add-btn {
+        padding: 0.5rem 1rem;
+        background-color: #3b82f6;
         color: white;
         border: none;
         border-radius: 0.25rem;
@@ -399,20 +455,10 @@
         width: 100%;
     }
 
-    .assign-program-btn:disabled {
-        background-color: #d1d5db;
-        cursor: not-allowed;
+    .save-btn {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background-color: #059669;
+        color: white;
     }
-
-    .status-completed {
-        color: #059669;
-    }
-
-    .status-pending {
-        color: #d97706;
-    }
-
-    .status-skipped {
-        color: #dc2626;
-    }
-</style>
+    </style>

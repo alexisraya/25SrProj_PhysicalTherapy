@@ -1,5 +1,5 @@
 import { db } from "$lib/helpers/firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 
 const exercises = [
     // Distance-based exercises
@@ -114,19 +114,17 @@ const exercises = [
 ];
 
 export async function seedExercises() {
-    try {
-        console.log("Starting to seed exercises...");
-        const exercisesRef = collection(db, "exercises");
-        
-        for (const exercise of exercises) {
-            console.log(`Attempting to add exercise: ${exercise.exerciseName}`);
-            await setDoc(doc(exercisesRef, exercise.exerciseId), exercise);
-            console.log(`Successfully added exercise: ${exercise.exerciseName}`);
+    const exercisesRef = collection(db, "exercises");
+    const existingExercisesSnapshot = await getDocs(exercisesRef);
+    const existingExerciseIds = new Set(existingExercisesSnapshot.docs.map(doc => doc.id));
+
+    for (const exercise of exercises) {
+        if (!existingExerciseIds.has(exercise.exerciseId)) {
+            const exerciseRef = doc(db, "exercises", exercise.exerciseId);
+            await setDoc(exerciseRef, exercise);
+            console.log(`Exercise ${exercise.exerciseId} added to Firestore`);
+        } else {
+            console.log(`Exercise ${exercise.exerciseId} already exists, skipping`);
         }
-        
-        console.log("Successfully seeded all exercises!");
-    } catch (error) {
-        console.error("Error in seedExercises:", error);
-        throw error;
     }
 }

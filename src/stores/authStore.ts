@@ -40,7 +40,23 @@ export const authHandlers = {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             therapistId: "mY8JFfhiJvdFm54wG57ALJmVYit2",
-            assignedExercises: []
+            stats: {
+                completedExercises: 0,
+                completedPrograms: 0,
+                totalSets: 0,
+                totalReps: 0,
+                totalWeight: 0,
+                totalDistance: 0,
+                totalTime: 0
+            }
+        });
+
+        const programRef = doc(db, "users", user.uid, "program", "currentProgram");
+        await setDoc(programRef, {
+            exercises: [],
+            estimatedTime: 0,
+            assignedAt: new Date().toISOString(),
+            completed: false
         });
 
         await assignPatientToTherapist(user.uid);
