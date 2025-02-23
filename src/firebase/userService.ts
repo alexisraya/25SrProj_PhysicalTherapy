@@ -1,15 +1,12 @@
-// This is referring to the Patient User
 import { db } from "$lib/helpers/firebase";
 import { doc, getDoc, updateDoc, collection, getDocs, query, where } from "firebase/firestore";
 
-export interface AssignedExercise {
-    exerciseId: string;
-    exerciseName: string;
-    sets: number;      // Added sets field
-    reps: number;
-    assigned: string;  // ISO date string
+export interface Program {
+    programId: string;
+    estimatedTime: number;  // in minutes
+    assignedAt: string; 
+    exercises: AssignedExercise[];
     completed: boolean;
-    completedAt?: string;  // ISO date string
 }
 
 export interface User {
@@ -21,29 +18,51 @@ export interface User {
     isTherapist: boolean;
     createdAt: string;
     updatedAt: string;
-    therapistId?: string; // The therapist assigned to this user
-    assignedExercises?: AssignedExercise[];
+    therapistId?: string;
+    assignedExercises: AssignedExercise[];
+    estimatedTime?: number;  // For the program
+    stats: {
+        completedExercises: number;
+        completedPrograms: number;
+        totalSets: number;
+        totalReps: number;
+        totalWeight: number;
+        totalDistance: number;
+        totalTime: number;
+    };
 }
 
-/**
- * Fetch a user by their ID
- */
+export interface AssignedExercise {
+    exerciseId: string;
+    exerciseName: string;
+    exerciseType: 'distance' | 'weight' | 'time';
+    order: number;
+    equipment?: string;
+    // Values assigned by therapist
+    sets?: number;
+    reps?: number;
+    steps?: number;
+    seconds?: number;
+    weight?: number;
+    completed: boolean;
+    completedAt?: string;
+    skipped?: boolean;
+    // Track adjustments made by user
+    adjustedSets?: number;
+    adjustedReps?: number;
+    adjustedSteps?: number;
+    adjustedSeconds?: number;
+    adjustedWeight?: number;
+}
+
 export async function getUser(userId: string): Promise<User | null> {
     try {
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
         
         if (userSnap.exists()) {
-            const userData = userSnap.data() as User;
-            
-            // Ensure assignedExercises is always an array
-            if (!userData.assignedExercises) {
-                userData.assignedExercises = [];
-            }
-            
-            return userData;
+            return userSnap.data() as User;
         }
-        
         return null;
     } catch (error) {
         console.error(`Error fetching user ${userId}:`, error);
@@ -51,53 +70,30 @@ export async function getUser(userId: string): Promise<User | null> {
     }
 }
 
-/**
- * Update a user's data
- */
 export async function updateUser(userId: string, updates: Partial<User>): Promise<void> {
     try {
-        // Add updatedAt timestamp
-        const updatedData = {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
             ...updates,
             updatedAt: new Date().toISOString()
-        };
-        
-        const userRef = doc(db, "users", userId);
-        await updateDoc(userRef, updatedData);
+        });
     } catch (error) {
         console.error(`Error updating user ${userId}:`, error);
         throw error;
     }
 }
 
-/**
- * Get all users (patients)
- */
 export async function getAllUsers(): Promise<User[]> {
     try {
-        const usersQuery = query(
-            collection(db, "users"),
-            where("isTherapist", "==", false)
-        );
-        
-        const snapshot = await getDocs(usersQuery);
-        return snapshot.docs.map(doc => {
-            const data = doc.data() as User;
-            // Ensure assignedExercises is always an array
-            if (!data.assignedExercises) {
-                data.assignedExercises = [];
-            }
-            return data;
-        });
+        const usersRef = collection(db, "users");
+        const snapshot = await getDocs(usersRef);
+        return snapshot.docs.map(doc => doc.data() as User);
     } catch (error) {
         console.error("Error fetching all users:", error);
         return [];
     }
 }
 
-/**
- * Get all patients assigned to a specific therapist
- */
 export async function getPatientsForTherapist(therapistId: string): Promise<User[]> {
     try {
         const patientsQuery = query(
@@ -107,113 +103,146 @@ export async function getPatientsForTherapist(therapistId: string): Promise<User
         );
         
         const snapshot = await getDocs(patientsQuery);
-        return snapshot.docs.map(doc => {
-            const data = doc.data() as User;
-            // Ensure assignedExercises is always an array
-            if (!data.assignedExercises) {
-                data.assignedExercises = [];
-            }
-            return data;
-        });
+        return snapshot.docs.map(doc => doc.data() as User);
     } catch (error) {
         console.error(`Error fetching patients for therapist ${therapistId}:`, error);
         return [];
     }
 }
 
-/**
- * Assign a therapist to a patient
- */
-export async function assignTherapistToPatient(patientId: string, therapistId: string): Promise<void> {
-    try {
-        const userRef = doc(db, "users", patientId);
-        await updateDoc(userRef, {
-            therapistId: therapistId,
-            updatedAt: new Date().toISOString()
-        });
-    } catch (error) {
-        console.error(`Error assigning therapist to patient:`, error);
-        throw error;
-    }
+export async function assignProgram(
+    userId: string, 
+    exercises: AssignedExercise[], 
+    estimatedTime: number
+) {
+    const programRef = doc(db, "users", userId, "program", "currentProgram");
+    await setDoc(programRef, {
+        exercises: exercises,
+        estimatedTime: estimatedTime,
+    });
 }
 
-/**
- * Assign an exercise to a patient
- */
-export async function assignExerciseToPatient(
-    patientId: string,
-    exercise: {
-        exerciseId: string;
-        exerciseName: string;
-        reps: number;
+
+export async function completeExercise(
+    userId: string,
+    exerciseIndex: number,
+    adjustedValues?: {
+        sets?: number;
+        reps?: number;
+        steps?: number;
+        seconds?: number;
+        weight?: number;
     }
 ): Promise<void> {
     try {
-        const userRef = doc(db, "users", patientId);
-        const userSnap = await getDoc(userRef);
-        
-        if (!userSnap.exists()) {
-            throw new Error(`Patient ${patientId} not found`);
+        const user = await getUser(userId);
+        if (!user?.assignedExercises) return;
+
+        const exercise = user.assignedExercises[exerciseIndex];
+        if (!exercise || exercise.completed || exercise.skipped) return;
+
+        const updatedExercises = [...user.assignedExercises];
+        updatedExercises[exerciseIndex] = {
+            ...exercise,
+            completed: true,
+            completedAt: new Date().toISOString(),
+            adjustedSets: adjustedValues?.sets,
+            adjustedReps: adjustedValues?.reps,
+            adjustedSteps: adjustedValues?.steps,
+            adjustedSeconds: adjustedValues?.seconds,
+            adjustedWeight: adjustedValues?.weight
+        };
+
+        const stats = { ...user.stats };
+        stats.completedExercises += 1;
+
+        if (exercise.exerciseType === 'distance') {
+            const sets = adjustedValues?.sets || exercise.sets || 0;
+            const steps = adjustedValues?.steps || exercise.steps || 0;
+            stats.totalSets += sets;
+            stats.totalDistance += sets * steps;
+        } 
+        else if (exercise.exerciseType === 'weight') {
+            const sets = adjustedValues?.sets || exercise.sets || 0;
+            const reps = adjustedValues?.reps || exercise.reps || 0;
+            const weight = adjustedValues?.weight || exercise.weight || 0;
+            stats.totalSets += sets;
+            stats.totalReps += sets * reps;
+            stats.totalWeight += sets * reps * weight;
+        } 
+        else if (exercise.exerciseType === 'time') {
+            const reps = adjustedValues?.reps || exercise.reps || 0;
+            const seconds = adjustedValues?.seconds || exercise.seconds || 0;
+            stats.totalTime += reps * seconds;
         }
-        
-        const userData = userSnap.data() as User;
-        const currentExercises = userData.assignedExercises || [];
-        
-        const updatedExercises = [
-            ...currentExercises,
-            {
-                exerciseId: exercise.exerciseId,
-                exerciseName: exercise.exerciseName,
-                reps: exercise.reps,
-                assigned: new Date().toISOString(),
-                completed: false
-            }
-        ];
-        
-        await updateDoc(userRef, {
+
+        const allDone = updatedExercises.every(ex => ex.completed || ex.skipped);
+        if (allDone) {
+            stats.completedPrograms += 1;
+        }
+
+        await updateUser(userId, {
             assignedExercises: updatedExercises,
-            updatedAt: new Date().toISOString()
+            stats
         });
     } catch (error) {
-        console.error(`Error assigning exercise to patient ${patientId}:`, error);
+        console.error("Error completing exercise:", error);
         throw error;
     }
 }
 
-/**
- * Mark an exercise as completed for a patient
- */
-export async function markExerciseCompleted(
-    patientId: string,
+export async function skipExercise(
+    userId: string,
     exerciseIndex: number
 ): Promise<void> {
     try {
-        const userRef = doc(db, "users", patientId);
-        const userSnap = await getDoc(userRef);
-        
-        if (!userSnap.exists()) {
-            throw new Error(`Patient ${patientId} not found`);
-        }
-        
-        const userData = userSnap.data() as User;
-        const exercises = userData.assignedExercises || [];
-        
-        if (exerciseIndex < 0 || exerciseIndex >= exercises.length) {
-            throw new Error(`Invalid exercise index: ${exerciseIndex}`);
-        }
-        
-        exercises[exerciseIndex] = {
-            ...exercises[exerciseIndex],
-            completed: true,
-            completedAt: new Date().toISOString()
+        const user = await getUser(userId);
+        if (!user?.assignedExercises) return;
+
+        const updatedExercises = [...user.assignedExercises];
+        updatedExercises[exerciseIndex] = {
+            ...updatedExercises[exerciseIndex],
+            skipped: true,
+            completed: false
         };
-        
-        await updateDoc(userRef, {
-            assignedExercises: exercises,
-            updatedAt: new Date().toISOString()
+
+        const allDone = updatedExercises.every(ex => ex.completed || ex.skipped);
+        const stats = { ...user.stats };
+        if (allDone) {
+            stats.completedPrograms += 1;
+        }
+
+        await updateUser(userId, {
+            assignedExercises: updatedExercises,
+            stats
         });
     } catch (error) {
-        console.error(`Error marking exercise as completed:`, error);
+        console.error("Error skipping exercise:", error);
+        throw error;
+    }
+}
+
+export async function updateExerciseOrder(
+    userId: string,
+    newOrder: number[]
+): Promise<void> {
+    try {
+        const user = await getUser(userId);
+        if (!user?.assignedExercises) return;
+
+        const updatedExercises = [...user.assignedExercises];
+        newOrder.forEach((newIndex, oldIndex) => {
+            updatedExercises[newIndex] = {
+                ...user.assignedExercises[oldIndex],
+                order: newIndex
+            };
+        });
+
+        await updateUser(userId, {
+            assignedExercises: updatedExercises
+        });
+    } catch (error) {
+        console.error("Error updating exercise order:", error);
         throw error;
     }
 }

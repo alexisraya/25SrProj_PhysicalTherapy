@@ -3,20 +3,26 @@
     import { page } from '$app/stores';
     import { goto } from '$app/navigation';
     import { auth } from '$lib/helpers/firebase';
-    import { getUser, updateUser, type User } from '$firebase/userService';
-    import { getAllExercisesFromLibrary, type Exercise } from '$firebase/exerciseService';
+    import { getUser, assignProgram, type User, type AssignedExercise } from '$firebase/userService';
+    import { getAllExercisesFromLibrary, type Exercise, isDistanceExercise, isWeightExercise, isTimeExercise } from '$firebase/exerciseService';
 
     let patient: User | null = null;
-    let exercises: Exercise[] = [];
+    let availableExercises: Exercise[] = [];
     let loading = true;
     let error: string | null = null;
     
-    // Form state
+    // Program creation state
+    let selectedExercises: AssignedExercise[] = [];
+    let estimatedTime = 30; // default 30 minutes
     let selectedExercise: Exercise | null = null;
-    let sets = 3;
-    let reps = 10;
+    let exerciseValues = {
+        sets: 3,
+        reps: 10,
+        steps: 10,
+        seconds: 10,
+        weight: 0
+    };
     let isAssigning = false;
-    let assignmentSuccess = false;
 
     onMount(() => {
         const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
@@ -26,31 +32,22 @@
             }
 
             try {
-                // Get the specific patient ID from the URL parameter
                 const patientId = $page.params.id;
                 console.log("Loading patient details for:", patientId);
                 
-                // Fetch only this specific patient
                 const patientData = await getUser(patientId);
-                
                 if (patientData) {
                     patient = patientData;
-                    if (!patient.assignedExercises) {
-                        patient.assignedExercises = [];
-                    }
                 } else {
                     error = "Patient not found";
                 }
                 
                 // Load exercise library
-                exercises = await getAllExercisesFromLibrary();
-                if (exercises.length > 0) {
-                    selectedExercise = exercises[0];
-                }
+                availableExercises = await getAllExercisesFromLibrary();
                 
             } catch (err) {
-                console.error('Error fetching patient data:', err);
-                error = "Error loading patient data";
+                console.error('Error fetching data:', err);
+                error = "Error loading data";
             } finally {
                 loading = false;
             }
@@ -59,63 +56,77 @@
         return unsubscribe;
     });
 
-    async function handleAssignExercise() {
-        if (!patient || !selectedExercise) return;
-        
-        try {
-            isAssigning = true;
-            
-            // Create the exercise assignment
-            const newExercise = {
-                exerciseId: selectedExercise.exerciseId,
-                exerciseName: selectedExercise.exerciseName,
-                sets: sets,
-                reps: reps,
-                assigned: new Date().toISOString(),
-                completed: false
+    function handleAddExercise() {
+        if (!selectedExercise) return;
+
+        const baseExercise = {
+            exerciseId: selectedExercise.exerciseId,
+            exerciseName: selectedExercise.exerciseName,
+            exerciseType: selectedExercise.exerciseType,
+            equipment: selectedExercise.equipment,
+            order: selectedExercises.length,
+            completed: false
+        };
+
+        let exerciseToAdd: AssignedExercise;
+
+        if (isDistanceExercise(selectedExercise)) {
+            exerciseToAdd = {
+                ...baseExercise,
+                sets: exerciseValues.sets,
+                steps: exerciseValues.steps
             };
-            
-            // Add to patient's assigned exercises
-            const updatedExercises = [...(patient.assignedExercises || []), newExercise];
-            
-            // Update the patient record
-            await updateUser(patient.userId, {
-                assignedExercises: updatedExercises
-            });
-            
-            // Update local state
-            patient.assignedExercises = updatedExercises;
-            assignmentSuccess = true;
-            
-            // Reset form after 2 seconds
-            setTimeout(() => {
-                assignmentSuccess = false;
-                sets = 3;
-                reps = 10;
-            }, 2000);
-            
-        } catch (err) {
-            console.error('Error assigning exercise:', err);
-            error = "Failed to assign exercise";
-        } finally {
-            isAssigning = false;
+        } else if (isWeightExercise(selectedExercise)) {
+            exerciseToAdd = {
+                ...baseExercise,
+                sets: exerciseValues.sets,
+                reps: exerciseValues.reps,
+                weight: exerciseValues.weight
+            };
+        } else {
+            exerciseToAdd = {
+                ...baseExercise,
+                sets: 1,
+                reps: exerciseValues.reps,
+                seconds: exerciseValues.seconds
+            };
         }
+
+        selectedExercises = [...selectedExercises, exerciseToAdd];
     }
 
     function handleRemoveExercise(index: number) {
-        if (!patient || !patient.assignedExercises) return;
+        selectedExercises = selectedExercises.filter((_, i) => i !== index);
+        // Recalculate order
+        selectedExercises = selectedExercises.map((ex, i) => ({
+            ...ex,
+            order: i
+        }));
+    }
+
+    async function handleAssignProgram() {
+        if (!patient || selectedExercises.length === 0) return;
         
-        const updatedExercises = [...patient.assignedExercises];
-        updatedExercises.splice(index, 1);
-        
-        updateUser(patient.userId, {
-            assignedExercises: updatedExercises
-        }).then(() => {
-            patient.assignedExercises = updatedExercises;
-        }).catch(err => {
-            console.error('Error removing exercise:', err);
-            error = "Failed to remove exercise";
-        });
+        try {
+            isAssigning = true;
+            await assignProgram(patient.userId, selectedExercises, estimatedTime);
+            
+            // Refresh patient data to show new program
+            const updatedPatient = await getUser(patient.userId);
+            if (updatedPatient) {
+                patient = updatedPatient;
+            }
+            
+            // Clear selection
+            selectedExercises = [];
+            estimatedTime = 30;
+            
+        } catch (err) {
+            console.error('Error assigning program:', err);
+            error = "Failed to assign program";
+        } finally {
+            isAssigning = false;
+        }
     }
 
     function goBack() {
@@ -147,111 +158,169 @@
             <p><strong>Email:</strong> {patient.email}</p>
             <p><strong>Start Date:</strong> {formatDate(patient.createdAt)}</p>
             
-            <div class="exercise-section">
-                <h2>Assigned Exercises</h2>
-                {#if patient.assignedExercises && patient.assignedExercises.length > 0}
+            <!-- Current Program Section -->
+            {#if patient.currentProgram}
+                <div class="current-program">
+                    <h2>Current Program</h2>
+                    <p>Estimated time: {patient.currentProgram.estimatedTime} minutes</p>
+                    <div class="equipment-list">
+                        <strong>Equipment needed:</strong>
+                        {#each [...new Set(patient.currentProgram.exercises.filter(ex => ex.equipment).map(ex => ex.equipment))] as equipment}
+                            <span class="equipment-tag">{equipment}</span>
+                        {/each}
+                    </div>
+                    
                     <table class="exercise-table">
                         <thead>
                             <tr>
                                 <th>Exercise</th>
-                                <th>Sets</th>
-                                <th>Reps</th>
-                                <th>Assigned</th>
+                                <th>Details</th>
                                 <th>Status</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {#each patient.assignedExercises as exercise, i}
+                            {#each patient.currentProgram.exercises as exercise}
                                 <tr>
                                     <td>{exercise.exerciseName}</td>
-                                    <td>{exercise.sets || 1}</td>
-                                    <td>{exercise.reps}</td>
-                                    <td>{formatDate(exercise.assigned)}</td>
                                     <td>
-                                        {#if exercise.completed}
-                                            <span class="status-completed">Completed</span>
+                                        {#if exercise.exerciseType === 'distance'}
+                                            {exercise.sets} sets of {exercise.steps} steps
+                                        {:else if exercise.exerciseType === 'weight'}
+                                            {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
                                         {:else}
-                                            <span class="status-pending">Pending</span>
+                                            {exercise.reps} times, {exercise.seconds} seconds each
                                         {/if}
                                     </td>
                                     <td>
-                                        <button 
-                                            class="remove-btn" 
-                                            on:click={() => handleRemoveExercise(i)}
-                                            aria-label="Remove exercise"
-                                        >
-                                            Remove
-                                        </button>
+                                        {#if exercise.completed}
+                                            <span class="status-completed">✓ Completed</span>
+                                        {:else if exercise.skipped}
+                                            <span class="status-skipped">Skipped</span>
+                                        {:else}
+                                            <span class="status-pending">Pending</span>
+                                        {/if}
                                     </td>
                                 </tr>
                             {/each}
                         </tbody>
                     </table>
-                {:else}
-                    <p>No exercises assigned yet.</p>
-                {/if}
-
-                <div class="assign-section">
-                    <h3>Assign New Exercise</h3>
-                    
-                    <div class="assign-form">
-                        <div class="form-group">
-                            <label for="exercise-select">Select Exercise:</label>
-                            <select 
-                                id="exercise-select"
-                                bind:value={selectedExercise}
-                                disabled={isAssigning || exercises.length === 0}
-                            >
-                                {#each exercises as exercise}
-                                    <option value={exercise}>{exercise.exerciseName}</option>
-                                {/each}
-                            </select>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="sets-input">Sets:</label>
-                                <input 
-                                    id="sets-input"
-                                    type="number" 
-                                    bind:value={sets}
-                                    min="1"
-                                    max="10"
-                                    disabled={isAssigning}
-                                />
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="reps-input">Reps per set:</label>
-                                <input 
-                                    id="reps-input"
-                                    type="number" 
-                                    bind:value={reps}
-                                    min="1"
-                                    max="50"
-                                    disabled={isAssigning}
-                                />
-                            </div>
-                        </div>
-                        
-                        <button 
-                            class="assign-btn"
-                            on:click={handleAssignExercise}
-                            disabled={isAssigning || !selectedExercise}
-                        >
-                            {#if isAssigning}
-                                Assigning...
-                            {:else}
-                                Assign Exercise
-                            {/if}
-                        </button>
-                        
-                        {#if assignmentSuccess}
-                            <p class="success-message">Exercise assigned successfully!</p>
-                        {/if}
-                    </div>
                 </div>
+            {/if}
+
+            <!-- Program Creation Section -->
+            <div class="program-creation">
+                <h2>Create New Program</h2>
+                
+                <div class="time-input">
+                    <label>
+                        Estimated Program Time (minutes):
+                        <input 
+                            type="number" 
+                            bind:value={estimatedTime}
+                            min="1"
+                        />
+                    </label>
+                </div>
+
+                <div class="exercise-selection">
+                    <select bind:value={selectedExercise}>
+                        <option value={null}>Select an exercise to add</option>
+                        {#each availableExercises as exercise}
+                            <option value={exercise}>{exercise.exerciseName}</option>
+                        {/each}
+                    </select>
+
+                    {#if selectedExercise}
+                        <div class="exercise-values">
+                            {#if isDistanceExercise(selectedExercise)}
+                                <label>
+                                    Sets:
+                                    <input type="number" bind:value={exerciseValues.sets} min="1" />
+                                </label>
+                                <label>
+                                    Steps per set:
+                                    <input type="number" bind:value={exerciseValues.steps} min="1" />
+                                </label>
+                            {:else if isWeightExercise(selectedExercise)}
+                                <label>
+                                    Sets:
+                                    <input type="number" bind:value={exerciseValues.sets} min="1" />
+                                </label>
+                                <label>
+                                    Reps per set:
+                                    <input type="number" bind:value={exerciseValues.reps} min="1" />
+                                </label>
+                                <label>
+                                    Weight (lbs):
+                                    <input type="number" bind:value={exerciseValues.weight} min="0" step="5" />
+                                </label>
+                            {:else}
+                                <label>
+                                    Times to perform:
+                                    <input type="number" bind:value={exerciseValues.reps} min="1" />
+                                </label>
+                                <label>
+                                    Seconds to hold:
+                                    <input type="number" bind:value={exerciseValues.seconds} min="1" />
+                                </label>
+                            {/if}
+
+                            <button 
+                                class="add-exercise-btn"
+                                on:click={handleAddExercise}
+                            >
+                                Add to Program
+                            </button>
+                        </div>
+                    {/if}
+                </div>
+
+                {#if selectedExercises.length > 0}
+                    <div class="selected-exercises">
+                        <h3>Selected Exercises</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Exercise</th>
+                                    <th>Details</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each selectedExercises as exercise, i}
+                                    <tr>
+                                        <td>{exercise.exerciseName}</td>
+                                        <td>
+                                            {#if exercise.exerciseType === 'distance'}
+                                                {exercise.sets} sets of {exercise.steps} steps
+                                            {:else if exercise.exerciseType === 'weight'}
+                                                {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
+                                            {:else}
+                                                {exercise.reps} times, {exercise.seconds} seconds each
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            <button 
+                                                class="remove-btn"
+                                                on:click={() => handleRemoveExercise(i)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {/each}
+                            </tbody>
+                        </table>
+
+                        <button 
+                            class="assign-program-btn"
+                            on:click={handleAssignProgram}
+                            disabled={isAssigning}
+                        >
+                            {isAssigning ? 'Assigning Program...' : 'Assign Program'}
+                        </button>
+                    </div>
+                {/if}
             </div>
         </div>
     </div>
@@ -263,161 +332,87 @@
 {/if}
 
 <style>
-    .patient-container {
+    /* ... Keeping existing styles ... */
+    
+    .current-program {
+        margin-top: 2rem;
         padding: 1rem;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .back-button {
-        margin-bottom: 1rem;
-        padding: 0.5rem 1rem;
-        background-color: #e5e7eb;
-        border-radius: 0.25rem;
-        border: none;
-        cursor: pointer;
-    }
-
-    .back-button:hover {
-        background-color: #d1d5db;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #e5e7eb;
-        padding-bottom: 0.5rem;
-    }
-
-    .details-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .loading-container,
-    .error-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 300px;
-        gap: 1rem;
-    }
-
-    .error {
-        color: #dc2626;
-    }
-
-    .success-message {
-        color: #059669;
-        font-weight: 500;
-        margin-top: 0.5rem;
-    }
-
-    .exercise-section {
-        margin-top: 1.5rem;
-    }
-
-    .exercise-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1.5rem;
-    }
-    
-    .exercise-table th,
-    .exercise-table td {
         border: 1px solid #e5e7eb;
-        padding: 0.75rem;
-        text-align: left;
-    }
-    
-    .exercise-table th {
-        background-color: #f9fafb;
-        font-weight: 500;
-    }
-    
-    .status-completed {
-        color: #059669;
-        font-weight: 500;
-    }
-    
-    .status-pending {
-        color: #d97706;
+        border-radius: 0.5rem;
     }
 
-    .remove-btn {
-        background-color: #fee2e2;
-        color: #dc2626;
-        border: none;
-        border-radius: 0.25rem;
+    .program-creation {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+    }
+
+    .equipment-tag {
+        background-color: #f3f4f6;
         padding: 0.25rem 0.5rem;
-        cursor: pointer;
-        font-size: 0.75rem;
-    }
-
-    .remove-btn:hover {
-        background-color: #fecaca;
-    }
-
-    .assign-section {
-        background-color: #f9fafb;
-        padding: 1rem;
-        border-radius: 0.375rem;
-        border: 1px solid #e5e7eb;
-    }
-
-    .assign-form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-    
-    .form-row {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        flex: 1;
-    }
-
-    .form-group label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: #4b5563;
-    }
-
-    .form-group select,
-    .form-group input {
-        padding: 0.5rem;
-        border: 1px solid #d1d5db;
         border-radius: 0.25rem;
-        font-size: 1rem;
+        margin-right: 0.5rem;
     }
 
-    .assign-btn {
-        padding: 0.625rem 1rem;
+    .time-input {
+        margin-bottom: 1rem;
+    }
+
+    .exercise-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .exercise-values {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+        background-color: #f9fafb;
+        border-radius: 0.5rem;
+    }
+
+    .add-exercise-btn {
+        grid-column: 1 / -1;
+        padding: 0.5rem;
         background-color: #3b82f6;
         color: white;
         border: none;
         border-radius: 0.25rem;
-        font-weight: 500;
         cursor: pointer;
-        align-self: flex-start;
     }
 
-    .assign-btn:hover {
-        background-color: #2563eb;
+    .selected-exercises {
+        margin-top: 1.5rem;
     }
 
-    .assign-btn:disabled {
-        background-color: #93c5fd;
+    .assign-program-btn {
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background-color: #059669;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .assign-program-btn:disabled {
+        background-color: #d1d5db;
         cursor: not-allowed;
+    }
+
+    .status-completed {
+        color: #059669;
+    }
+
+    .status-pending {
+        color: #d97706;
+    }
+
+    .status-skipped {
+        color: #dc2626;
     }
 </style>
