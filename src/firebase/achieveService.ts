@@ -1,11 +1,11 @@
 import { db } from "$lib/helpers/firebase";
+import exp from "constants";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 // Base achievement interface with common fields
 interface BaseAchievement {
     achieveId: string;
     achieveName: string;
-    description: string;
     achieveType: 'distance' | 'weight' | 'time';
     targetValue: number;
     targetUnits: 'steps' | 'lbs' | 'seconds'
@@ -51,6 +51,31 @@ export async function getAllAchievementsFromLibrary(): Promise<Achievement[]> {
         return snapshot.docs.map(doc => doc.data() as Achievement);
     } catch (error) {
         console.error("Error fetching achievements:", error);
+        return [];
+    }
+}
+
+export async function getAchievement(achieveId: string): Promise<Achievement | null> {
+    try {
+        const achievementRef = doc(db, "achievements", achieveId);
+        const snapshot = await getDoc(achievementRef);
+        
+        if (snapshot.exists()) {
+            return snapshot.data() as Achievement;
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching achievement ${achieveId}:`, error);
+        return null;
+    }
+}
+
+export async function getAchievementsByType(type: 'distance' | 'weight' | 'time'): Promise<Achievement[]> {
+    try {
+        const achievements = await getAllAchievementsFromLibrary();
+        return achievements.filter(achievement => achievement.achieveType === type);
+    } catch (error) {
+        console.error(`Error fetching achievements of type ${type}:`, error);
         return [];
     }
 }

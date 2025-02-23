@@ -3,11 +3,30 @@
 <script lang="ts">
     import { seedGoals } from '$lib/seeds/goalSeeder';
     import { seedExercises } from '$lib/seeds/exerciseSeeder';
+    import { seedAchievements } from '$lib/seeds/achieveSeeder';
 
+    let seedingAchievements = false;
     let seedingGoals = false;
     let seedingExercises = false;
+    let achievementResult = '';
     let goalResult = '';
     let exerciseResult = '';
+
+    async function handleSeedAchievements() {
+        seedingAchievements = true;
+        achievementResult = '';
+        try {
+            console.log("Starting goal seeding process...");
+            await seedAchievements();
+            console.log("Achievement seeding completed!");
+            achievementResult = 'Successfully seeded achievements!';
+        } catch (error) {
+            console.error("Detailed seeding error:", error);
+            achievementResult = 'Error seeding achievements: ' + error.message;
+        } finally {
+            seedingAchievements = false;
+        }
+    }
 
     async function handleSeedGoals() {
         seedingGoals = true;
@@ -44,6 +63,14 @@
 
 <div>
     <h1>Seed Library</h1>
+
+    <h2>Seed Achievement Library</h2>
+    <button on:click={handleSeedAchievements} disabled={seedingAchievements}>
+        {seedingAchievements ? 'Seeding...' : 'Seed Achievements'}
+    </button>
+    {#if achievementResult}
+        <p>{achievementResult}</p>
+    {/if}
     
     <h2>Seed Goal Library</h2>
     <button on:click={handleSeedGoals} disabled={seedingGoals}>

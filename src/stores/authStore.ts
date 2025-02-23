@@ -102,11 +102,33 @@ async function checkUserRole(userId: string) {
 }
 
 onAuthStateChanged(auth, async (user) => {
-    authStore.set({ isLoading: false, currentUser: user });
-
-    if (user) {
-        await checkUserRole(user.uid);
-    } else {
+    if (!user) {
         console.warn("No user signed in.");
+        authStore.set({ isLoading: false, currentUser: null });
+        return;
+    }
+
+    try {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            
+            authStore.set({
+                isLoading: false,
+                currentUser: {
+                    ...user,
+                    ...userData,
+                    stats: userData.stats ?? null
+                }
+            });
+        } else {
+            console.warn("User document not found in Firestore.");
+            authStore.set({ isLoading: false, currentUser: null });
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        authStore.set({ isLoading: false, currentUser: null });
     }
 });

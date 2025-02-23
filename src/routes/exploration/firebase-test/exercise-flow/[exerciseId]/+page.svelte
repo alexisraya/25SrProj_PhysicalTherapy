@@ -1,15 +1,20 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
-    import { goto } from '$app/navigation';
-    import { getUser, updateUser } from '$firebase/userService';
     import { authStore } from '$stores/authStore';
-    import type { AssignedExercise } from '$firebase/userService';
+    import { 
+        getCurrentProgram, 
+        completeExercise,
+        skipExercise,
+        getUserStats 
+    } from '$firebase/userService';
+    import { getExercise } from '$firebase/exerciseService';
 
-    let currentExercise: AssignedExercise | null = null;
-    let progress = 0;
+    let currentExercise = null;
+    let program = null;
+    let stats = null;
     let loading = true;
-    let error: string | null = null;
+    let error = null;
     let adjustedValues = {
         sets: 0,
         reps: 0,
@@ -17,30 +22,25 @@
         seconds: 0,
         weight: 0
     };
-    let isAdjusting = false;
+    let isCompleting = false;
 
     onMount(async () => {
-        const exerciseId = $page.params.exerciseId;
-        const authUser = $authStore.currentUser;
-
-        if (!authUser) {
-            goto('/login');
-            return;
-        }
-
         try {
-            const userData = await getUser(authUser.uid);
-            if (!userData?.currentProgram) {
-                error = "No active program found";
-                return;
-            }
+            if (!$authStore.currentUser) return;
 
-            currentExercise = userData.currentProgram.exercises.find(
-                ex => ex.exerciseId === exerciseId
-            ) || null;
+            const exerciseId = $page.params.exerciseId;
+            const [programData, exerciseData, statsData] = await Promise.all([
+                getCurrentProgram($authStore.currentUser.uid),
+                getExercise(exerciseId),
+                getUserStats($authStore.currentUser.uid)
+            ]);
 
+            program = programData;
+            currentExercise = program?.exercises.find(ex => ex.exerciseId === exerciseId);
+            stats = statsData;
+
+            // Initialize adjusted values with current exercise values
             if (currentExercise) {
-                // Initialize adjusted values with current values
                 adjustedValues = {
                     sets: currentExercise.sets || 0,
                     reps: currentExercise.reps || 0,
@@ -48,345 +48,313 @@
                     seconds: currentExercise.seconds || 0,
                     weight: currentExercise.weight || 0
                 };
-
-                // Calculate progress
-                const totalExercises = userData.currentProgram.exercises.length;
-                const currentIndex = userData.currentProgram.exercises.findIndex(
-                    ex => ex.exerciseId === exerciseId
-                );
-                progress = ((currentIndex + 1) / totalExercises) * 100;
-            } else {
-                error = "Exercise not found";
             }
         } catch (err) {
-            console.error('Error loading exercise:', err);
-            error = "Error loading exercise";
+            error = err.message;
         } finally {
             loading = false;
         }
     });
 
     async function handleComplete() {
-        if (!currentExercise || !$authStore.currentUser) return;
+        if (!$authStore.currentUser || !currentExercise) return;
 
         try {
-            const userData = await getUser($authStore.currentUser.uid);
-            if (!userData?.currentProgram) return;
-
-            // Update the completed exercise with adjusted values
-            const updatedExercises = userData.currentProgram.exercises.map(ex => {
-                if (ex.exerciseId === currentExercise.exerciseId) {
-                    return {
-                        ...ex,
-                        completed: true,
-                        completedAt: new Date().toISOString(),
-                        // Include adjusted values
-                        sets: adjustedValues.sets || ex.sets,
-                        reps: adjustedValues.reps || ex.reps,
-                        steps: adjustedValues.steps || ex.steps,
-                        seconds: adjustedValues.seconds || ex.seconds,
-                        weight: adjustedValues.weight || ex.weight
-                    };
-                }
-                return ex;
-            });
-
-            // Find next exercise
-            const currentIndex = updatedExercises.findIndex(
-                ex => ex.exerciseId === currentExercise.exerciseId
+            isCompleting = true;
+            await completeExercise(
+                $authStore.currentUser.uid,
+                currentExercise.exerciseId,
+                adjustedValues
             );
-            const nextExercise = updatedExercises[currentIndex + 1];
 
-            // Update program
-            await updateUser(userData.userId, {
-                currentProgram: {
-                    ...userData.currentProgram,
-                    exercises: updatedExercises
-                }
-            });
-
-            // Navigate to next exercise or end
-            if (nextExercise) {
-                goto(`/exploration/firebase-test/exercise-flow/${nextExercise.exerciseId}`);
-            } else {
-                goto('/exploration/firebase-test/program-complete');
-            }
+            // Refresh stats after completion
+            stats = await getUserStats($authStore.currentUser.uid);
+            
+            // Redirect back to program view
+            window.location.href = '/exploration/firebase-test/program-view';
         } catch (err) {
-            console.error('Error completing exercise:', err);
-            error = "Error completing exercise";
+            error = err.message;
+        } finally {
+            isCompleting = false;
         }
     }
 
-    async function handleSkip(skipReason: 'tooHard' | 'addToEnd') {
-        if (!currentExercise || !$authStore.currentUser) return;
+    async function handleSkip() {
+        if (!$authStore.currentUser || !currentExercise) return;
 
         try {
-            const userData = await getUser($authStore.currentUser.uid);
-            if (!userData?.currentProgram) return;
-
-            let updatedExercises = [...userData.currentProgram.exercises];
-            const currentIndex = updatedExercises.findIndex(
-                ex => ex.exerciseId === currentExercise.exerciseId
-            );
-
-            if (skipReason === 'addToEnd') {
-                // Move current exercise to end
-                const [exercise] = updatedExercises.splice(currentIndex, 1);
-                updatedExercises.push({
-                    ...exercise,
-                    order: updatedExercises.length
-                });
-            } else {
-                // Mark as skipped
-                updatedExercises[currentIndex] = {
-                    ...updatedExercises[currentIndex],
-                    skipped: true,
-                    skipReason
-                };
-            }
-
-            // Find next exercise
-            const nextExercise = updatedExercises[currentIndex + 1];
-
-            // Update program
-            await updateUser(userData.userId, {
-                currentProgram: {
-                    ...userData.currentProgram,
-                    exercises: updatedExercises
-                }
-            });
-
-            // Navigate to next exercise or end
-            if (nextExercise) {
-                goto(`/exploration/firebase-test/exercise-flow/${nextExercise.exerciseId}`);
-            } else {
-                goto('/exploration/firebase-test/program-complete');
-            }
+            await skipExercise($authStore.currentUser.uid, currentExercise.exerciseId);
+            window.location.href = '/exploration/firebase-test/program-view';
         } catch (err) {
-            console.error('Error skipping exercise:', err);
-            error = "Error skipping exercise";
+            error = err.message;
         }
+    }
+
+    function getProgressPercentage(): number {
+        if (!program?.exercises) return 0;
+        const currentIndex = program.exercises.findIndex(ex => ex.exerciseId === currentExercise?.exerciseId);
+        return ((currentIndex + 1) / program.exercises.length) * 100;
     }
 </script>
 
-{#if loading}
-    <div class="loading">Loading exercise...</div>
-{:else if error}
-    <div class="error">{error}</div>
-{:else if currentExercise}
-    <div class="exercise-container">
-        <div class="progress-bar">
-            <div class="progress" style="width: {progress}%"></div>
+<div class="exercise-flow-container">
+    {#if loading}
+        <p>Loading exercise...</p>
+    {:else if error}
+        <p class="error">{error}</p>
+    {:else if currentExercise}
+        <!-- Progress Overview -->
+        <div class="progress-overview">
+            <div class="progress-bar">
+                <div 
+                    class="progress-fill"
+                    style="width: {getProgressPercentage()}%"
+                ></div>
+            </div>
+            <p class="progress-text">
+                Exercise {program.exercises.findIndex(ex => ex.exerciseId === currentExercise.exerciseId) + 1} 
+                of {program.exercises.length}
+            </p>
         </div>
 
-        <div class="exercise-content">
-            <h1>{currentExercise.exerciseName}</h1>
-
+        <!-- Exercise Details -->
+        <div class="exercise-details">
+            <h2>{currentExercise.exerciseName}</h2>
             {#if currentExercise.equipment}
-                <div class="equipment">
-                    Equipment needed: {currentExercise.equipment}
-                </div>
+                <p class="equipment">Equipment needed: {currentExercise.equipment}</p>
             {/if}
 
-            <div class="exercise-details">
-                {#if !isAdjusting}
-                    <div class="prescribed-values">
-                        {#if currentExercise.exerciseType === 'distance'}
-                            <p>{adjustedValues.sets} sets of {adjustedValues.steps} steps</p>
-                        {:else if currentExercise.exerciseType === 'weight'}
-                            <p>{adjustedValues.sets} sets of {adjustedValues.reps} reps at {adjustedValues.weight}lbs</p>
-                        {:else}
-                            <p>{adjustedValues.reps} times, holding for {adjustedValues.seconds} seconds</p>
-                        {/if}
-                        <button class="adjust-btn" on:click={() => isAdjusting = true}>
-                            Adjust Values
-                        </button>
+            <!-- Exercise Values Form -->
+            <div class="exercise-form">
+                <h3>Exercise Settings</h3>
+                {#if currentExercise.exerciseType === 'distance'}
+                    <div class="form-group">
+                        <label>
+                            Sets:
+                            <input type="number" bind:value={adjustedValues.sets} min="1" />
+                        </label>
+                        <label>
+                            Steps per set:
+                            <input type="number" bind:value={adjustedValues.steps} min="1" />
+                        </label>
+                    </div>
+                {:else if currentExercise.exerciseType === 'weight'}
+                    <div class="form-group">
+                        <label>
+                            Sets:
+                            <input type="number" bind:value={adjustedValues.sets} min="1" />
+                        </label>
+                        <label>
+                            Reps per set:
+                            <input type="number" bind:value={adjustedValues.reps} min="1" />
+                        </label>
+                        <label>
+                            Weight (lbs):
+                            <input type="number" bind:value={adjustedValues.weight} min="0" step="5" />
+                        </label>
                     </div>
                 {:else}
-                    <div class="value-adjustment">
-                        {#if currentExercise.exerciseType === 'distance'}
-                            <label>
-                                Sets:
-                                <input type="number" bind:value={adjustedValues.sets} min="1" />
-                            </label>
-                            <label>
-                                Steps:
-                                <input type="number" bind:value={adjustedValues.steps} min="1" />
-                            </label>
-                        {:else if currentExercise.exerciseType === 'weight'}
-                            <label>
-                                Sets:
-                                <input type="number" bind:value={adjustedValues.sets} min="1" />
-                            </label>
-                            <label>
-                                Reps:
-                                <input type="number" bind:value={adjustedValues.reps} min="1" />
-                            </label>
-                            <label>
-                                Weight (lbs):
-                                <input type="number" bind:value={adjustedValues.weight} min="0" step="5" />
-                            </label>
-                        {:else}
-                            <label>
-                                Times to perform:
-                                <input type="number" bind:value={adjustedValues.reps} min="1" />
-                            </label>
-                            <label>
-                                Seconds to hold:
-                                <input type="number" bind:value={adjustedValues.seconds} min="1" />
-                            </label>
-                        {/if}
-                        <button class="save-btn" on:click={() => isAdjusting = false}>
-                            Save Adjustments
-                        </button>
+                    <div class="form-group">
+                        <label>
+                            Times to perform:
+                            <input type="number" bind:value={adjustedValues.reps} min="1" />
+                        </label>
+                        <label>
+                            Seconds to hold:
+                            <input type="number" bind:value={adjustedValues.seconds} min="1" />
+                        </label>
                     </div>
                 {/if}
             </div>
 
-            <div class="action-buttons">
-                <button class="complete-btn" on:click={handleComplete}>
-                    Complete Exercise
-                </button>
-                
-                <div class="skip-options">
-                    <button class="skip-btn" on:click={() => handleSkip('addToEnd')}>
-                        Move to End
-                    </button>
-                    <button class="skip-btn" on:click={() => handleSkip('tooHard')}>
-                        Too Hard to Complete
-                    </button>
+            <!-- Stats Preview -->
+            {#if stats}
+                <div class="stats-preview">
+                    <h3>Stats Preview</h3>
+                    <div class="stats-grid">
+                        {#if currentExercise.exerciseType === 'distance'}
+                            <div class="stat-item">
+                                <span>Current Total Distance</span>
+                                <span>{stats.totalDistance} steps</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>After Completion</span>
+                                <span>{stats.totalDistance + (adjustedValues.sets * adjustedValues.steps)} steps</span>
+                            </div>
+                        {:else if currentExercise.exerciseType === 'weight'}
+                            <div class="stat-item">
+                                <span>Current Total Weight</span>
+                                <span>{stats.totalWeight} lbs</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>After Completion</span>
+                                <span>
+                                    {stats.totalWeight + (adjustedValues.sets * adjustedValues.reps * adjustedValues.weight)} lbs
+                                </span>
+                            </div>
+                        {:else}
+                            <div class="stat-item">
+                                <span>Current Total Time</span>
+                                <span>{stats.totalTime} seconds</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>After Completion</span>
+                                <span>{stats.totalTime + (adjustedValues.reps * adjustedValues.seconds)} seconds</span>
+                            </div>
+                        {/if}
+                    </div>
                 </div>
+            {/if}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button 
+                    class="complete-btn"
+                    on:click={handleComplete}
+                    disabled={isCompleting}
+                >
+                    {isCompleting ? 'Completing...' : 'Complete Exercise'}
+                </button>
+                <button 
+                    class="skip-btn"
+                    on:click={handleSkip}
+                >
+                    Skip Exercise
+                </button>
             </div>
         </div>
-    </div>
-{/if}
+    {:else}
+        <p>Exercise not found</p>
+    {/if}
+</div>
 
 <style>
-    .exercise-container {
+    .exercise-flow-container {
         max-width: 800px;
         margin: 0 auto;
         padding: 1rem;
     }
 
-    .progress-bar {
-        width: 100%;
-        height: 8px;
-        background-color: #e5e7eb;
-        border-radius: 4px;
+    .progress-overview {
         margin-bottom: 2rem;
     }
 
-    .progress {
-        height: 100%;
-        background-color: #3b82f6;
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
         border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #3b82f6;
         transition: width 0.3s ease;
     }
 
-    .exercise-content {
-        padding: 2rem;
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-    }
-
-    .equipment {
-        margin: 1rem 0;
-        padding: 0.5rem;
-        background-color: #f3f4f6;
-        border-radius: 0.25rem;
+    .progress-text {
+        text-align: center;
+        color: #6b7280;
+        margin-top: 0.5rem;
     }
 
     .exercise-details {
-        margin: 2rem 0;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .prescribed-values {
-        text-align: center;
-        font-size: 1.25rem;
+    .equipment {
+        color: #6b7280;
+        margin-bottom: 1rem;
     }
 
-    .value-adjustment {
-        display: flex;
-        flex-direction: column;
+    .exercise-form {
+        margin: 1.5rem 0;
+    }
+
+    .form-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
-        max-width: 300px;
-        margin: 0 auto;
+        margin-top: 1rem;
     }
 
     label {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.25rem;
     }
 
-    input[type="number"] {
-        width: 100px;
+    input {
         padding: 0.5rem;
         border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
+    }
+
+    .stats-preview {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem;
+        background: white;
         border-radius: 0.25rem;
     }
 
     .action-buttons {
         display: flex;
-        flex-direction: column;
         gap: 1rem;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
     }
 
-    .complete-btn {
-        padding: 1rem;
-        background-color: #10b981;
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1.125rem;
-        cursor: pointer;
-    }
-
-    .complete-btn:hover {
-        background-color: #059669;
-    }
-
-    .skip-options {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .skip-btn {
-        flex: 1;
-        padding: 0.75rem;
-        background-color: #f3f4f6;
-        border: 1px solid #d1d5db;
-        border-radius: 0.5rem;
-        cursor: pointer;
-    }
-
-    .skip-btn:hover {
-        background-color: #e5e7eb;
-    }
-
-    .adjust-btn, .save-btn {
-        margin-top: 1rem;
-        padding: 0.5rem 1rem;
-        background-color: #3b82f6;
-        color: white;
+    .complete-btn, .skip-btn {
+        padding: 0.75rem 1.5rem;
         border: none;
         border-radius: 0.25rem;
         cursor: pointer;
+        font-weight: 500;
     }
 
-    .adjust-btn:hover, .save-btn:hover {
-        background-color: #2563eb;
+    .complete-btn {
+        background: #3b82f6;
+        color: white;
+        flex: 2;
     }
 
-    .loading, .error {
-        text-align: center;
-        padding: 2rem;
+    .complete-btn:hover {
+        background: #2563eb;
+    }
+
+    .complete-btn:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .skip-btn {
+        background: #ef4444;
+        color: white;
+        flex: 1;
+    }
+
+    .skip-btn:hover {
+        background: #dc2626;
     }
 
     .error {
-        color: #dc2626;
+        color: #ef4444;
     }
 </style>

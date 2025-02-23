@@ -1,102 +1,121 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { getUser, updateUser } from "$firebase/userService";
+    import { getUser, getCurrentProgram, completeExercise, skipExercise, type Program } from "$firebase/userService";
     import { authStore } from "$stores/authStore";
 
     let userId = "";
-    let userData = null;
+    let program: Program | null = null;
     let isLoading = true;
+    let error: string | null = null;
 
     onMount(() => {
         const unsubscribe = authStore.subscribe(async (store) => {
             if (!store.isLoading && store.currentUser) {
                 userId = store.currentUser.uid;
-                userData = await getUser(userId);
-                console.log("Fetched User Data:", userData);
-            } else {
-                console.warn("No user signed in!");
+                try {
+                    program = await getCurrentProgram(userId);
+                } catch (err) {
+                    console.error("Error fetching program:", err);
+                    error = "Failed to load program";
+                } finally {
+                    isLoading = false;
+                }
             }
-            isLoading = false;
         });
 
         return () => unsubscribe();
     });
 
-    function formatDate(dateString) {
+    function formatDate(dateString: string | undefined): string {
         if (!dateString) return "N/A";
         return new Date(dateString).toLocaleDateString();
     }
 
-    async function markExerciseComplete(index: number) {
+    async function handleCompleteExercise(exerciseId: string) {
         try {
-            if (!userData || !userData.assignedExercises) return;
-            
-            const updatedExercises = [...userData.assignedExercises];
-            updatedExercises[index] = {
-                ...updatedExercises[index],
-                completed: true,
-                completedAt: new Date().toISOString()
-            };
-            
-            await updateUser(userId, {
-                assignedExercises: updatedExercises
-            });
-            
-            userData.assignedExercises = updatedExercises;
+            await completeExercise(userId, exerciseId);
+            // Refresh program data
+            program = await getCurrentProgram(userId);
         } catch (error) {
-            console.error("Error marking exercise as complete:", error);
+            console.error("Error completing exercise:", error);
+        }
+    }
+
+    async function handleSkipExercise(exerciseId: string) {
+        try {
+            await skipExercise(userId, exerciseId);
+            // Refresh program data
+            program = await getCurrentProgram(userId);
+        } catch (error) {
+            console.error("Error skipping exercise:", error);
         }
     }
 </script>
 
 <div class="exercise-view-container">
-    <h2>My Exercises</h2>
+    <h2>My Program</h2>
 
     {#if isLoading}
-        <p>Loading exercises...</p>
-    {:else}
-        {#if userData}
-            {#if userData.assignedExercises && userData.assignedExercises.length > 0}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Exercise</th>
-                            <th>Reps</th>
-                            <th>Assigned</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each userData.assignedExercises as exercise, i}
-                            <tr>
-                                <td>{exercise.exerciseName}</td>
-                                <td>{exercise.reps}</td>
-                                <td>{formatDate(exercise.assigned)}</td>
-                                <td>
-                                    {#if exercise.completed}
-                                        ✓ Completed ({formatDate(exercise.completedAt)})
-                                    {:else}
-                                        Pending
-                                    {/if}
-                                </td>
-                                <td>
-                                    {#if !exercise.completed}
-                                        <button on:click={() => markExerciseComplete(i)}>
-                                            Mark Complete
-                                        </button>
-                                    {/if}
-                                </td>
-                            </tr>
-                        {/each}
-                    </tbody>
-                </table>
-            {:else}
-                <p>No exercises assigned yet.</p>
-            {/if}
+        <p>Loading program...</p>
+    {:else if error}
+        <p class="error">{error}</p>
+    {:else if program}
+        <div class="program-info">
+            <p>Estimated time: {program.estimatedTime} minutes</p>
+            <p>Assigned: {formatDate(program.assignedAt)}</p>
+        </div>
+
+        {#if program.exercises.length > 0}
+            <div class="exercise-list">
+                {#each program.exercises as exercise (exercise.exerciseId)}
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <h3>{exercise.exerciseName}</h3>
+                            {#if exercise.equipment}
+                                <span class="equipment">Equipment: {exercise.equipment}</span>
+                            {/if}
+                        </div>
+
+                        <div class="exercise-details">
+                            {#if exercise.exerciseType === 'distance'}
+                                <p>{exercise.sets} sets of {exercise.steps} steps</p>
+                            {:else if exercise.exerciseType === 'weight'}
+                                <p>{exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs</p>
+                            {:else}
+                                <p>{exercise.reps} times, {exercise.seconds} seconds each</p>
+                            {/if}
+                        </div>
+
+                        <div class="exercise-status">
+                            {#if exercise.completed}
+                                <span class="completed">✓ Completed {formatDate(exercise.completedAt)}</span>
+                            {:else if exercise.skipped}
+                                <span class="skipped">Skipped</span>
+                            {:else}
+                                <div class="exercise-actions">
+                                    <button 
+                                        class="complete-btn"
+                                        on:click={() => handleCompleteExercise(exercise.exerciseId)}
+                                    >
+                                        Complete
+                                    </button>
+                                    <button 
+                                        class="skip-btn"
+                                        on:click={() => handleSkipExercise(exercise.exerciseId)}
+                                    >
+                                        Skip
+                                    </button>
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                {/each}
+            </div>
         {:else}
-            <p>Unable to load exercise data.</p>
+            <p>No exercises assigned yet.</p>
         {/if}
+    {:else}
+        <p>No program found.</p>
     {/if}
 </div>
 

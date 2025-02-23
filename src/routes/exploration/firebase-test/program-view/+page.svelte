@@ -1,114 +1,163 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
-    import { authStore } from "$stores/authStore";
-    import type { AssignedExercise } from "$firebase/userService";
+    import { onMount } from 'svelte';
+    import { authStore } from '$stores/authStore';
+    import { 
+        getCurrentProgram,
+        getUserStats,
+        getWeeklyProgress
+    } from '$firebase/userService';
 
-    let userData = null;
-    let isLoading = true;
-    let exercises: AssignedExercise[] = [];
-    let programEstimatedTime = 0;
-    const db = getFirestore();
-
-    async function fetchUserProgram(userId: string) {
-        try {
-            const programRef = doc(db, "users", userId, "program", "currentProgram");
-            const programSnap = await getDoc(programRef);
-
-            if (programSnap.exists()) {
-                userData = programSnap.data();
-                exercises = userData.exercises.sort((a, b) => a.order - b.order);
-                programEstimatedTime = userData.estimatedTime;
-                console.log("Fetched program data:", userData);
-            } else {
-                console.error("No current program found for user.");
-            }
-        } catch (error) {
-            console.error("Error fetching user program:", error);
-        } finally {
-            isLoading = false;
-        }
-    }
+    let program = null;
+    let stats = null;
+    let weeklyProgress = null;
+    let loading = true;
+    let error = null;
 
     onMount(() => {
-        const unsubscribe = authStore.subscribe(async (store) => {
-            if (!store.isLoading && store.currentUser) {
-                await fetchUserProgram(store.currentUser.uid);
+        const unsubscribe = authStore.subscribe(async (auth) => {
+            if (!auth.isLoading && auth.currentUser) {
+                try {
+                    const [programData, statsData, weeklyData] = await Promise.all([
+                        getCurrentProgram(auth.currentUser.uid),
+                        getUserStats(auth.currentUser.uid),
+                        getWeeklyProgress(auth.currentUser.uid)
+                    ]);
+                    
+                    program = programData;
+                    stats = statsData;
+                    weeklyProgress = weeklyData;
+                } catch (err) {
+                    error = err.message;
+                } finally {
+                    loading = false;
+                }
             }
         });
 
-        return () => unsubscribe();
+        return unsubscribe;
     });
 
-    async function handleReorder(event: CustomEvent) {
-        const { oldIndex, newIndex } = event.detail;
-
-        if (!userData) return;
-
-        // Update local state
-        const exerciseToMove = exercises[oldIndex];
-        exercises.splice(oldIndex, 1);
-        exercises.splice(newIndex, 0, exerciseToMove);
-        exercises = exercises.map((ex, index) => ({ ...ex, order: index }));
-
-        try {
-            // Update Firestore
-            const programRef = doc(db, "users", userData.userId, "program", "currentProgram");
-            await updateDoc(programRef, {
-                exercises: exercises,
-            });
-
-            console.log("Updated exercise order:", exercises);
-        } catch (error) {
-            console.error("Error updating exercise order:", error);
-            // Revert local state on failure
-            exercises = exercises.sort((a, b) => a.order - b.order);
-        }
+    function getProgressPercentage(): number {
+        if (!program?.exercises) return 0;
+        const completed = program.exercises.filter(ex => ex.completed).length;
+        return (completed / program.exercises.length) * 100;
     }
 
-    function handleStartProgram() {
-        if (exercises.length > 0) {
-            // Navigate to exercise flow
-            window.location.href = `/exploration/firebase-test/exercise-flow/${exercises[0].exerciseId}`;
-        }
+    function formatDate(dateString: string): string {
+        return new Date(dateString).toLocaleDateString();
+    }
+
+    function formatTime(seconds: number): string {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}m ${remainingSeconds}s`;
     }
 </script>
 
 <div class="program-container">
-    <h1>Your Program</h1>
-
-    {#if isLoading}
-        <p>Loading your program...</p>
-    {:else if exercises.length > 0}
+    {#if loading}
+        <p>Loading program...</p>
+    {:else if error}
+        <p class="error">{error}</p>
+    {:else if program}
+        <!-- Program Overview -->
         <div class="program-header">
-            <p>Estimated time: {programEstimatedTime} minutes</p>
-            <button class="start-btn" on:click={handleStartProgram}>
-                Start Program
-            </button>
+            <h2>Today's Program</h2>
+            <div class="program-meta">
+                <span>Estimated Time: {program.estimatedTime} minutes</span>
+                <span>Assigned: {formatDate(program.assignedAt)}</span>
+            </div>
         </div>
 
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-cards">
+                <!-- Daily Progress -->
+                <div class="progress-card">
+                    <h3>Today's Progress</h3>
+                    <div class="progress-bar">
+                        <div 
+                            class="progress-fill"
+                            style="width: {getProgressPercentage()}%"
+                        ></div>
+                    </div>
+                    <p>{program.exercises.filter(ex => ex.completed).length} / {program.exercises.length} exercises completed</p>
+                </div>
+
+                <!-- Weekly Progress -->
+                {#if weeklyProgress}
+                    <div class="progress-card">
+                        <h3>Weekly Goal Progress</h3>
+                        <div class="progress-bar">
+                            <div 
+                                class="progress-fill"
+                                style="width: {(weeklyProgress.daysCompleted / 5) * 100}%"
+                            ></div>
+                        </div>
+                        <p>{weeklyProgress.daysCompleted}/5 days completed</p>
+                        <p class="text-sm">Week starting {formatDate(weeklyProgress.weekStartDate)}</p>
+                    </div>
+                {/if}
+
+                <!-- Stats Summary -->
+                {#if stats}
+                    <div class="progress-card">
+                        <h3>Current Stats</h3>
+                        <div class="stats-summary">
+                            <div class="stat-item">
+                                <span>Streak</span>
+                                <span>{stats.currentStreak} days</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Total Time</span>
+                                <span>{formatTime(stats.totalTime)}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Completed</span>
+                                <span>{stats.completedExercises} exercises</span>
+                            </div>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+        </div>
+
+        <!-- Exercise List -->
         <div class="exercise-list">
-            {#each exercises as exercise, i}
-                <div class="exercise-item">
-                    <h3>{exercise.exerciseName}</h3>
-                    <p>
-                        {#if exercise.exerciseType === 'distance'}
-                            {exercise.sets} sets of {exercise.steps} steps
-                        {:else if exercise.exerciseType === 'weight'}
-                            {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
-                        {:else}
-                            {exercise.reps} times, {exercise.seconds} seconds each
+            <h3>Exercises</h3>
+            {#each program.exercises as exercise, i}
+                <div class="exercise-card" class:completed={exercise.completed} class:skipped={exercise.skipped}>
+                    <div class="exercise-info">
+                        <h4>{exercise.exerciseName}</h4>
+                        <p>
+                            {#if exercise.exerciseType === 'distance'}
+                                {exercise.sets} sets of {exercise.steps} steps
+                            {:else if exercise.exerciseType === 'weight'}
+                                {exercise.sets} sets of {exercise.reps} reps at {exercise.weight}lbs
+                            {:else}
+                                {exercise.reps} times, {exercise.seconds} seconds each
+                            {/if}
+                        </p>
+                        {#if exercise.equipment}
+                            <small>Equipment: {exercise.equipment}</small>
                         {/if}
-                    </p>
-                    <div class="exercise-controls">
-                        <button on:click={() => handleReorder({ detail: { oldIndex: i, newIndex: i - 1 } })} disabled={i === 0}>↑</button>
-                        <button on:click={() => handleReorder({ detail: { oldIndex: i, newIndex: i + 1 } })} disabled={i === exercises.length - 1}>↓</button>
+                    </div>
+                    <div class="exercise-status">
+                        {#if exercise.completed}
+                            <span class="status completed">✓ Completed {formatDate(exercise.completedAt)}</span>
+                        {:else if exercise.skipped}
+                            <span class="status skipped">Skipped</span>
+                        {:else}
+                            <a href="/exploration/firebase-test/exercise-flow/{exercise.exerciseId}" class="start-btn">
+                                Start Exercise
+                            </a>
+                        {/if}
                     </div>
                 </div>
             {/each}
         </div>
     {:else}
-        <p>No program assigned yet.</p>
+        <p>No program found</p>
     {/if}
 </div>
 
@@ -120,44 +169,108 @@
     }
 
     .program-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-bottom: 2rem;
     }
 
-    .start-btn {
-        padding: 0.75rem 1.5rem;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
+    .program-meta {
+        display: flex;
+        gap: 1rem;
+        color: #6b7280;
     }
 
-    .exercise-list {
-        display: flex;
-        flex-direction: column;
+    .progress-section {
+        margin-bottom: 2rem;
+    }
+
+    .progress-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
     }
 
-    .exercise-item {
-        padding: 1rem;
+    .progress-card {
         background: white;
-        border: 1px solid #e5e7eb;
+        padding: 1rem;
         border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .exercise-controls {
-        display: flex;
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 4px;
+        margin: 1rem 0;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: #3b82f6;
+        transition: width 0.3s ease;
+    }
+
+    .stats-summary {
+        display: grid;
         gap: 0.5rem;
     }
 
-    .exercise-controls button {
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .exercise-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .exercise-card.completed {
+        background: #f0fdf4;
+    }
+
+    .exercise-card.skipped {
+        background: #fef2f2;
+    }
+
+    .status {
         padding: 0.25rem 0.5rem;
-        background-color: #f3f4f6;
-        border: 1px solid #d1d5db;
         border-radius: 0.25rem;
-        cursor: pointer;
+        font-size: 0.875rem;
+    }
+
+    .status.completed {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status.skipped {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .start-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: #3b82f6;
+        color: white;
+        border-radius: 0.25rem;
+        text-decoration: none;
+    }
+
+    .start-btn:hover {
+        background: #2563eb;
+    }
+
+    .error {
+        color: #ef4444;
     }
 </style>
