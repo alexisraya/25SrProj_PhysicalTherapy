@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { getAllExercisesFromLibrary, type Exercise, isDistanceExercise, isWeightExercise, isTimeExercise } from "$firebase/exerciseService";
+    import { getAllExercisesFromLibrary, type Exercise, isDistanceExercise, isWeightExercise, isTimeExercise } from "$firebase/services/exerciseService";
 
     let exercises: Exercise[] = [];
     let loading = true;

@@ -8,7 +8,7 @@
         skipExercise,
         getUserStats 
     } from '$firebase/userService';
-    import { getExercise } from '$firebase/exerciseService';
+    import { getExercise } from '$firebase/services/exerciseService';
 
     let currentExercise = null;
     let program = null;

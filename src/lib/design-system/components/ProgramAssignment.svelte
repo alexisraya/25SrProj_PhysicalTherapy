@@ -1,8 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import type { Exercise } from '$firebase/exerciseService';
+    import type { Exercise } from '$firebase/services/exerciseService';
     import type { AssignedExercise } from '$firebase/userService';
-    import { isDistanceExercise, isWeightExercise, isTimeExercise } from '$firebase/exerciseService';
+    import { isDistanceExercise, isWeightExercise, isTimeExercise } from '$firebase/services/exerciseService';
 
     export let availableExercises: Exercise[] = [];
     export let selectedExercises: AssignedExercise[] = [];

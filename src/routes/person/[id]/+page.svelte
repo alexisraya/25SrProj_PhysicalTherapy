@@ -4,7 +4,7 @@
     import { goto } from '$app/navigation';
     import { auth } from '$lib/helpers/firebase';
     import { getUser, getCurrentProgram, assignProgram, type User, type Program } from '$firebase/userService';
-    import { getAllExercisesFromLibrary, type Exercise } from '$firebase/exerciseService';
+    import { getAllExercisesFromLibrary, type Exercise } from '$firebase/services/exerciseService';
     import ProgramManagement from '$lib/design-system/components/ProgramManagement.svelte';
 
     let patient: User | null = null;
