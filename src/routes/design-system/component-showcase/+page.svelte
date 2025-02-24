@@ -11,6 +11,7 @@
     import Streak from "$lib/design-system/components/Streak.svelte";
     import Achievement from "$lib/design-system/components/Achievement.svelte";
     import AchievmentCard from "$lib/design-system/components/AchievmentCard.svelte";
+    import ProgressBar from "$lib/design-system/components/ProgressBar.svelte";
 
 </script>
 
@@ -93,11 +94,17 @@
     </div>
 
     <!-- Streak Displays -->
-    <div>
+    <div class="component-section">
         <h2>Streak Displays</h2>
         <Streak streakType="home" streakTotalDays={5} streakDaysCompleted={1} />
         <Streak streakType="program" streakTotalDays={5} streakDaysCompleted={1} />
         <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} />
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="component-section">
+        <h2>Progress Bar</h2>
+        <ProgressBar totalExercises={6} completedExercises={2} />
     </div>
 </div>
 

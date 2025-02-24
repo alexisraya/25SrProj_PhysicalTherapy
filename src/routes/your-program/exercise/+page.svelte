@@ -8,17 +8,14 @@
   import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
   import Button from '$lib/design-system/components/Button.svelte';
     import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
+    import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
 </script>
 
 <div class="page_container">
   <div class="exercise_container--top">
     <div class="exercise_nav">
       <img class="back_button" src={LeftArrow} />
-      <div class="progress_bar">
-        <div class="progress_bar--item"></div>
-        <div class="progress_bar--item"></div>
-        <div class="progress_bar--item empty"></div>
-      </div>
+      <ProgressBar totalExercises={3} completedExercises={2} />
     </div>
     <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" />
     <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
@@ -117,22 +114,6 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-  }
-  .progress_bar {
-    width: 100%;
-    display: flex;
-    column-gap: 8px;
-    justify-content: center;
-    /* z-index: 1000; */
-  }
-  .progress_bar--item {
-    border-radius: 8px;
-    height: 9px;
-    width: 90px;
-    background-color: var(--color-blue-1100);
-  }
-  .empty {
-    opacity: 40%;
   }
   .exercise_info {
     position: relative;
