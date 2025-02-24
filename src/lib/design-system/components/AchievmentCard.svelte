@@ -16,7 +16,11 @@
                 <Icon name="polar-bear" size="small"/>
             {/if}
         </div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;">{achievementTitle}</p>
+        {#if isLocked}
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;">Locked</p>
+        {:else}
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;">{achievementTitle}</p>
+        {/if}
         <p class="achievement-mark" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">{achievementMark}</p>
     </div>
     
