@@ -1,0 +1,129 @@
+name: Bug Report
+description: Create a report to help us improve
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us address the issue quickly.
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of issue are you reporting?
+      options:
+        - Visual/Design Mismatch
+        - Functionality Issue
+        - User Experience Problem
+        - Performance Issue
+        - Responsive/Mobile Issue
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: page-location
+    attributes:
+      label: Page/Feature Location
+      description: Which page or feature were you testing?
+      placeholder: "Example: Login page, User Profile, Homepage"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: What happened that you weren't expecting?
+      placeholder: Describe what you saw...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should have happened? Include Figma reference if applicable
+      placeholder: |
+        Describe what you expected...
+        Figma Link: [If applicable]
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Browser
+      description: Which browsers have you tested this on?
+      multiple: true
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device Type
+      description: What type of device were you using?
+      options:
+        - Desktop
+        - Tablet
+        - Mobile Phone
+    validations:
+      required: true
+
+  - type: input
+    id: screen-size
+    attributes:
+      label: Screen Size
+      description: What was your screen size/resolution? (If known)
+      placeholder: "Example: 1920x1080, iPhone 13, etc."
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Recordings
+      description: |
+        Add screenshots or recordings to help explain the issue.
+        Tip: You can click this area to upload files, or paste directly from your clipboard
+      placeholder: Drag and drop images or paste from clipboard
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: "Example: This only happens when..."
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this issue?
+      options:
+        - Critical (Blocking work/Crashes)
+        - High (Major function broken)
+        - Medium (Function works with workaround)
+        - Low (Minor visual/UX issue)
+    validations:
+      required: true
