@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Program, AssignedExercise } from '$firebase/userService';
-  import type { Exercise } from '$firebase/services/exerciseService';
-  import { isDistanceExercise, isWeightExercise } from '$firebase/services/exerciseService';
+  import type { Exercise } from '$firebase/types/exerciseType';
+  import { isDistanceExercise, isWeightExercise } from '$firebase/types/exerciseType';
 
   export let currentProgram: Program | null;
   export let availableExercises: Exercise[] = [];

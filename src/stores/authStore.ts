@@ -3,7 +3,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, up
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth } from "$lib/helpers/firebase";
 import { goto } from "$app/navigation";
-import { assignPatientToTherapist } from "$firebase/therapistService";
+import { assignPatientToTherapist } from "$firebase/services/therapistService";
 
 const db = getFirestore();
 

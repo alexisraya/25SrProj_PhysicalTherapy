@@ -14,7 +14,7 @@ export interface User {
     updatedAt: string;
     therapistId?: string;
     assignedExercises: AssignedExercise[];
-    userStats: UserStats[];
+    stats: UserStats;
     estimatedTime?: number;
 }
 
@@ -87,15 +87,7 @@ export async function getUser(userId: string): Promise<User | null> {
             const userData = userSnap.data() as User;
             if (!userData.assignedExercises) userData.assignedExercises = [];
             if (!userData.stats) {
-                userData.stats = {
-                    completedExercises: 0,
-                    completedPrograms: 0,
-                    totalSets: 0,
-                    totalReps: 0,
-                    totalWeight: 0,
-                    totalDistance: 0,
-                    totalTime: 0
-                };
+                userData.stats = initializeUserStats();  // Initialize with full stats object
             }
             return userData;
         }
@@ -109,13 +101,22 @@ export async function getUser(userId: string): Promise<User | null> {
 export async function updateUser(userId: string, updates: Partial<User>): Promise<void> {
     try {
         const userRef = doc(db, "users", userId);
-        const cleanUpdates = Object.fromEntries(
-            Object.entries(updates).filter(([_, value]) => value !== undefined)
-        );
-        await updateDoc(userRef, {
-            ...cleanUpdates,
-            updatedAt: new Date().toISOString()
-        });
+        // Ensure updates.stats is a valid UserStats object if it exists
+        if (updates.stats && typeof updates.stats === 'object') {
+            const cleanUpdates = Object.fromEntries(
+                Object.entries(updates).filter(([_, value]) => value !== undefined)
+            );
+            await updateDoc(userRef, {
+                ...cleanUpdates,
+                updatedAt: new Date().toISOString()
+            });
+        } else {
+            const { stats, ...otherUpdates } = updates;
+            await updateDoc(userRef, {
+                ...otherUpdates,
+                updatedAt: new Date().toISOString()
+            });
+        }
     } catch (error) {
         console.error(`Error updating user ${userId}:`, error);
         throw error;
@@ -472,6 +473,15 @@ export async function getWeeklyProgress(userId: string): Promise<{
 }> {
     const stats = await getUserStats(userId);
     if (!stats) throw new Error("User stats not found");
+    
+    // Initialize if weeklyProgress doesn't exist
+    if (!stats.weeklyProgress) {
+        stats.weeklyProgress = {
+            weekStartDate: getWeekStartDate(),
+            daysCompleted: 0,
+            exercisesCompleted: 0
+        };
+    }
 
     const today = new Date();
     const weekStart = new Date(stats.weeklyProgress.weekStartDate);

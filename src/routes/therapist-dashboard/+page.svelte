@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { auth } from '$lib/helpers/firebase';
-    import { getTherapist, type Therapist } from '$firebase/therapistService';
+    import { getTherapist, type Therapist } from '$firebase/services/therapistService';
     import { getUser } from '$firebase/userService';
     import { goto } from '$app/navigation';
     import type { User as FirebaseUser } from 'firebase/auth';
