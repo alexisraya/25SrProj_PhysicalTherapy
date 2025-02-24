@@ -30,8 +30,6 @@ npm create svelte@latest my-app
 npm install
 # or
 pnpm install
-# or
-yarn
 ```
 
 ## 💻 Development
@@ -50,7 +48,7 @@ npm run dev -- --open
 This project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
 
 ### Production Environment
-- Production URL: [https://mend.vercel.app/]
+- Production URL: https://mend.vercel.app/
 - Production Branch: main
 
 ### Preview Environments
@@ -75,7 +73,7 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
    - User experience evaluation
 
 ### Testing Environments
-- Production: [https://mend.vercel.app/]
+- Production: https://mend.vercel.app/
 - Preview: Check PR comments for preview URLs
 - Local: http://localhost:5173 (when running `npm run dev`)
 
@@ -163,4 +161,4 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 
 - [SvelteKit Documentation](https://kit.svelte.dev/)
 - [Vercel Documentation](https://vercel.com/docs)
-- [Figma Project Link] (https://www.figma.com/design/uP8xxldybt4ChRB1iiYVON/UI-Design?node-id=2-5&p=f&t=mSRbUnyDYwM2R6r5-0)
+- [Figma Project Link](https://www.figma.com/design/uP8xxldybt4ChRB1iiYVON/UI-Design?node-id=2-5&p=f&t=mSRbUnyDYwM2R6r5-0)
