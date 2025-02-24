@@ -13,6 +13,7 @@
     import AchievmentCard from "$lib/design-system/components/AchievmentCard.svelte";
     import ProgressBar from "$lib/design-system/components/ProgressBar.svelte";
     import MilestoneMonths from "$lib/design-system/components/MilestoneMonths.svelte";
+    import CharacterSelect from "$lib/design-system/components/CharacterSelect.svelte";
 
 </script>
 
@@ -116,6 +117,12 @@
             <MilestoneMonths isComplete={false} isActive={true} isUpcoming={false} month={2} />
             <MilestoneMonths isComplete={false} isActive={false} isUpcoming={true} month={3} />
         </div>
+    </div>
+
+    <!-- Character Select -->
+    <div class="component-section">
+        <h2>Character Select</h2>
+        <CharacterSelect />
     </div>
 </div>
 

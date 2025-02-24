@@ -9,6 +9,7 @@
   import Button from '$lib/design-system/components/Button.svelte';
     import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
     import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
+    import CharacterSelect from '$lib/design-system/components/CharacterSelect.svelte';
 </script>
 
 <div class="page_container">
@@ -52,29 +53,7 @@
       </div>
       <div class="exercise_description--section">
           <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
-          <div class="select-character-section">
-            <div class="character selected">
-              <img class="character--img selected-img" src={Character} alt="Character" />
-              <div class="character--overlay selected-overlay"></div>
-              <div class="character--name selected-name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}" class="selected-name">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
-            </div>
-          </div>
+          <CharacterSelect />
       </div>
     </div>
   </div>
@@ -172,52 +151,6 @@
   }
   .exercise_description--section p {
     color: var(--color-grey-400);
-  }
-  .select-character-section {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 16px;
-  }
-  .character {
-    border-radius: 8px;
-    position: relative;
-    display: inline-block;
-    width: 99px; /* Adjust as needed */
-  }
-  .character img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
-  .character--overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--color-grey-opactity-dark);
-  }
-  .character--name {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--color-blue-1100);
-    text-align: center;
-  }
-  .selected-img {
-    border: 1px solid var(--color-blue-1100);
-  }
-  .selected-overlay {
-    display: none;
-  }
-  .selected-name {
-    color: var(--color-grey-0) !important;
   }
   .buttons {
     background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
