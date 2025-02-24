@@ -43,6 +43,68 @@ npm run dev
 npm run dev -- --open
 ```
 
+### Contributing to the Project
+
+1. **Clone the Repository**
+   ```bash
+   git clone [repository-url]
+   cd [project-name]
+   ```
+
+2. **Create a New Branch**
+   ```bash
+   # Create a branch using a descriptive name
+   git checkout -b your-feature-name
+   # or
+   git checkout -b issue-you-are-fixing
+   ```
+
+3. **Make Your Changes**
+   - Write clean, documented code
+   - Follow existing code style and patterns
+   - Test your changes locally
+
+4. **Start the Development Server**
+   ```bash
+   npm run dev
+
+   # or start the server and open the app in a new browser tab
+   npm run dev -- --open
+   ```
+
+5. **Commit Your Changes**
+   ```bash
+   git add .
+   git commit -m "descriptive commit message"
+   ```
+
+   Commit message guidelines:
+   - Be clear and descriptive
+   - Start with a verb (add, fix, update, etc.)
+   - Reference issue numbers if applicable
+
+6. **Push to GitHub**
+   ```bash
+   git push origin your-branch-name
+   ```
+
+7. **Create a Pull Request**
+   - Go to the repository on GitHub
+   - Click "New Pull Request"
+   - Select your branch
+   - Fill out the PR template
+   - Add screenshots if UI changes are involved
+   - Request review from project maintainers
+
+### Pull Request Guidelines
+- Link related issues (if applicable)
+- Include screenshots for UI changes
+- Describe what was changed
+- List any new dependencies
+- Mention any breaking changes
+- Test your changes
+- Check that your branch is up to date with main
+
 ## 🌐 Deployment
 
 This project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
