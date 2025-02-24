@@ -22,19 +22,23 @@
     </div>
     <div class="streaks-container {streakType}">
         {#each Array(streakDaysCompleted).fill(0) as _, i}
-            <div class="streak completed {streakType!=="home" ? 'tall' : ''}"></div>
+            <div class="streak-container">
+                <div class="streak completed {streakType!=="home" ? 'tall' : ''}"></div>
+                {#if streakType=="home"}
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+1}</p>
+                {/if}
+            </div>
         {/each}
         {#each Array(remainingDays).fill(0) as _, i}
-            <div class="streak {streakType!=="home" ? 'tall' : ''}" />
+            <div class="streak-container">
+                <div class="streak {streakType!=="home" ? 'tall' : ''}"></div>
+                {#if streakType=="home"}
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+streakDaysCompleted+1}</p>
+                {/if}
+            </div>
         {/each}
     </div>
-    {#if streakType=="home"}
-        <div class="streak-days-container">
-            {#each Array(streakTotalDays).fill(0) as _, i}
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+1}</p>
-            {/each}
-        </div>
-    {:else}
+    {#if streakType!="home"}
         <div class="program-days-container">
             <h3 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h3}; font-weight: {typography.fontWeights.regular};">{streakDaysCompleted}/{streakTotalDays} </h3>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular};">programs</p>
@@ -69,6 +73,13 @@
         border-radius: 4px;
         padding: 16px 12px;
     }
+    .streak-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 6px;
+        width: 100%;
+    }
     .streak {
         border-radius: 4px;
         display: flex;
@@ -82,12 +93,6 @@
     }
     .completed {
         background-color: var(--color-purple-600);
-    }
-    .streak-days-container {
-        display: flex;
-        padding: 4px 10px;
-        justify-content: space-between;
-        align-items: center;
     }
     .program-days-container {
         display: flex;
