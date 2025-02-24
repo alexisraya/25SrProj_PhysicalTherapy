@@ -12,6 +12,7 @@
     import Achievement from "$lib/design-system/components/Achievement.svelte";
     import AchievmentCard from "$lib/design-system/components/AchievmentCard.svelte";
     import ProgressBar from "$lib/design-system/components/ProgressBar.svelte";
+    import MilestoneMonths from "$lib/design-system/components/MilestoneMonths.svelte";
 
 </script>
 
@@ -106,6 +107,16 @@
         <h2>Progress Bar</h2>
         <ProgressBar totalExercises={6} completedExercises={2} />
     </div>
+
+    <!-- Milestone Months -->
+    <div class="component-section">
+        <h2>Milestone Months</h2>
+        <div class="milestone">
+            <MilestoneMonths isComplete={true} isActive={false} isUpcoming={false} month={1} />
+            <MilestoneMonths isComplete={false} isActive={true} isUpcoming={false} month={2} />
+            <MilestoneMonths isComplete={false} isActive={false} isUpcoming={true} month={3} />
+        </div>
+    </div>
 </div>
 
 <style>
@@ -136,5 +147,13 @@
         gap: 16px;
         justify-content: center;
         padding-top: 10px;
+    }
+
+    .milestone {
+        display: flex;
+        column-gap: 8px;
+        align-items: flex-start;
+        background-color: #EAEAEA;
+        padding: 16px;
     }
 </style>
