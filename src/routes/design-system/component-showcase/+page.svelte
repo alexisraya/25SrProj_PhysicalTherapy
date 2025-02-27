@@ -15,6 +15,7 @@
     import MilestoneMonths from "$lib/design-system/components/MilestoneMonths.svelte";
     import CharacterSelect from "$lib/design-system/components/CharacterSelect.svelte";
     import ExerciseInfoBlock from "$lib/design-system/components/ExerciseInfoBlock.svelte";
+    import InfoModal from "$lib/design-system/components/InfoModal.svelte";
 
 </script>
 
@@ -131,6 +132,18 @@
         <h2>Exercise Info Block</h2>
         <ExerciseInfoBlock />
     </div>
+
+    <!-- Info Modal -->
+    <div class="component-section">
+        <h2>Info Modal</h2>
+        <div class="grey">
+            <InfoModal iconName="stairs" infoName="Climb stairs" isGoal />
+            <InfoModal iconName="thunderstorm" />
+            <InfoModal isLocked />
+            <InfoModal isLocked isGoal infoName="Goal"/>
+        </div>
+        
+    </div>
 </div>
 
 <style>
@@ -169,5 +182,14 @@
         align-items: flex-start;
         background-color: #EAEAEA;
         padding: 16px;
+    }
+
+    .grey {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #EAEAEA;
+        padding: 16px;
+        row-gap: 16px;
+        column-gap: 16px;
     }
 </style>
