@@ -196,7 +196,6 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
    - Include visual evidence
    - Reference Figma designs when applicable
    - Specify environment details
-   - Include deployment URL where issue was found
 
 3. **After Reporting**
    - Respond to any follow-up questions
