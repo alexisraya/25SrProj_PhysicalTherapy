@@ -7,7 +7,7 @@
 
 </script>
 
-<button class="{buttonType} {isDisabled ? `${buttonType}-disabled` : ''}" disabled={isDisabled}>
+<button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled}>
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}
     </p>
@@ -32,6 +32,18 @@
         color: var(--color-grey-0);
     }
 
+    /* Primary Hover */
+    .primary:hover {
+        background-color: var(--color-blue-900);
+        border: 1px solid var(--button-primary-bg);
+        color: var(--color-grey-0);
+    }
+
+    /* Primary Active */
+    .primary:active {
+        transform: scale(95%);
+    }
+
     /* Disabled Primary Button Styles */
     .primary-disabled {
         background-color: var(--button-primary-disabled-bg);
@@ -45,6 +57,18 @@
         background-color: transparent;
         color: var(--button-secondary-border);
         border: 1px solid var(--color-blue-1100);
+    }
+
+    /* Secondary Hover */
+    .secondary:hover {
+        background-color: var(--color-blue-50);
+        color: var(--color-blue-800);
+        border: 1px solid var(--color-blue-800);
+    }
+
+    /* Secondary Active */
+    .secondary:active {
+        transform: scale(95%);
     }
 
     /* Disabled Secondary Button Styles */
