@@ -1,41 +1,24 @@
 <script>
   import { typography } from '$lib/design-system';
   import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
-  import Editicon from '$lib/assets/iconography/EditIcon.svg';
-  import RightArrow from '$lib/assets/iconography/RightArrow.svg';
   import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
-  import Character from '$lib/assets/iconography/Character.png';
-  import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
   import Button from '$lib/design-system/components/Button.svelte';
-    import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
+  import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
+  import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
+  import CharacterSelect from '$lib/design-system/components/CharacterSelect.svelte';
+  import ExerciseInfoBlock from '$lib/design-system/components/ExerciseInfoBlock.svelte';
 </script>
 
 <div class="page_container">
   <div class="exercise_container--top">
     <div class="exercise_nav">
       <img class="back_button" src={LeftArrow} />
-      <div class="progress_bar">
-        <div class="progress_bar--item"></div>
-        <div class="progress_bar--item"></div>
-        <div class="progress_bar--item empty"></div>
-      </div>
+      <ProgressBar totalExercises={3} completedExercises={2} />
     </div>
-    <ExerciseModel modelPath="/meditation_pose_female.glb" />
-    <div class="exercise_info">
-      <button class="edit_btn">
-        <img src={Editicon} />
-      </button>
-      <h5 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.h5}; font-weight: {typography.fontWeights.bold};">Long Sitting Quad Set</h5>
-      <div class="exercise_text--description">
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3 sets</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">10 reps</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3lbs</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Kettle Bell</p>
-      </div>
-    </div>
+    <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" />
+    <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
+    <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
+    <ExerciseInfoBlock />
   </div>
   <div class="exercise_container-bottom">
     <div class="exercise_description">
@@ -53,29 +36,7 @@
       </div>
       <div class="exercise_description--section">
           <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
-          <div class="select-character-section">
-            <div class="character selected">
-              <img class="character--img selected-img" src={Character} alt="Character" />
-              <div class="character--overlay selected-overlay"></div>
-              <div class="character--name selected-name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}" class="selected-name">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
-            </div>
-          </div>
+          <CharacterSelect />
       </div>
     </div>
   </div>
@@ -89,7 +50,7 @@
 </div>
 
 <style>
-  h5, h6, p{
+  h6, p{
     margin: 0;
   }
   .page_container {
@@ -116,57 +77,6 @@
     justify-content: space-between;
     width: 100%;
   }
-  .progress_bar {
-    width: 100%;
-    display: flex;
-    column-gap: 8px;
-    justify-content: center;
-    /* z-index: 1000; */
-  }
-  .progress_bar--item {
-    border-radius: 8px;
-    height: 9px;
-    width: 90px;
-    background-color: var(--color-blue-1100);
-  }
-  .empty {
-    opacity: 40%;
-  }
-  .exercise_info {
-    position: relative;
-    background: var(--color-grey-opactity-dark);
-    border-radius: 30px;
-    color: var(--color-blue-1100);
-    padding: 12px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .line{
-    border: 0.5px solid var(--color-purple-100);
-    height: 28px;
-  }
-  .edit_btn {
-    background-color: var(--color-grey-0);
-    border: none;
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25px;
-    height: 25px;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-  }
-  .exercise_text--description {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 12px;
-    height: 45px;
-  }
   .exercise_container-bottom {
     display: flex;
     flex-direction: column;
@@ -190,52 +100,6 @@
   .exercise_description--section p {
     color: var(--color-grey-400);
   }
-  .select-character-section {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 16px;
-  }
-  .character {
-    border-radius: 8px;
-    position: relative;
-    display: inline-block;
-    width: 99px; /* Adjust as needed */
-  }
-  .character img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-  }
-  .character--overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--color-grey-opactity-dark);
-  }
-  .character--name {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--color-blue-1100);
-    text-align: center;
-  }
-  .selected-img {
-    border: 1px solid var(--color-blue-1100);
-  }
-  .selected-overlay {
-    display: none;
-  }
-  .selected-name {
-    color: var(--color-grey-0) !important;
-  }
   .buttons {
     background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
     position: sticky;
@@ -251,15 +115,5 @@
   .skip_btn{
     padding-left: 24px;
     width: 108px;
-  }
-  .hold_to_complete_container {
-    padding-right: 24px;
-    display: flex;
-    align-items: center;
-    column-gap: 4px;
-  }
-  .hold_to_complete_label {
-    display: flex;
-    align-items: center;
   }
 </style>
