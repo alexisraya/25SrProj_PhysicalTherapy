@@ -7,11 +7,15 @@
 
 </script>
 
+
 <button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled}>
+
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}
     </p>
+
 </button>
+
 
 <style>
     button {
@@ -22,7 +26,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        transition: 0.3s ease;
+        transition: 0.25s ease;
     }
 
     /* Primary Button Styles */
@@ -41,7 +45,7 @@
 
     /* Primary Active */
     .primary:active {
-        transform: scale(95%);
+        transform: scale(97.5%);
     }
 
     /* Disabled Primary Button Styles */
@@ -68,7 +72,7 @@
 
     /* Secondary Active */
     .secondary:active {
-        transform: scale(95%);
+        transform: scale(97.5%);
     }
 
     /* Disabled Secondary Button Styles */
@@ -78,4 +82,5 @@
         color: var(--button-secondary-disabled-border);
         cursor: default;
     }
+
 </style>
