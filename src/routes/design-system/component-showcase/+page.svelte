@@ -14,6 +14,7 @@
     import ProgressBar from "$lib/design-system/components/ProgressBar.svelte";
     import MilestoneMonths from "$lib/design-system/components/MilestoneMonths.svelte";
     import CharacterSelect from "$lib/design-system/components/CharacterSelect.svelte";
+    import ExerciseInfoBlock from "$lib/design-system/components/ExerciseInfoBlock.svelte";
 
 </script>
 
@@ -123,6 +124,12 @@
     <div class="component-section">
         <h2>Character Select</h2>
         <CharacterSelect />
+    </div>
+
+    <!-- Exercise Info Block -->
+    <div class="component-section">
+        <h2>Exercise Info Block</h2>
+        <ExerciseInfoBlock />
     </div>
 </div>
 

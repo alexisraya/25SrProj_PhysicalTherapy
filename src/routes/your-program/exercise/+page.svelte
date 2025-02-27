@@ -1,15 +1,12 @@
 <script>
   import { typography } from '$lib/design-system';
   import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
-  import Editicon from '$lib/assets/iconography/EditIcon.svg';
-  import RightArrow from '$lib/assets/iconography/RightArrow.svg';
   import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
-  import Character from '$lib/assets/iconography/Character.png';
-  import HoldToCompleteButton from '$lib/assets/iconography/HoldToCompleteButton.svg';
   import Button from '$lib/design-system/components/Button.svelte';
-    import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
-    import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
-    import CharacterSelect from '$lib/design-system/components/CharacterSelect.svelte';
+  import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
+  import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
+  import CharacterSelect from '$lib/design-system/components/CharacterSelect.svelte';
+  import ExerciseInfoBlock from '$lib/design-system/components/ExerciseInfoBlock.svelte';
 </script>
 
 <div class="page_container">
@@ -21,21 +18,7 @@
     <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" />
     <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
     <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
-    <div class="exercise_info">
-      <button class="edit_btn">
-        <img src={Editicon} />
-      </button>
-      <h5 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.h5}; font-weight: {typography.fontWeights.bold};">Long Sitting Quad Set</h5>
-      <div class="exercise_text--description">
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3 sets</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">10 reps</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3lbs</p>
-        <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Kettle Bell</p>
-      </div>
-    </div>
+    <ExerciseInfoBlock />
   </div>
   <div class="exercise_container-bottom">
     <div class="exercise_description">
@@ -67,7 +50,7 @@
 </div>
 
 <style>
-  h5, h6, p{
+  h6, p{
     margin: 0;
   }
   .page_container {
@@ -93,41 +76,6 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-  }
-  .exercise_info {
-    position: relative;
-    background: var(--color-grey-opactity-dark);
-    border-radius: 30px;
-    color: var(--color-blue-1100);
-    padding: 12px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .line{
-    border: 0.5px solid var(--color-purple-100);
-    height: 28px;
-  }
-  .edit_btn {
-    background-color: var(--color-grey-0);
-    border: none;
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 25px;
-    height: 25px;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-  }
-  .exercise_text--description {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: 12px;
-    height: 45px;
   }
   .exercise_container-bottom {
     display: flex;
@@ -167,15 +115,5 @@
   .skip_btn{
     padding-left: 24px;
     width: 108px;
-  }
-  .hold_to_complete_container {
-    padding-right: 24px;
-    display: flex;
-    align-items: center;
-    column-gap: 4px;
-  }
-  .hold_to_complete_label {
-    display: flex;
-    align-items: center;
   }
 </style>
