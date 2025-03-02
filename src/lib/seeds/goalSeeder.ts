@@ -36,7 +36,7 @@ const goals = [
         unlocked: false,
     },
     {
-        goalId: "goal-",
+        goalId: "goal-5",
         goalName: "Sleep Through the Night",
         description: "You can sleep for 6 hours straight without pain waking you up.",
         month: 1,
@@ -141,11 +141,14 @@ export async function seedGoals() {
     const existingGoalIds = new Set(existingGoalsSnapshot.docs.map(doc => doc.id));
 
     for (const goal of goals) {
+        const goalRef = doc(db, "goals", goal.goalId);
+
         if (!existingGoalIds.has(goal.goalId)) {
             const goalRef = doc(db, "goals", goal.goalId);
             await setDoc(goalRef, goal);
             console.log(`Goal ${goal.goalId} added to Firestore`);
         } else {
+            await setDoc(goalRef, goal, { merge: true });
             console.log(`Goal ${goal.goalId} already exists, skipping`);
         }
     }

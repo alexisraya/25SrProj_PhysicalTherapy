@@ -1,6 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { getAllExercisesFromLibrary, type Exercise, isDistanceExercise, isWeightExercise, isTimeExercise } from "$firebase/services/exerciseService";
+    import {
+        getAllExercisesFromLibrary,
+        isDistanceExercise,
+        isWeightExercise,
+        isTimeExercise,
+    } from "$firebase/services/exerciseService";
+    import type { Exercise } from "$firebase/types/exerciseType";
 
     let exercises: Exercise[] = [];
     let loading = true;
@@ -21,18 +27,21 @@
 
     function getExerciseDetails(exercise: Exercise): string {
         if (isDistanceExercise(exercise)) {
-            return `${exercise.defaultSets} sets of ${exercise.defaultSteps} steps`;
+            return `${exercise.defaultSets || 0} sets of ${exercise.defaultSteps || 0} steps`;
         } else if (isWeightExercise(exercise)) {
-            return `${exercise.defaultSets} sets of ${exercise.defaultReps} reps at ${exercise.defaultWeight}lbs`;
+            return `${exercise.defaultSets || 0} sets of ${exercise.defaultReps || 0} reps at ${exercise.defaultWeight || 0}lbs`;
         } else if (isTimeExercise(exercise)) {
-            return `${exercise.defaultSets} set of ${exercise.defaultReps} reps, holding for ${exercise.defaultSeconds} seconds`;
+            return `${exercise.defaultSets || 0} set of ${exercise.defaultReps || 0} reps, holding for ${exercise.defaultSeconds || 0} seconds`;
         }
         return "";
     }
 </script>
 
 <h1>Exercise Library</h1>
-
+<h2>
+    (For Dev to see that Exercises are being properly populated and retrieved
+    from database)
+</h2>
 {#if loading}
     <p>Loading exercises...</p>
 {:else if error}
@@ -47,28 +56,28 @@
                         {exercise.exerciseType}
                     </span>
                 </div>
-
                 <div class="exercise-content">
                     <p class="exercise-details">
                         Default: {getExerciseDetails(exercise)}
                     </p>
-                    
                     {#if exercise.equipment}
                         <p class="equipment">
-                            <strong>Equipment:</strong> {exercise.equipment}
+                            <strong>Equipment:</strong>
+                            {exercise.equipment}
                         </p>
                     {/if}
-
                     <div class="info-section">
                         <h3>Instructions:</h3>
                         <p>{exercise.instructions}</p>
                     </div>
-
                     <div class="info-section">
                         <h3>Information:</h3>
                         <p>{exercise.information}</p>
                     </div>
-
+                    <div class="info-section">
+                        <h3>Modification:</h3>
+                        <p>{exercise.modification}</p>
+                    </div>
                     <div class="debug-info">
                         <small>Exercise ID: {exercise.exerciseId}</small>
                     </div>

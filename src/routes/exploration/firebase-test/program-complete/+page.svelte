@@ -1,46 +1,50 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { page } from '$app/stores';
-    import { authStore } from '$stores/authStore';
-    import { 
-        getCurrentProgram,
+    import { onMount } from "svelte";
+    import { goto } from "$app/navigation";
+    import { authStore } from "$stores/authStore";
+    import { getCurrentProgram } from "$firebase/services/programService";
+    import {
         getUserStats,
-        getWeeklyProgress 
-    } from '$firebase/userService';
+        getWeeklyProgress,
+        checkAndResetProgress,
+    } from "$firebase/services/statService";
+    import type { Program } from "$firebase/types/userType";
+    import type { UserStats } from "$firebase/types/userType";
 
-    let program = null;
-    let stats = null;
-    let weeklyProgress = null;
+    let program: Program | null = null;
+    let stats: UserStats | null = null;
+    let weeklyProgress: any = null;
     let loading = true;
-    let error = null;
-
-    let achievements = [
-        { title: "Program Complete!", description: "Completed all exercises in the program" },
-        { title: "Daily Goal", description: "Added to your daily streak" },
-        { title: "Progress Made", description: "Updated your overall stats" }
-    ];
+    let error: string | null = null;
 
     onMount(async () => {
-        if (!$authStore.currentUser) return;
-
         try {
+            if (!$authStore.currentUser) return;
+            const userId = $authStore.currentUser.uid;
+            await checkAndResetProgress($authStore.currentUser.uid);
+
             const [programData, statsData, weeklyData] = await Promise.all([
-                getCurrentProgram($authStore.currentUser.uid),
-                getUserStats($authStore.currentUser.uid),
-                getWeeklyProgress($authStore.currentUser.uid)
+                getCurrentProgram(userId),
+                getUserStats(userId),
+                getWeeklyProgress(userId),
             ]);
 
             program = programData;
             stats = statsData;
             weeklyProgress = weeklyData;
         } catch (err) {
-            error = err.message;
+            console.error("Error loading completion data:", err);
+            error =
+                err instanceof Error
+                    ? err.message
+                    : "Failed to load completion data";
         } finally {
             loading = false;
         }
     });
 
     function formatTime(seconds: number): string {
+        if (!seconds) return "0m 0s";
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}m ${secs}s`;
@@ -54,25 +58,9 @@
         <p class="error">{error}</p>
     {:else}
         <div class="completion-header">
-            <h1>🎉 Program Complete!</h1>
+            <h1>Program Complete!</h1>
             <p>Great work on completing today's exercises</p>
         </div>
-
-        <!-- Achievements Section -->
-        <div class="achievements-section">
-            <h2>Achievements Unlocked</h2>
-            <div class="achievements-grid">
-                {#each achievements as achievement}
-                    <div class="achievement-card">
-                        <div class="achievement-icon">🏆</div>
-                        <h3>{achievement.title}</h3>
-                        <p>{achievement.description}</p>
-                    </div>
-                {/each}
-            </div>
-        </div>
-
-        <!-- Stats Update -->
         {#if stats && weeklyProgress}
             <div class="stats-section">
                 <h2>Your Progress</h2>
@@ -84,8 +72,13 @@
                     </div>
                     <div class="stat-card">
                         <h3>Weekly Progress</h3>
-                        <p class="stat-value">{weeklyProgress.daysCompleted}/5</p>
+                        <p class="stat-value">
+                            {weeklyProgress.daysCompleted}/5
+                        </p>
                         <p class="stat-label">days completed this week</p>
+                        <p class="stat-label">
+                            Days needed: {weeklyProgress.daysNeededForStreak}
+                        </p>
                     </div>
                     <div class="stat-card">
                         <h3>Total Programs</h3>
@@ -93,13 +86,16 @@
                         <p class="stat-label">programs completed</p>
                     </div>
                 </div>
-
                 <div class="detailed-stats">
                     <h3>Today's Stats</h3>
                     <div class="stat-list">
                         <div class="stat-item">
                             <span>Exercises Completed</span>
-                            <span>{program?.exercises.filter(ex => ex.completed).length || 0}</span>
+                            <span
+                                >{program?.exercises.filter(
+                                    (ex) => ex.completed,
+                                ).length || 0}</span
+                            >
                         </div>
                         <div class="stat-item">
                             <span>Total Time</span>
@@ -121,10 +117,11 @@
                 </div>
             </div>
         {/if}
-
-        <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="/exploration/firebase-test/program-view" class="btn primary">
+            <a
+                href="/exploration/firebase-test/program-view"
+                class="btn primary"
+            >
                 Return to Program
             </a>
             <a href="/patient-dashboard" class="btn secondary">
@@ -144,26 +141,6 @@
     .completion-header {
         text-align: center;
         margin-bottom: 2rem;
-    }
-
-    .achievements-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 1rem 0 2rem;
-    }
-
-    .achievement-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        text-align: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .achievement-icon {
-        font-size: 2rem;
-        margin-bottom: 1rem;
     }
 
     .stats-grid {

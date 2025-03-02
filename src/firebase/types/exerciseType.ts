@@ -7,6 +7,7 @@ interface BaseExercise {
     exerciseType: 'distance' | 'weight' | 'time';
     defaultSets: number;
     equipment?: string;
+    modification: string;
 }
 
 // Distance-based exercises

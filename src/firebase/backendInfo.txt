@@ -1,0 +1,57 @@
+THIS EXPLAINS HOW BACKEND WORKS AND WHAT FUNCTIONALITIES EACH FILE HOLDS
+- Will help with imports
+
+// -------------------------------- // T Y P E S // -------------------------------- //
+
+* ------------------------- userType.ts ------------------------- *
+Interfaces:
+• User
+• AssignedExercise
+• Program
+• UserStats
+
+* ------------------------- exerciseType.ts ------------------------- *
+Interfaces:
+• BaseExercise
+• DistanceExercise
+• WeightExercise
+• TimeExercise
+
+
+// -------------------------------- // S E R V I C E S // -------------------------------- //
+
+* ------------------------- userService.ts ------------------------- *
+
+
+
+* ------------------------- programService.ts -------------------------*
+
+
+
+* ------------------------- userexerciseService.ts ------------------------- *
+
+
+* ------------------------- milestoneService.ts ------------------------- *
+
+
+* ------------------------- statService.ts ------------------------- *
+
+
+
+* ------------------------- goalService.ts ------------------------- *
+
+
+
+* ------------------------- achieveService.ts ------------------------- *
+
+
+
+* ------------------------- helpers.ts ------------------------- *
+
+
+
+* ------------------------- therapistService.ts ------------------------- *
+
+
+
+* ------------------------- exerciseService.ts ------------------------- *

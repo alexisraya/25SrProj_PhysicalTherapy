@@ -11,7 +11,8 @@ const exercises = [
         exerciseType: "distance",
         defaultSets: 3,
         defaultSteps: 10,
-        equipment: "Resistance band"
+        equipment: "Resistance band",
+        modification: "Move the resistance band higher, just above your knees, to reduce resistance and strain on your joints. If still painful, try performing the movement without a band."
     },
     {
         exerciseId: "monster-walk",
@@ -21,7 +22,8 @@ const exercises = [
         exerciseType: "distance",
         defaultSets: 3,
         defaultSteps: 10,
-        equipment: "Resistance band"
+        equipment: "Resistance band",
+        modification: "Place the band just above your knees instead of around your ankles to reduce resistance and strain. If still painful, try performing the movement without a band."
     },
 
     // Weight-based exercises
@@ -34,7 +36,8 @@ const exercises = [
         defaultSets: 3,
         defaultReps: 10,
         defaultWeight: 20,
-        equipment: "Dumbbell"
+        equipment: "Dumbbell",
+        modification: "For additional balance or support, hold onto a wall or balance pole. If you are using a weight, try decreasing it or removing it altogether."
     },
     {
         exerciseId: "straight-leg-raise",
@@ -44,7 +47,8 @@ const exercises = [
         exerciseType: "weight",
         defaultSets: 3,
         defaultReps: 10,
-        defaultWeight: 20
+        defaultWeight: 20,
+        modification: "Try using a belt or your arms to assist you to lift the leg a bit."
     },
     {
         exerciseId: "single-leg-squat",
@@ -55,7 +59,8 @@ const exercises = [
         defaultSets: 3,
         defaultReps: 10,
         defaultWeight: 20,
-        equipment: "Dumbbell"
+        equipment: "Dumbbell",
+        modification: "For additional balance or support, hold onto a wall or balance pole. If you are using a weight, try decreasing it or removing it altogether."
     },
 
     // Time-based exercises
@@ -67,7 +72,8 @@ const exercises = [
         exerciseType: "time",
         defaultSets: 1,
         defaultReps: 10,
-        defaultSeconds: 10
+        defaultSeconds: 10,
+        modification: "Place a folded towel or a small pillow under your lower back or hips to provide extra support and reduce strain."
     },
     {
         exerciseId: "clamshell",
@@ -78,7 +84,8 @@ const exercises = [
         defaultSets: 1,
         defaultReps: 10,
         defaultSeconds: 10,
-        equipment: "Resistance band"
+        equipment: "Resistance band",
+        modification: "Try using a lighter band or removing it altogether."
     },
     {
         exerciseId: "quad-set",
@@ -88,7 +95,8 @@ const exercises = [
         exerciseType: "time",
         defaultSets: 1,
         defaultReps: 10,
-        defaultSeconds: 10
+        defaultSeconds: 10,
+        modification: "Place a small rolled-up towel under your knee and focus on gently squeezing your quad without fully straightening your leg."
     },
     {
         exerciseId: "standing-tke",
@@ -99,7 +107,8 @@ const exercises = [
         defaultSets: 1,
         defaultReps: 10,
         defaultSeconds: 5,
-        equipment: "Resistance band"
+        equipment: "Resistance band",
+        modification: "Switch to a lighter band or move closer to the anchor to reduce tension."
     },
     {
         exerciseId: "heel-slide",
@@ -109,7 +118,9 @@ const exercises = [
         exerciseType: "time",
         defaultSets: 3,
         defaultReps: 10,
-        defaultSeconds: 10
+        defaultSeconds: 10,
+        equipment: "Towel",
+        modification: "Move your heel only a few inches—just enough to stay within a pain-free range."
     },
 ];
 
@@ -119,12 +130,14 @@ export async function seedExercises() {
     const existingExerciseIds = new Set(existingExercisesSnapshot.docs.map(doc => doc.id));
 
     for (const exercise of exercises) {
+        const exerciseRef = doc(db, "exercises", exercise.exerciseId);
+        
         if (!existingExerciseIds.has(exercise.exerciseId)) {
-            const exerciseRef = doc(db, "exercises", exercise.exerciseId);
             await setDoc(exerciseRef, exercise);
             console.log(`Exercise ${exercise.exerciseId} added to Firestore`);
         } else {
-            console.log(`Exercise ${exercise.exerciseId} already exists, skipping`);
+            await setDoc(exerciseRef, exercise, { merge: true });
+            console.log(`Exercise ${exercise.exerciseId} updated in Firestore`);
         }
     }
 }

@@ -29,7 +29,6 @@ export async function getExercise(exerciseId: string): Promise<Exercise | null> 
     }
 }
 
-// Function to get exercises by type
 export async function getExercisesByType(type: 'distance' | 'weight' | 'time'): Promise<Exercise[]> {
     try {
         const exercises = await getAllExercisesFromLibrary();
@@ -40,8 +39,6 @@ export async function getExercisesByType(type: 'distance' | 'weight' | 'time'): 
     }
 }
 
-// Function to format exercise requirements based on type
-// TODO: change this later and just probably do an assignment calculation
 export function formatExerciseRequirements(exercise: Exercise): string {
     if (isDistanceExercise(exercise)) {
         return `${exercise.defaultSets || 3} sets of ${exercise.defaultSteps || 10} steps`;
@@ -52,3 +49,5 @@ export function formatExerciseRequirements(exercise: Exercise): string {
     }
     return 'Exercise requirements not specified';
 }
+
+    export { isDistanceExercise, isWeightExercise, isTimeExercise};

@@ -183,12 +183,15 @@ export async function seedAchievements() {
     const existingAchievementIds = new Set(existingAchievementsSnapshot.docs.map(doc => doc.id));
 
     for (const achievement of achievements) {
+        const achievementRef = doc(db, "achievements", achievement.achieveId);
+
         if (!existingAchievementIds.has(achievement.achieveId)) {
             const achievementRef = doc(db, "achievements", achievement.achieveId);
             await setDoc(achievementRef, achievement);
             console.log(`Achievement ${achievement.achieveId} added to Firestore`);
         } else {
-            console.log(`Achievement ${achievement.achieveId} already exists, skipping`);
+            await setDoc(achievementRef, achievement, {merge: true});
+            console.log(`Achievement ${achievement.achieveId} updated in Firestore`);
         }
     }
 }

@@ -1,10 +1,13 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { auth } from '$lib/helpers/firebase';
-    import { getTherapist, type Therapist } from '$firebase/services/therapistService';
-    import { getUser } from '$firebase/userService';
-    import { goto } from '$app/navigation';
-    import type { User as FirebaseUser } from 'firebase/auth';
+    import { onMount } from "svelte";
+    import { auth } from "$lib/helpers/firebase";
+    import {
+        getTherapist,
+        type Therapist,
+    } from "$firebase/services/therapistService";
+    import { getUser } from "$firebase/services/userService";
+    import { goto } from "$app/navigation";
+    import type { User as FirebaseUser } from "firebase/auth";
 
     let therapist: FirebaseUser | null = null;
     let therapistData: Therapist | null = null;
@@ -17,67 +20,91 @@
     let debugInfo = {
         therapistId: "",
         patientIds: [] as string[],
-        errors: [] as string[]
+        errors: [] as string[],
     };
 
     onMount(() => {
         const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
             if (!authUser) {
-                goto('/login');
+                goto("/login");
                 return;
             }
-            
+
             try {
-                // Get therapist data
                 therapist = authUser;
                 debugInfo.therapistId = authUser.uid;
                 console.log("Therapist auth ID:", authUser.uid);
-                
+
                 const fetchedTherapistData = await getTherapist(authUser.uid);
                 console.log("Fetched therapist data:", fetchedTherapistData);
-                
+
                 if (fetchedTherapistData) {
                     therapistData = fetchedTherapistData;
-                    
-                    // Debug: check patients array
+
                     if (therapistData.patients) {
                         debugInfo.patientIds = [...therapistData.patients];
-                        console.log("Patient IDs from therapist:", therapistData.patients);
+                        console.log(
+                            "Patient IDs from therapist:",
+                            therapistData.patients,
+                        );
                     } else {
-                        console.log("No patients array found in therapist data");
-                        debugInfo.errors.push("No patients array in therapist data");
+                        console.log(
+                            "No patients array found in therapist data",
+                        );
+                        debugInfo.errors.push(
+                            "No patients array in therapist data",
+                        );
                     }
-                    
-                    // Fetch all patients assigned to this therapist
-                    if (therapistData.patients && therapistData.patients.length > 0) {
-                        const patientPromises = therapistData.patients.map(async (patientId) => {
-                            try {
-                                console.log("Fetching patient:", patientId);
-                                const patientData = await getUser(patientId);
-                                console.log("Patient data for", patientId, ":", patientData);
-                                
-                                if (patientData) {
-                                    return {
-                                        id: patientId,
-                                        name: `${patientData.firstName} ${patientData.lastName}`,
-                                        startDate: patientData.createdAt
-                                    };
+
+                    if (
+                        therapistData.patients &&
+                        therapistData.patients.length > 0
+                    ) {
+                        const patientPromises = therapistData.patients.map(
+                            async (patientId) => {
+                                try {
+                                    console.log("Fetching patient:", patientId);
+                                    const patientData =
+                                        await getUser(patientId);
+                                    console.log(
+                                        "Patient data for",
+                                        patientId,
+                                        ":",
+                                        patientData,
+                                    );
+
+                                    if (patientData) {
+                                        return {
+                                            id: patientId,
+                                            name: `${patientData.firstName} ${patientData.lastName}`,
+                                            startDate: patientData.createdAt,
+                                        };
+                                    }
+                                    debugInfo.errors.push(
+                                        `Patient ${patientId} not found`,
+                                    );
+                                    return null;
+                                } catch (err) {
+                                    console.error(
+                                        `Error fetching patient ${patientId}:`,
+                                        err,
+                                    );
+                                    debugInfo.errors.push(
+                                        `Error fetching patient ${patientId}: ${err}`,
+                                    );
+                                    return null;
                                 }
-                                debugInfo.errors.push(`Patient ${patientId} not found`);
-                                return null;
-                            } catch (err) {
-                                console.error(`Error fetching patient ${patientId}:`, err);
-                                debugInfo.errors.push(`Error fetching patient ${patientId}: ${err}`);
-                                return null;
-                            }
-                        });
-                        
-                        const fetchedPatients = (await Promise.all(patientPromises)).filter(Boolean) as Array<{
+                            },
+                        );
+
+                        const fetchedPatients = (
+                            await Promise.all(patientPromises)
+                        ).filter(Boolean) as Array<{
                             id: string;
                             name: string;
                             startDate: string;
                         }>;
-                        
+
                         console.log("Fetched patients:", fetchedPatients);
                         patients = fetchedPatients;
                     }
@@ -112,7 +139,7 @@
     <p>Loading...</p>
 {:else if therapist && therapistData}
     <h1>Welcome, {therapistData.firstName} {therapistData.lastName}!</h1>
-    
+
     {#if patients.length > 0}
         <h2>Your Patients ({patients.length})</h2>
         <table>
@@ -138,11 +165,11 @@
     {:else}
         <div class="error-section">
             <p>No patients found. Check the debugging information below.</p>
-            
+
             <div class="debug-info">
                 <h3>Debug Information</h3>
                 <p><strong>Therapist ID:</strong> {debugInfo.therapistId}</p>
-                
+
                 <p><strong>Patient IDs from database:</strong></p>
                 {#if debugInfo.patientIds.length > 0}
                     <ul>
@@ -153,7 +180,7 @@
                 {:else}
                     <p>No patient IDs found</p>
                 {/if}
-                
+
                 {#if debugInfo.errors.length > 0}
                     <p><strong>Errors:</strong></p>
                     <ul class="error-list">
@@ -167,7 +194,7 @@
     {/if}
 {:else}
     <p>Could not load therapist data. Please check console for errors.</p>
-    
+
     <div class="debug-info">
         <h3>Debug Information</h3>
         {#if debugInfo.errors.length > 0}
@@ -186,13 +213,14 @@
         border-collapse: collapse;
         width: 100%;
     }
-    
-    th, td {
+
+    th,
+    td {
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
     }
-    
+
     th {
         background-color: #f2f2f2;
     }
@@ -200,25 +228,25 @@
     tr {
         background-color: #ffffff;
     }
-    
+
     tr:hover {
         background-color: lightgray;
         cursor: pointer;
     }
-    
+
     .view-btn {
-        background-color: #4682B4;
+        background-color: #4682b4;
         color: white;
         border: none;
         padding: 5px 10px;
         border-radius: 4px;
         cursor: pointer;
     }
-    
+
     .view-btn:hover {
-        background-color: #36648B;
+        background-color: #36648b;
     }
-    
+
     .debug-info {
         margin-top: 2rem;
         padding: 1rem;
@@ -226,11 +254,11 @@
         border: 1px solid #ddd;
         border-radius: 4px;
     }
-    
+
     .error-list {
         color: #d32f2f;
     }
-    
+
     .error-section {
         margin-top: 1rem;
     }
