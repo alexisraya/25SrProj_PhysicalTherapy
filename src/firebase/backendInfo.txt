@@ -78,10 +78,10 @@ Functions:
 - getUserStats()
 - updateUserStats() --> Updates stats after exercise
 - resetDailyProgress() --> Midnight reset (Might delete or not be async function)
-- resetWeeklyProgress() --> Sunday Midnight Resets (Might delete or not be asynch function)
-- checkAndResetProgress() --> So that there isn't multiple resets in a day
+- *resetWeeklyProgress() --> Sunday Midnight Resets (Might delete or not be asynch function)
+- *checkAndResetProgress() --> So that there isn't multiple resets in a day
 - getWeeklyProgress() --> Returns remaining days of week and days needed for 5 day streak
-- updateStreakOnCompletion() --> Updates the streak after program complete
+- *updateStreakOnCompletion() --> Updates the streak after program complete
 - resetDailyExercises() --> Resets exercises for next day
 - hasCompletedToday() -> Completed program today (Might delete or not be asynch function)
 
@@ -91,8 +91,7 @@ Functions:
 
 Functions:
 - getWeekStartDate()
-- calculateStreak()
-- calculateWeeklyStreak()
+- initializeUserStats()
 
 // -------------------------------- // OTHER S E R V I C E S // -------------------------------- //
 GENERAL FUNCTIONS THAT HAVE DIFFERENT PURPOSES THROUGHOUT THE APP

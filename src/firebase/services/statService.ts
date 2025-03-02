@@ -6,7 +6,14 @@ import { getWeekStartDate, initializeUserStats } from "./helpers";
 import { getCurrentProgram, updateProgram } from "./programService";
 import { checkAchievements } from "./milestoneService";
 
+export { initializeUserStats };
+
 /* ---------------------- GET USER STATS ---------------------- */
+/**
+ * Retrieves the current stats for a specific user from Firestore.
+ * This is the core function for accessing all user statistics.
+ */
+
 export async function getUserStats(userId: string): Promise<UserStats | null> {
     try {
         const userRef = doc(db, "users", userId);
@@ -19,6 +26,12 @@ export async function getUserStats(userId: string): Promise<UserStats | null> {
 }
 
 /* ---------------------- UPDATE USER STATS AFTER EXERCISE ---------------------- */
+/**
+ * Updates a user's cumulative stats after completing an exercise.
+ * Increments totalSets, totalReps, totalWeight, totalDistance, and totalTime based on the exercise.
+ * Also triggers a check for newly unlocked achievements.
+ */
+
 export async function updateUserStats(userId: string, exercise: AssignedExercise) {
     try {
         const userRef = doc(db, "users", userId);
@@ -41,6 +54,12 @@ export async function updateUserStats(userId: string, exercise: AssignedExercise
 }
 
 /* ---------------------- RESET USER'S DAILY PROGRESS AT MIDNIGHT ---------------------- */
+/**
+ * Resets a user's daily exercise progress.
+ * Called when a new day starts to mark all exercises as not completed.
+ * If the user didn't complete any exercises yesterday, resets their current streak.
+ */
+
 export async function resetDailyProgress(userId: string) {
     try {
         const userRef = doc(db, "users", userId);
@@ -78,6 +97,13 @@ export async function resetDailyProgress(userId: string) {
 }
 
 /* ---------------------- RESET WEEKLY PROGRESS (ONLY ON SUNDAYS) ---------------------- */
+/**
+ * Resets weekly progress every Sunday at midnight.
+ * - If user completed 5+ days in the week, increments their currentStreak
+ * - Resets daysCompleted to 0 for the new week
+ * - Updates longest streak if needed
+ */
+
 export async function resetWeeklyProgress(userId: string) {
     try {
         const userRef = doc(db, "users", userId);
@@ -113,26 +139,41 @@ export async function resetWeeklyProgress(userId: string) {
 }
 
 /* ---------------------- CHECK & RESET PROGRESS ---------------------- */
+/**
+ * Checks if it's a new day and performs necessary resets.
+ * Uses localStorage to track the last check date.
+ * Calls resetDailyProgress for a new day and resetWeeklyProgress on Sundays.
+ */
+
 export async function checkAndResetProgress(userId: string) {
     try {
-      // Get last check date from localStorage
-      const lastCheck = localStorage.getItem(`lastProgressCheck_${userId}`);
-      const today = new Date().toDateString();
-      
-      if (lastCheck !== today) {
-        await resetDailyProgress(userId);
-        localStorage.setItem(`lastProgressCheck_${userId}`, today);
-
-        if (new Date().getDay() === 0) {
-          await resetWeeklyProgress(userId);
+        const lastCheck = localStorage.getItem(`lastProgressCheck_${userId}`);
+        const today = new Date().toDateString();
+        
+        // Only reset if it's a new day
+        if (lastCheck !== today) {
+            console.log("Performing daily progress check and reset if needed");
+            await resetDailyProgress(userId);
+            localStorage.setItem(`lastProgressCheck_${userId}`, today);
+            
+            // Check if it's Sunday (day 0) for weekly reset
+            if (new Date().getDay() === 0) {
+                console.log("Sunday detected - performing weekly reset");
+                await resetWeeklyProgress(userId);
+            }
         }
-      }
     } catch (error) {
-      console.error(`Error checking and resetting progress for user ${userId}:`, error);
+        console.error(`Error checking and resetting progress for user ${userId}:`, error);
     }
-  }
+}
 
 /* ---------------------- GET WEEKLY PROGRESS ---------------------- */
+/**
+ * Retrieves and calculates weekly progress information for UI display.
+ * Adds additional metrics like remainingDays and daysNeededForStreak.
+ * Creates weeklyProgress if it doesn't exist yet.
+ */
+
 export async function getWeeklyProgress(userId: string): Promise<{
     weekStartDate: string;
     daysCompleted: number;
@@ -171,6 +212,13 @@ export async function getWeeklyProgress(userId: string): Promise<{
 }
 
 /* ---------------------- UPDATE STREAK ON PROGRAM COMPLETION ---------------------- */
+/**
+ * Updates the user's streak when they complete their daily exercises.
+ * - Adds today's completion to the streak history
+ * - Increments the days completed for the current week (max of 5)
+ * The streak model is based on completing exercises on 5 out of 7 days each week.
+ */
+
 export async function updateStreakOnCompletion(userId: string): Promise<void> {
     try {
         const user = await getUser(userId);
@@ -196,6 +244,11 @@ export async function updateStreakOnCompletion(userId: string): Promise<void> {
 }
 
 /* ---------------------- RESET DAILY EXERCISES ---------------------- */
+/**
+ * Resets all exercises to not completed if the user's last completion was not today.
+ * This ensures exercises are fresh each day.
+ */
+
 export async function resetDailyExercises(userId: string): Promise<void> {
     try {
         const user = await getUser(userId);
@@ -227,7 +280,10 @@ export async function resetDailyExercises(userId: string): Promise<void> {
     }
 }
 
-export { initializeUserStats };
+/**
+ * Checks if the user has already completed their exercises today.
+ * Used to prevent duplicate streak updates on the same day.
+ */
 
 async function hasCompletedToday(userId: string): Promise<boolean> {
     try {

@@ -9,44 +9,6 @@ export function getWeekStartDate(date: Date = new Date()): string {
     return sunday.toISOString();
 }
 
-export function calculateStreak(streakHistory: UserStats['streakHistory']): number {
-    let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (let i = streakHistory.length - 1; i >= 0; i--) {
-        const date = new Date(streakHistory[i].date);
-        date.setHours(0, 0, 0, 0);
-        
-        const daysDiff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (daysDiff > 1) break;
-        if (streakHistory[i].completed) streak++;
-    }
-
-    return streak;
-}
-
-export function calculateWeeklyStreak(
-    streakHistory: UserStats['streakHistory'],
-    weekStartDate: string
-): boolean {
-    const weekStart = new Date(weekStartDate);
-    const weekEnd = new Date(weekStartDate);
-    weekEnd.setDate(weekEnd.getDate() + 7);
-
-    const weekEntries = streakHistory.filter(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate >= weekStart && entryDate < weekEnd && entry.completed;
-    });
-
-    const uniqueDays = new Set(
-        weekEntries.map(entry => entry.date.split('T')[0])
-    );
-
-    return uniqueDays.size >= 5;
-}
-
 export function initializeUserStats(): UserStats {
     return {
         currentStreak: 0,
