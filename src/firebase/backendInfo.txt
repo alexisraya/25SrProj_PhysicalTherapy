@@ -2,7 +2,9 @@ THIS EXPLAINS HOW BACKEND WORKS AND WHAT FUNCTIONALITIES EACH FILE HOLDS
 - Will help with imports
 
 // -------------------------------- // T Y P E S // -------------------------------- //
-
+INTERFACE SETUP TEMPLATES
+Import example:
+import type { Exercise } from "$firebase/types/exerciseType";
 * ------------------------- userType.ts ------------------------- *
 Interfaces:
 • User
@@ -12,46 +14,134 @@ Interfaces:
 
 * ------------------------- exerciseType.ts ------------------------- *
 Interfaces:
-• BaseExercise
-• DistanceExercise
-• WeightExercise
-• TimeExercise
+• Exercise
+• (BaseExercise)
+• (DistanceExercise)
+• (WeightExercise)
+• (TimeExercise)
 
 
-// -------------------------------- // S E R V I C E S // -------------------------------- //
+// -------------------------------- // USER-RELATED S E R V I C E S // -------------------------------- //
+USER-RELATED FUNCTIONS THAT HAVE DIFFERENT PURPOSES THROUGHOUT THE APP
+Import example:
+import { getCurrentProgram } from "$firebase/services/programService";
 
 * ------------------------- userService.ts ------------------------- *
+Helps with initializing and updating User and their core details
 
-
+Functions:
+- getUser()
+- getAllUsers()
+- updateUser()
+- createUser()
 
 * ------------------------- programService.ts -------------------------*
+Overall Program Management functionality
 
-
+Functions:
+- assignProgram()
+- getCurrentProgram()
+- updateProgram()
+- isProgramCompleted()
+- updateExerciseOrder()
 
 * ------------------------- userexerciseService.ts ------------------------- *
+Manages the user to exercise interactions
 
+Functions:
+- completedExercise()
+- skipExercise()
 
 * ------------------------- milestoneService.ts ------------------------- *
+Handles goals and achievements for the user
+
+Interface:
+- Goal
+
+Goal Functions:
+- assignGoalsToUser()
+- updateGoalLockStatus()
+- getUserGoals()
+
+Achievement Functions:
+- initializeUserAchievements()
+- checkAchievements()
+- getUserAchievements()
 
 
 * ------------------------- statService.ts ------------------------- *
+(Might need cleaning or deleting) Handles/updates statistics and streaks
+(I might have repeated functions here at the moment so sab will remove soon)
+(Sab wil have to refactor this)
 
-
-
-* ------------------------- goalService.ts ------------------------- *
-
-
-
-* ------------------------- achieveService.ts ------------------------- *
-
-
+Functions:
+- getUserStats()
+- updateUserStats() --> Updates stats after exercise
+- resetDailyProgress() --> Midnight reset (Might delete or not be async function)
+- resetWeeklyProgress() --> Sunday Midnight Resets (Might delete or not be asynch function)
+- checkAndResetProgress() --> So that there isn't multiple resets in a day
+- getWeeklyProgress() --> Returns remaining days of week and days needed for 5 day streak
+- updateStreakOnCompletion() --> Updates the streak after program complete
+- resetDailyExercises() --> Resets exercises for next day
+- hasCompletedToday() -> Completed program today (Might delete or not be asynch function)
 
 * ------------------------- helpers.ts ------------------------- *
+(Might need cleaning or deleting) Helper functions - that might not be necessary
+(They might not even be used) - don't worry about this file
 
+Functions:
+- getWeekStartDate()
+- calculateStreak()
+- calculateWeeklyStreak()
 
+// -------------------------------- // OTHER S E R V I C E S // -------------------------------- //
+GENERAL FUNCTIONS THAT HAVE DIFFERENT PURPOSES THROUGHOUT THE APP
+
+* ------------------------- goalService.ts ------------------------- *
+Global Goal Library/Collection Management
+
+Interface:
+- Goal
+
+Functions:
+- getAllGoalsFromLibrary()
+- getGoal()
+- sortedGoalsByMonth --> Not async function
+
+* ------------------------- achieveService.ts ------------------------- *
+Global Achievement Library/Collection Management
+
+Interfaces:
+- BaseAchievement
+- DistanceAchievement
+- WeightAchievement
+- TimeAchievement
+
+export type Achievement = DistanceAchievement | WeightAchievement | TimeAchievement;
+
+Functions:
+- isDistanceAchievement()
+- isWeightAchievement()
+- isTimeAchievement()
+- convertToAchievement() --> Switch function that determines which achievement
+- getAllAchievementsFromLibrary()
+- getAchievement()
+- getAchievementsByType()
 
 * ------------------------- therapistService.ts ------------------------- *
+Manages the Therapist initialization (don't worry about this)
 
+Functions:
+- getTherapist()
+- assignPatientToTherapist() --> Not working for some reason
+- getPatientsForTherapist()
 
 
 * ------------------------- exerciseService.ts ------------------------- *
+Global Exercise Library/Collection Management
+
+Functions:
+- getAllExercisesFromLibrary()
+- getExercise()
+- getExercisesByType()
+- formatExerciseRequirements()

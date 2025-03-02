@@ -101,13 +101,3 @@ export async function createUser(
         throw error;
     }
 }
-
-export async function deleteUser(userId: string): Promise<void> {
-    try {
-        const userRef = doc(db, "users", userId);
-        await deleteDoc(userRef);
-    } catch (error) {
-        console.error(`Error deleting user ${userId}:`, error);
-        throw error;
-    }
-}

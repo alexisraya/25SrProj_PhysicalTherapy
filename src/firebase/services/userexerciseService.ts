@@ -35,7 +35,6 @@ export async function completeExercise(
         const exercise = program.exercises.find(ex => ex.exerciseId === exerciseId);
         if (!exercise || exercise.completed) return;
 
-        // Update exercise completion status
         const updatedExercises = program.exercises.map(ex =>
             ex.exerciseId === exerciseId
                 ? {
