@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { typography } from "$lib/design-system";
     import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import DraggableIcon from '$lib/assets/iconography/DraggableIcon.svg';
@@ -12,8 +13,15 @@
     export let exerciseName: string;
     export let exerciseSet: string = null;
     export let exerciseEquipment: string = null;
+    export let exerciseId: string;
+
+    const onClick = () => {
+        if(!editMode){
+            goto(`/your-program/${exerciseId}`)
+        }
+    }
 </script>
-<div class="exercise-container">
+<button class="exercise-container" on:click={onClick}>
     <div class="exercise-container--left">
         <div class="exercise-container--name">
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">
@@ -51,7 +59,7 @@
             <img src={DraggableIcon} alt="draggable dots" />
          {/if}
     </div>
-</div>
+</button>
 
 <style>
     p {
@@ -59,12 +67,14 @@
     }
     .exercise-container {
         background-color: var(--color-blue-50);
+        border: 0;
         border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 12px;
         width: 326px;
+        cursor: pointer;
     }
     .exercise-container--left {
         display: flex;
@@ -76,6 +86,7 @@
     .exercise-container--name {
         display: flex;
         column-gap: 4px;
+        align-items: center;
     }
     .tags-container {
         display: flex;

@@ -1,20 +1,32 @@
-<script>
+<script lang="ts">
     import { typography } from "$lib/design-system/typography";
     import Editicon from '$lib/assets/iconography/EditIcon.svg';
     import DoneIcon from '$lib/assets/iconography/DoneIcon.svg';
     
     // Props for the exercise information
-    export let exerciseName = "Long Sitting Quad Set";
-    export let sets = 3;
-    export let reps = 10;
-    export let weight = 3;
-    export let equipment = "Kettle Bell";
+    export let exerciseName: string | null = null;
+    export let sets: number | null = null;
+    export let reps: number | null = null;
+    export let weight: number | null = null;
+    export let time: number | null = null;
+    export let steps: number | null = null;
+    export let equipment: string | null = null;
     
     // State variables
     let isEditing = false;
     let editedSets = sets;
     let editedReps = reps;
     let editedWeight = weight;
+    let editedTime = time;
+    let editedSteps = steps;
+
+    console.log("Weight");
+    console.log(weight);
+    console.log("Time");
+    console.log(time);
+    console.log("sets");
+    console.log(sets);
+    console.log(editedSets);
     
     // Toggle edit mode
     function toggleEdit() {
@@ -23,11 +35,15 @@
             sets = editedSets;
             reps = editedReps;
             weight = editedWeight;
+            time = editedTime;
+            steps = editedSteps;
         } else {
             // Reset the edited values to current values
             editedSets = sets;
             editedReps = reps;
             editedWeight = weight;
+            editedTime = time
+            editedSteps = steps;
         }
         
         isEditing = !isEditing;
@@ -75,17 +91,45 @@
                 <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">reps</span>
             </div>
             <div class="line"></div>
-            <div class="edit-field">
-                <input 
-                    type="number" 
-                    bind:value={editedWeight} 
-                    class="edit-input"
-                    on:keypress={handleKeyPress}
-                    min="0"
-                />
-                <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">lbs</span>
-            </div>
-            <div class="line"></div>
+            {#if weight && weight != 0}
+                <div class="edit-field">
+                    <input 
+                        type="number" 
+                        bind:value={editedWeight} 
+                        class="edit-input"
+                        on:keypress={handleKeyPress}
+                        min="0"
+                    />
+                    <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">lbs</span>
+                </div>
+                <div class="line"></div>
+            {/if}
+            {#if time && time != 0}
+                <div class="edit-field">
+                    <input 
+                        type="number" 
+                        bind:value={editedTime} 
+                        class="edit-input"
+                        on:keypress={handleKeyPress}
+                        min="0"
+                    />
+                    <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">secs</span>
+                </div>
+                <div class="line"></div>
+            {/if}
+            {#if steps && steps != 0}
+                <div class="edit-field">
+                    <input 
+                        type="number" 
+                        bind:value={editedSteps} 
+                        class="edit-input"
+                        on:keypress={handleKeyPress}
+                        min="0"
+                    />
+                    <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">steps</span>
+                </div>
+                <div class="line"></div>
+            {/if}
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
         {:else}
             <!-- Display view -->
@@ -93,8 +137,18 @@
             <div class="line"></div>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{reps} reps</p>
             <div class="line"></div>
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{weight}lbs</p>
-            <div class="line"></div>
+            {#if weight && weight != 0}
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{weight}lbs</p>
+                <div class="line"></div>
+            {/if}
+            {#if time && time != 0}
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{time} secs</p>
+                <div class="line"></div>
+            {/if}
+            {#if steps && steps != 0}
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{steps} steps</p>
+                <div class="line"></div>
+            {/if}
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
         {/if}
     </div>
