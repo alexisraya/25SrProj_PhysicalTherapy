@@ -1,7 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { auth, db } from '$lib/helpers/firebase';
+    import { authStore } from '$stores/authStore';
     import { doc, getDoc } from 'firebase/firestore';
+    import type { User } from '$firebase/types/userType'
+    import { checkAndResetProgress, getUserStats, getWeeklyProgress } from '$firebase/services/statService';
+    import { getCurrentProgram } from '$firebase/services/programService';
+
     import { goto } from '$app/navigation';
     import { typography } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
@@ -9,11 +14,19 @@
     import homeBackgroundLarge from '$lib/assets/background-images/home-background-large.svg';
     import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
     import Chart from '$lib/design-system/components/Chart.svelte';
+    import UserExerciseView from '$lib/design-system/components/UserExerciseView.svelte';
 
     let user = null;
     let userData = null;
+    let program = null;
+    let stats = null;
+    let weeklyProgress = null
+    let loading = true;
 
     onMount(async () => {
+        if ($authStore.currentUser) {
+            await checkAndResetProgress($authStore.currentUser.uid);
+        }
         auth.onAuthStateChanged(async (authUser) => {
         if (authUser) {
             user = authUser;
@@ -30,6 +43,44 @@
         }
         });
     });
+
+    /* Sab Commented this out for now  */
+
+    // onMount(() => {
+    //     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+    //         if (authUser) {
+    //             try {
+    //                 user = authUser;
+    //                 await checkAndResetProgress(user.uid);
+
+    //                 const userDoc = await getDoc(doc(db, 'users', user.uid));
+    //                 if (userDoc.exists()) {
+    //                     userData = userDoc.data();
+    //                     if (userData.isTherapist) {
+    //                         goto('/therapist-dashboard');
+    //                         return;
+    //                     }
+    //                     [program, stats, weeklyProgress] = await Promise.all([
+    //                         getCurrentProgram(user.uid),
+    //                         getUserStats(user.uid),
+    //                         getWeeklyProgress(user.uid)
+    //                     ]);
+    //                     console.log("User data loaded:", userData);
+    //                 } else {
+    //                     console.error("User document not found");
+    //                 }
+    //             } catch (err) {
+    //                 console.error("Error loading dashboard data:", err);
+    //             } finally {
+    //                 loading = false;
+    //             }
+    //         } else {
+    //             goto('/login');
+    //         }
+    //     });
+        
+    //     return unsubscribe;
+    // });
 </script>
 
 {#if user && userData}

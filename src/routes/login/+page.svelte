@@ -1,41 +1,35 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-	import { authHandlers, authStore } from "../../stores/authStore";
+    import { authHandlers, authStore } from "../../stores/authStore";
 
-	let register = false;
-	let firstName = '';
-    let lastName = '';
-	let email = '';
-	let password = '';
-	let confirmPassword = '';
+    let register = false;
+    let firstName = "";
+    let lastName = "";
+    let email = "";
+    let password = "";
+    let confirmPassword = "";
 
-	async function handleSubmit() {
-		if (!email || !password || (register && !confirmPassword)) {
-			return;
-		}
+    async function handleSubmit() {
+        if (!email || !password || (register && !confirmPassword)) {
+            return;
+        }
 
-		if (register && password === confirmPassword) {
-			try {
-				await authHandlers.signup(email, password, firstName, lastName);
-				console.log("SIGNUP SUCESSFUL");
-				goto('/therapist-dashboard');
-			} catch (err) {
-				console.log(err);
-			}
-		} else {
-			try {
-				await authHandlers.login(email, password);
-                console.log("SUCCESS");
-                goto('/therapist-dashboard');
-			} catch (err) {
+        if (register && password === confirmPassword) {
+            try {
+                await authHandlers.signup(email, password, firstName, lastName);
+                console.log("Signup successful.");
+            } catch (err) {
+                console.error("Signup failed:", err);
+            }
+        } else {
+            try {
+                await authHandlers.login(email, password);
+                console.log("Login successful.");
+            } catch (err) {
                 console.error("Login failed:", err);
-            	alert("Login failed. Please check if your email and password are correct.");
-			}
-		}
-	}
-    if ($authStore.currentUser) {
-        console.log("current user is in");
-        goto('/therapist-dashboard');
+                alert("Login failed. Please check your credentials.");
+            }
+        }
     }
 </script>
 
