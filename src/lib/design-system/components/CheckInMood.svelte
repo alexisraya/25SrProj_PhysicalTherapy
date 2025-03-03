@@ -40,7 +40,6 @@
     .mood-container--icon {
         width: 105px;
         margin-bottom: 16px;
-        min-height: fit-content;
     }
     .mood-rating-container {
         display: flex;
