@@ -3,7 +3,7 @@
     import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import DraggableIcon from '$lib/assets/iconography/DraggableIcon.svg';
     import CompletedCheckmark from "./CompletedCheckmark.svelte";
-    import Checkbox from "../Checkbox.svelte";
+    import Checkbox from "./Checkbox.svelte";
 
     export let orderable = false;
     export let editMode = false;
