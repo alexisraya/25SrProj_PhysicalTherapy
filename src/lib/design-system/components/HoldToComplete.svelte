@@ -50,7 +50,16 @@
         radius = 0;
 
         growInterval = setInterval(() => {
-            radius += 20; // Adjust growth speed
+            // Use an easing function to create acceleration
+            const progress = 1 - (MAX_RADIUS - radius) / MAX_RADIUS; // Ranges from 0 to 1
+            // Cubic ease-in function: starts slow, speeds up dramatically
+            const easedProgress = progress * progress * progress;
+            // Calculate dynamic growth rate with more controlled acceleration
+            const baseGrowthRate = 5; // Start with a very low base growth rate
+            const accelerationFactor = 15; // Control the maximum acceleration
+            // Calculate dynamic growth rate
+            const growthRate = baseGrowthRate * (1 + easedProgress * accelerationFactor);
+            radius += growthRate; // Adjust growth speed
             if (radius >= MAX_RADIUS && growInterval) {
                 clearInterval(growInterval); // Stop animation at max size
                 hasFilledScreen = true;
@@ -118,6 +127,9 @@
     p {
         margin: 0;
     }
+    img {
+        transition: 0.25s;
+    }
     .hold_to_complete_container {
         padding-right: 24px;
         display: flex;
@@ -146,5 +158,20 @@
         background-color: transparent;
         border: none;
         cursor: pointer;
+    }
+    .hold_to_complete_container img {
+        position: relative;
+        transition: transform 0.25s ease-in;
+    }
+    .hold_to_complete_container:hover img {
+        animation: slide-arrow 0.75s infinite alternate;
+    }
+    @keyframes slide-arrow {
+        from {
+            transform: translateX(0px);
+        }
+        to {
+            transform: translateX(4px);
+        }
     }
 </style>
