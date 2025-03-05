@@ -59,7 +59,7 @@
         /* static */
         /* background: var(--color-blue-50); */
         /* animated light */
-        background: linear-gradient(-45deg, var(--color-grey-200), var(--color-blue-50), var(--color-grey-200), var(--color-blue-50));
+        background: linear-gradient(-90deg, var(--color-blue-50), var(--color-grey-100), var(--color-blue-50), var(--color-grey-100));
         /* animated dark */
         /* background: linear-gradient(-45deg, var(--color-grey-400), var(--color-blue-900), var(--color-grey-400), var(--color-blue-900)); */
         background-size: 400% 400%;
