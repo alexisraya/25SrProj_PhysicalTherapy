@@ -236,9 +236,10 @@
             <img class="back_button" src={LeftArrow} />
             <ProgressBar totalExercises={program.exercises.length} completedExercises={completedExercises} />
             </div>
-            <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" />
+            <!-- <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" /> -->
             <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
             <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
+            <ExerciseModel modelPath="/models/SmallTest2.glb" />
             <ExerciseInfoBlock exerciseName={currentExercise.exerciseName} sets={currentExercise.adjustedSets} reps={currentExercise.adjustedReps} time={currentExercise.adjustedSeconds} steps={currentExercise.adjustedSteps} weight={currentExercise.adjustedWeight} equipment={currentExercise.equipment}/>
         </div>
         <div class="exercise_container-bottom">
