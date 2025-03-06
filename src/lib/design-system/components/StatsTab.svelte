@@ -86,6 +86,7 @@
         width: 100%;
     }
     .recovery-metrics {
+        padding-top: 50px;
         min-height: 210px;
     }
     .stats {

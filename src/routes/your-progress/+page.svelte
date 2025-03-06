@@ -18,7 +18,7 @@
     {#if activeTab === 0}
         <StatsTab />
     {:else if activeTab === 1}
-      <div>
+      <div class="milestones-header">
         <h2>Milestones</h2>
         <!-- Your progress content here -->
         <p>This is the progress tracking content</p>
@@ -48,5 +48,8 @@
     .page-container h3 {
         position: relative;
         z-index: 1;
+    }
+    .milestones-header {
+      padding-top: 35px;
     }
 </style>
