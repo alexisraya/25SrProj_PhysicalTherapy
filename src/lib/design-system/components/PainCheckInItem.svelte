@@ -27,5 +27,16 @@
         border-radius: 4px;
         width: 68px;
         height: 75px;
+        transition: 0.25s;
+    }
+
+    .check-in-item-container:active {
+        transform: scale(0.9);
+    }
+
+    .check-in-item-container:active p{
+        transform: scale(1.1);
+        transition: 0.25s;
+
     }
 </style>
