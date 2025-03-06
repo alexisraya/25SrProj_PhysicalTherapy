@@ -20,7 +20,7 @@
     .program-stat-container {
         display: flex;
         column-gap: 24px;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         width: 155px;
         height: 98px;
