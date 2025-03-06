@@ -2,7 +2,7 @@
     import { typography } from '$lib/design-system';
 
     export let statTitle: string;
-    export let stat: string;
+    export let stat: number;
 </script>
 
 <div class="program-stat-container">
