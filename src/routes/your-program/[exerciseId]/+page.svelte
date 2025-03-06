@@ -182,7 +182,7 @@
                 goto(`/your-program/${nextExercise.exerciseId}`);
                 await tick(); // Ensures UI updates
             } else {
-                goto("/exploration/firebase-test/program-complete");
+                goto("/your-progress/interstital");
             }
         } catch (err) {
             console.error("Error navigating to next exercise:", err);
