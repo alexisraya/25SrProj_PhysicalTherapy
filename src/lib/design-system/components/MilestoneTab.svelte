@@ -29,7 +29,7 @@
 <div class="milestone-body">
     <div class="milestone-body--top">
         <Achievement type="milestones" achievementDescription="You’ve lifted the weight of a polar bear!"/>
-        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} />
+        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} /> //TODO: Alexis Make dynamic
     </div>
     <div class="milestone-body--bottom">
         <div class="goals-section">

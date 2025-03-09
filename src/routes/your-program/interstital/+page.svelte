@@ -6,7 +6,7 @@
 
     onMount(() => {
         setTimeout(() => {
-            goto("/your-progress");
+            goto("/your-program/summary");
         }, 1500);
     });
 </script>

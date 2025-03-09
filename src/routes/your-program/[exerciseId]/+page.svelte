@@ -182,7 +182,7 @@
                 goto(`/your-program/${nextExercise.exerciseId}`);
                 await tick(); // Ensures UI updates
             } else {
-                goto("/your-progress/interstital");
+                goto("/your-program/interstital");
             }
         } catch (err) {
             console.error("Error navigating to next exercise:", err);

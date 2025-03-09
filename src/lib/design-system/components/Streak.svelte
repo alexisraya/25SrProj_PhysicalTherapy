@@ -5,10 +5,11 @@
     export let streakType: string; // "home", "milestones", or "program"
     export let streakTotalDays: number;
     export let streakDaysCompleted: number;
+    export let overallStreak: number = 4;
     const remainingDays = streakTotalDays - streakDaysCompleted;
 </script>
 
-<div class="streak-display-container">
+<div class="streak-display-container {streakType}">
     <div class="streak-title">
         {#if streakType=="home"}
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Weekly program streak</p>
@@ -16,11 +17,11 @@
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Streak</p>
         {/if}
         <div class="streak-count">
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">4</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">{overallStreak}</p>
             <img class="streak-icon" src={StreakComplete} alt="lightning"/>
         </div>
     </div>
-    <div class="streaks-container {streakType}">
+    <div class="streaks-container">
         {#each Array(streakDaysCompleted).fill(0) as _, i}
             <div class="streak-container">
                 <div class="streak completed {streakType!=="home" ? 'tall' : ''}"></div>
