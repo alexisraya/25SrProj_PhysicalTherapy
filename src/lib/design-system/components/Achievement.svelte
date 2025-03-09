@@ -18,7 +18,8 @@
         <img src={RightArrow} alt="rigth arrow" />
     </div>
     <div class="achievement-body">
-        <div class="achievement-image-container" >
+        <!-- TODO: ALEXIS make dynamic -->
+        <div class="achievement-image-container" > 
             <Icon name="polar-bear" size="small"/>
         </div>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{achievementDescription}</p>
@@ -39,7 +40,7 @@
         border-radius: 4px;
         border: 1px solid var(--color-yellow-600);
         background: var(--color-yellow-100);
-        padding: 16px 12px 12px 12px;
+        padding: 12px;
         cursor: pointer;
         z-index: 5;
     }

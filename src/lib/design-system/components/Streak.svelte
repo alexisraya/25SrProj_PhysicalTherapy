@@ -1,6 +1,6 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
-    import StreakComplete from "$lib/assets/iconography/Streak.svg";
+    import StreakComplete from "$lib/assets/iconography/StreakCompleted.svg";
 
     export let streakType: string; // "home", "milestones", or "program"
     export let streakTotalDays: number;

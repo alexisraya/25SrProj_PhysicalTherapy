@@ -3,6 +3,7 @@
     import StatsTab from '$lib/design-system/components/StatsTab.svelte';
     import Tabs from '$lib/design-system/components/Tabs.svelte';
     import ProgressBlob from '$lib/assets/background-images/ProgressBlob.svg';
+    import MilestoneTab from '$lib/design-system/components/MilestoneTab.svelte';
     
     let activeTab = 0;
     let tabs = [
@@ -19,10 +20,7 @@
         <StatsTab />
     {:else if activeTab === 1}
       <div class="milestones-header">
-        <h2>Milestones</h2>
-        <!-- Your progress content here -->
-        <p>This is the progress tracking content</p>
-        <!-- Add your progress tracking components here -->
+        <MilestoneTab />
       </div>
     {/if}
   </Tabs>
