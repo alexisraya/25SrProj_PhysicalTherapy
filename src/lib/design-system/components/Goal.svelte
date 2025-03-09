@@ -5,7 +5,7 @@
   export let goalName: string;
   export let isLocked: boolean = false;
   export let hasExtraInfo: boolean = false;
-  export let extraInfo: string = "Time";
+  export let extraInfo: string;
 </script>
 
 <script context="module">
@@ -26,7 +26,7 @@
     {/if}
   </div>
   <p class="goal-name" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{goalName}</p>
-  {#if hasExtraInfo}
+  {#if extraInfo}
     <p class="goal-extra" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic">{extraInfo}</p>
   {/if}
 </div>
@@ -41,6 +41,7 @@
     align-items: center;
     width: 92px;
     align-self: stretch;
+    text-align: center;
   }
 
   .goal-icon {
