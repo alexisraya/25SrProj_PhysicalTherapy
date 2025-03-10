@@ -56,7 +56,6 @@
         flex-direction: column;
         row-gap: 12px;
         padding: 12px;
-        width: 100%;
     }
     .streak-title {
         display: flex;
@@ -68,6 +67,9 @@
         column-gap: 2px;
         align-items: center;
         justify-content: center;
+    }
+    .home {
+        width: 100%;
     }
     .program {
         background-color: var(--color-purple-100);
