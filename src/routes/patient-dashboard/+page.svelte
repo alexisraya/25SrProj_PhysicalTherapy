@@ -10,39 +10,27 @@
     import { goto } from '$app/navigation';
     import { typography } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
-    import Streak from '$lib/assets/iconography/Streak.svg';
+    // import Streak from '$lib/assets/iconography/Streak.svg';
     import homeBackgroundLarge from '$lib/assets/background-images/home-background-large.svg';
     import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
     import Chart from '$lib/design-system/components/Chart.svelte';
     import UserExerciseView from '$lib/design-system/components/UserExerciseView.svelte';
+    import Streak from '$lib/design-system/components/Streak.svelte';
 
-    let user = null;
-    let userData = null;
-    let program = null;
-    let stats = null;
-    let weeklyProgress = null
-    let loading = true;
+    // let user = null;
+    // let userData = null;
 
-    onMount(async () => {
-        if ($authStore.currentUser) {
-            await checkAndResetProgress($authStore.currentUser.uid);
-        }
-        auth.onAuthStateChanged(async (authUser) => {
-        if (authUser) {
-            user = authUser;
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
-            if (userDoc.exists()) {
-                userData = userDoc.data();
-                if (userData.isTherapist) {
-                    goto('/therapist-dashboard');
-                }
-                console.log(userData.exercises);
-            }
-        } else {
-            goto('/login');
-        }
-        });
-    });
+    export let data;
+
+    $: program = data.program;
+    $: stats = data.stats;
+    $: weeklyProgress = data.weeklyProgress;
+    $: userData = data.userData;
+    $: error = data.error;
+    
+    // Determine if we're in a loading state
+    $: loading = !error && !program && !stats && !weeklyProgress;
+
 
     /* Sab Commented this out for now  */
 
@@ -83,46 +71,19 @@
     // });
 </script>
 
-{#if user && userData}
+{#if program && stats && weeklyProgress}
 <div class="header-container">
     <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; padding-bottom: 3px;">Start your program for today</p>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">Start your program for today</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
     </div>
 </div>
 <div class="body-container">
-    <div class="program-streak-container">
-        <div class="program-streak-container--title">
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Weekly program streak</p>
-            <span class="program-title--streak"><p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">4</p> <img src={Streak} /> </span>
-        </div>
-        <div class="program-streak-container--streaks">
-            <div class="streak-item">
-                <div class="streak-item--rect day-one"></div>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic">Day 1</p>
-            </div>
-            <div class="streak-item">
-                <div class="streak-item--rect"></div>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Day 2</p>
-            </div>
-            <div class="streak-item">
-                <div class="streak-item--rect"></div>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Day 3</p>
-            </div>
-            <div class="streak-item">
-                <div class="streak-item--rect"></div>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Day 4</p>
-            </div>
-            <div class="streak-item">
-                <div class="streak-item--rect"></div>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Day 5</p>
-            </div>
-        </div>
-    </div>
+    <Streak streakType="home" streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak} streakDaysCompleted={weeklyProgress.daysCompleted} overallStreak={stats?.completedPrograms}/>
     <div class="break"/>
     <div class="metrics-container">
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
@@ -130,7 +91,7 @@
     </div>
 </div>
 {:else}
-<p>Loading...</p>
+    <p>Loading...</p>
 {/if}
 
 <style>
@@ -148,10 +109,6 @@
         background-color: var(--color-blue-50);
     }
     .background-wave {
-        /* position: absolute;
-        top: 0;
-        transform: translateY(-50%);
-        z-index: -1; */
         position: absolute;
         top: -75%;
         left: 50%;
@@ -160,15 +117,8 @@
         width: 562px;
     }
     .header-container {
-        /* width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center; */
         position: relative;
         width: 100%;
-        /* height: 400px; */
         overflow-x: hidden;
         display: flex;
         flex-direction: column;
@@ -205,8 +155,6 @@
     }
     .program-streak-container--streaks {
         width: 100%;
-        /* display: flex;
-        justify-content: space-between; */
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         column-gap: 2px;

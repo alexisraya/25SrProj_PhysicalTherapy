@@ -56,6 +56,7 @@
         flex-direction: column;
         row-gap: 12px;
         padding: 12px;
+        width: 100%;
     }
     .streak-title {
         display: flex;
