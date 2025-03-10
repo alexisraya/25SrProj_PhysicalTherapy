@@ -17,7 +17,17 @@ export const load: PageLoad = async ({ depends }) => {
     if (browser) {
         // Wait for authentication to be ready before proceeding
         return new Promise((resolve) => {
-            const unsubscribe = authStore.subscribe(auth => {
+            let unsubscribe: (() => void) | undefined;
+            
+            // Define a safe cleanup function that can be called anytime
+            const cleanup = () => {
+                if (unsubscribe) {
+                    unsubscribe();
+                }
+            };
+            
+            // Now initialize unsubscribe
+            unsubscribe = authStore.subscribe(auth => {
                 // Check if auth is still loading
                 if (auth.isLoading) {
                     // Don't do anything yet, wait for the next update
@@ -25,7 +35,7 @@ export const load: PageLoad = async ({ depends }) => {
                 }
                 
                 // Auth is no longer loading, we can unsubscribe
-                unsubscribe();
+                cleanup();
                 
                 // Check if user is authenticated
                 if (!auth.currentUser) {
