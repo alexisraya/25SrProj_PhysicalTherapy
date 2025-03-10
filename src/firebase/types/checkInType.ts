@@ -1,7 +1,9 @@
+import type { FieldValue } from "firebase/firestore";
+
 export interface CheckIn {
     id?: string;
     userId: string;
-    timestamp: Date;
+    timestamp: Date | FieldValue;
     date: string;
     painLevel: number;
     moodLevel: number;

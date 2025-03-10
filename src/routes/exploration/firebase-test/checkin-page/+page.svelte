@@ -1,239 +1,326 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { authStore } from "$stores/authStore";
-    import { checkInStore } from '$stores/checkInStore';
+    import { checkInStore, checkInValid } from '$stores/checkInStore';
     import CheckInPain from '$lib/design-system/components/CheckInPain.svelte';
     import CheckInMood from '$lib/design-system/components/CheckInMood.svelte';
-    import Chart from '$lib/design-system/components/Chart.svelte';
     import { get } from 'svelte/store';
-    import { getMoodDescription } from '$firebase/types/checkInType';
+    import { getPainDescription, getMoodDescription } from '$firebase/types/checkInType';
 
-    let step = 1;
+    let currentStep = 1;
     let isSubmitting = false;
-    let errorMessage = '';
+    let errorMsg = '';
+    let showSuccess = false;
 
-    let userId: string | null = null;
-    let hasCompletedToday = false;
+    // Check if user has already completed check-in for today
+    let checkInCompleted = false;
 
     onMount(() => {
-        console.log("Check-in page mounted");
-
         const unsubAuth = authStore.subscribe(state => {
-            if (state.currentUser) {
-                userId = state.currentUser.uid;
-                console.log("Auth user ID:", userId);
-                checkIfAlreadyCompleted();
+            if (state.userId) {
+                loadCheckInStatus();
             }
         });
 
-        return () => unsubAuth();
+        return unsubAuth;
     });
 
-    async function checkIfAlreadyCompleted() {
-        if (!userId) return;
+    async function loadCheckInStatus() {
         try {
-            console.log("Checking if check-in is completed for user:", userId);
             await checkInStore.checkTodayStatus();
-            hasCompletedToday = get(checkInStore).todayCompleted;
-            console.log("Check-in completed today:", hasCompletedToday);
+            checkInCompleted = get(checkInStore).todayCompleted;
+            
+            if (checkInCompleted) {
+                // Load stats for the week if check-in is already completed
+                await checkInStore.loadStats('week');
+            }
         } catch (err) {
             console.error("Error checking check-in status:", err);
-            errorMessage = err instanceof Error ? err.message : "Unknown error";
+            errorMsg = err instanceof Error ? err.message : "Failed to load check-in status";
         }
     }
 
-    function handlePainSelection(event: CustomEvent<number>) {
-        const painValue = event.detail;
-        console.log("Pain level selected:", painValue);
-        checkInStore.setPainLevel(painValue);
-    }
-
-    function handleMoodSelection(event: CustomEvent<number>) {
-        const moodValue = event.detail;
-        console.log("Mood selected:", moodValue);
-        checkInStore.setMoodLevel(moodValue);
-    }
-
-    function nextStep() {
-        if (step < 3) step++;
-    }
-
-    function prevStep() {
-        if (step > 1) step--;
-    }
-
-    async function submitCheckIn() {
-        if (!userId) {
-            errorMessage = "Not logged in";
+    async function handleSubmit() {
+        if (!get(checkInValid)) {
+            errorMsg = "Please complete both pain and mood selections";
             return;
         }
-
-        const storeState = get(checkInStore);
-        if (storeState.currentCheckIn.painLevel === null || storeState.currentCheckIn.moodLevel === null) {
-            errorMessage = "Please complete all selections";
-            return;
-        }
-
-        console.log("Submitting check-in:", storeState.currentCheckIn);
 
         isSubmitting = true;
+        errorMsg = '';
 
         try {
             const success = await checkInStore.submitCheckIn();
             if (success) {
-                console.log("Check-in submitted successfully!");
-                hasCompletedToday = true;
+                showSuccess = true;
+                checkInCompleted = true;
+                // Load stats after successful submission
+                await checkInStore.loadStats('week');
             } else {
-                errorMessage = "Failed to submit check-in";
+                errorMsg = "Failed to submit check-in";
             }
         } catch (err) {
             console.error("Error submitting check-in:", err);
-            errorMessage = err instanceof Error ? err.message : "Unknown error";
+            errorMsg = err instanceof Error ? err.message : "An error occurred";
         } finally {
             isSubmitting = false;
         }
     }
+
+    function resetForm() {
+        checkInStore.resetForm();
+        errorMsg = '';
+        showSuccess = false;
+        checkInCompleted = false;
+    }
 </script>
 
-<div class="checkin-container">
-    <h1>Daily Check-in</h1>
+<div class="test-container">
+    <h1>Check-in Testing Page</h1>
+    <p class="subtitle">Testing Firebase integration with Check-in components</p>
 
-    {#if errorMessage}
-        <div class="error-message">
-            <p>{errorMessage}</p>
-            <button on:click={() => errorMessage = ''}>Dismiss</button>
+    {#if errorMsg}
+        <div class="error-box">
+            <p>{errorMsg}</p>
+            <button on:click={() => errorMsg = ''}>Dismiss</button>
         </div>
     {/if}
 
-    {#if hasCompletedToday}
-        <div class="completed-message">
-            <h2>You've completed your check-in for today!</h2>
-            <p>Thanks for keeping track of your progress.</p>
-
-            <div class="chart-container">
-                <h3>Your Progress This Week</h3>
-                <Chart />
-            </div>
-        </div>
-    {:else}
-        <div class="step-container">
-            <div class="step-indicators">
-                <div class="step {step >= 1 ? 'active' : ''}">1</div>
-                <div class="step {step >= 2 ? 'active' : ''}">2</div>
-                <div class="step {step >= 3 ? 'active' : ''}">3</div>
-            </div>
-
-            {#if step === 1}
-                <div class="step-content">
-                    <h2>How would you rate your pain level today?</h2>
-                    <CheckInPain on:select={handlePainSelection} />
-
-                    <div class="button-container">
-                        <button on:click={nextStep}>Next</button>
-                    </div>
-                </div>
-            {:else if step === 2}
-                <div class="step-content">
-                    <h2>How are you feeling today?</h2>
-                    <CheckInMood on:select={handleMoodSelection} />
-
-                    <div class="button-container">
-                        <button on:click={prevStep}>Back</button>
-                        <button on:click={nextStep}>Next</button>
-                    </div>
-                </div>
-            {:else if step === 3}
-                <div class="step-content">
-                    <h2>Confirm your check-in</h2>
-
-                    <p>Please review your answers before submitting:</p>
-                    <div class="summary">
-                        {#if get(checkInStore).currentCheckIn.painLevel !== null}
-                            <p><strong>Pain Level:</strong> {get(checkInStore).currentCheckIn.painLevel}</p>
-                        {:else}
-                            <p><strong>Pain Level:</strong> Not selected</p>
-                        {/if}
-
-                        {#if get(checkInStore).currentCheckIn.moodLevel !== null}
-                            <p><strong>Mood:</strong> {getMoodDescription(get(checkInStore).currentCheckIn.moodLevel)}</p>
-                        {:else}
-                            <p><strong>Mood:</strong> Not selected</p>
-                        {/if}
-                    </div>
-
-                    <div class="button-container">
-                        <button on:click={prevStep}>Back</button>
-                        <button on:click={submitCheckIn} disabled={isSubmitting}>
-                            {isSubmitting ? 'Submitting...' : 'Submit'}
-                        </button>
-                    </div>
+    {#if checkInCompleted}
+        <div class="completed-box">
+            <h2>Check-in completed for today</h2>
+            <p>You've already submitted your daily check-in</p>
+            
+            {#if get(checkInStore).stats}
+                <div class="stats-box">
+                    <h3>Your Recent Stats</h3>
+                    <p><strong>Average Pain Level:</strong> {get(checkInStore).stats?.averagePainLevel?.toFixed(1) || '0.0'}</p>
+                    <p><strong>Average Mood Level:</strong> {get(checkInStore).stats?.averageMoodLevel?.toFixed(1) || '0.0'} 
+                       ({getMoodDescription(Math.round(get(checkInStore).stats?.averageMoodLevel || 0))})</p>
+                    <p><strong>Check-ins Recorded:</strong> {get(checkInStore).stats?.checkIns?.length || 0}</p>
                 </div>
             {/if}
+            
+            <button on:click={resetForm}>Reset (Testing Only)</button>
+        </div>
+    {:else if showSuccess}
+        <div class="success-box">
+            <h2>Check-in Submitted Successfully!</h2>
+            <p>Thank you for tracking your progress today.</p>
+            <button on:click={resetForm}>Reset (Testing Only)</button>
+        </div>
+    {:else}
+        <div class="check-in-form">
+            <div class="steps-container">
+                <div class="steps-header">
+                    <button class={currentStep === 1 ? 'active' : ''}
+                            on:click={() => currentStep = 1}>Pain Assessment</button>
+                    <button class={currentStep === 2 ? 'active' : ''}
+                            on:click={() => currentStep = 2}>Mood Assessment</button>
+                    <button class={currentStep === 3 ? 'active' : ''}
+                            on:click={() => currentStep = 3}>Review</button>
+                </div>
+                
+                <div class="step-content">
+                    {#if currentStep === 1}
+                        <div class="pain-step">
+                            <h2>How would you rate your knee pain level today?</h2>
+                            <p class="details">This rating will be tracked on the Progress page so you can see how you’re improving over time.</p>
+                            <CheckInPain />
+                            <div class="nav-buttons">
+                                <button on:click={() => currentStep = 2}>Next</button>
+                            </div>
+                        </div>
+                    {:else if currentStep === 2}
+                        <div class="mood-step">
+                            <h2>How are you feeling about your recovery today?</h2>
+                            <CheckInMood />
+                            <div class="nav-buttons">
+                                <button on:click={() => currentStep = 1}>Back</button>
+                                <button on:click={() => currentStep = 3}>Next</button>
+                            </div>
+                        </div>
+                    {:else if currentStep === 3}
+                        <div class="review-step">
+                            <h2>Review Your Check-in</h2>
+                            <div class="summary-box">
+                                <div class="summary-item">
+                                    <h3>Pain Level</h3>
+                                    {#if get(checkInStore).currentCheckIn.painLevel !== null}
+                                        <p class="selected-value">{get(checkInStore).currentCheckIn.painLevel}</p>
+                                        <p class="description">
+                                            {(() => {
+                                                const painLevel = get(checkInStore).currentCheckIn.painLevel;
+                                                return painLevel !== null ? getPainDescription(painLevel) : '';
+                                            })()}
+                                        </p>
+                                    {:else}
+                                        <p class="not-selected">Not selected</p>
+                                    {/if}
+                                </div>
+                                
+                                <div class="summary-item">
+                                    <h3>Mood</h3>
+                                    {#if get(checkInStore).currentCheckIn.moodLevel !== null}
+                                        <p class="selected-value">{get(checkInStore).currentCheckIn.moodLevel}</p>
+                                        <p class="description">
+                                            {(() => {
+                                                const moodLevel = get(checkInStore).currentCheckIn.moodLevel;
+                                                return moodLevel !== null ? getMoodDescription(moodLevel) : '';
+                                            })()}
+                                        </p>
+                                    {:else}
+                                        <p class="not-selected">Not selected</p>
+                                    {/if}
+                                </div>
+                            </div>
+                            
+                            <div class="nav-buttons">
+                                <button on:click={() => currentStep = 2}>Back</button>
+                                <button 
+                                    class="submit-button" 
+                                    on:click={handleSubmit} 
+                                    disabled={isSubmitting || !get(checkInValid)}>
+                                    {isSubmitting ? 'Submitting...' : 'Submit Check-in'}
+                                </button>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+            </div>
         </div>
     {/if}
 </div>
 
 <style>
-    .checkin-container {
-        max-width: 600px;
+    .test-container {
+        max-width: 800px;
         margin: 0 auto;
         padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
     }
-
-    h1, h2, h3 {
-        text-align: center;
+    
+    h1 {
+        margin-bottom: 5px;
     }
-
-    .error-message {
-        background-color: #ffebee;
-        padding: 10px;
-        border-radius: 4px;
-        margin-bottom: 20px;
+    
+    .subtitle {
+        color: #666;
+        margin-top: 0;
+        margin-bottom: 30px;
     }
-
-    .step-indicators {
+    
+    .steps-header {
         display: flex;
-        justify-content: center;
-        gap: 20px;
         margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
     }
-
-    .step {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background-color: #e0e0e0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    
+    .steps-header button {
+        background: none;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        opacity: 0.7;
     }
-
-    .step.active {
-        background-color: #76D0D6;
-        color: white;
+    
+    .steps-header button.active {
+        border-bottom: 3px solid #76D0D6;
+        opacity: 1;
+        font-weight: bold;
     }
-
-    .step-content {
-        margin-top: 20px;
-    }
-
-    .button-container {
+    
+    .nav-buttons {
         display: flex;
         justify-content: space-between;
-        margin-top: 20px;
+        margin-top: 30px;
     }
-
+    
     button {
-        padding: 8px 16px;
-        border-radius: 4px;
-        border: none;
+        padding: 10px 16px;
         background-color: #76D0D6;
         color: white;
+        border: none;
+        border-radius: 4px;
         cursor: pointer;
+        font-weight: 500;
     }
-
+    
     button:disabled {
-        opacity: 0.5;
+        opacity: 0.6;
         cursor: not-allowed;
+    }
+    
+    .error-box {
+        background-color: #ffebee;
+        border-left: 4px solid #f44336;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    
+    .completed-box, .success-box {
+        background-color: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    
+    .stats-box {
+        background-color: white;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 15px 0;
+    }
+    
+    .details {
+        color: #666;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+    
+    .summary-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .summary-item {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .summary-item h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    
+    .selected-value {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .description {
+        margin-top: 5px;
+        color: #555;
+    }
+    
+    .not-selected {
+        color: #999;
+        font-style: italic;
+    }
+    
+    .submit-button {
+        background-color: #4caf50;
+    }
+    
+    .pain-step, .mood-step, .review-step {
+        padding: 10px 0;
     }
 </style>
