@@ -70,20 +70,24 @@ Achievement Functions:
 
 
 * ------------------------- statService.ts ------------------------- *
-(Might need cleaning or deleting) Handles/updates statistics and streaks
-(I might have repeated functions here at the moment so sab will remove soon)
-(Sab wil have to refactor this)
+Handles statistics tracking, streak management, and progress resets
 
 Functions:
-- getUserStats()
-- updateUserStats() --> Updates stats after exercise
-- resetDailyProgress() --> Midnight reset (Might delete or not be async function)
-- *resetWeeklyProgress() --> Sunday Midnight Resets (Might delete or not be asynch function)
-- *checkAndResetProgress() --> So that there isn't multiple resets in a day
-- getWeeklyProgress() --> Returns remaining days of week and days needed for 5 day streak
-- *updateStreakOnCompletion() --> Updates the streak after program complete
-- resetDailyExercises() --> Resets exercises for next day
-- hasCompletedToday() -> Completed program today (Might delete or not be asynch function)
+- getUserStats() - Gets a user's stats from Firestore
+- updateUserStats() - Updates stats after completing an exercise (only affects relevant stat categories)
+- resetDailyProgress() - Resets daily exercises at midnight without affecting weekly streak
+- resetWeeklyProgress() - Processes weekly stats on Sundays (increments streak if 5+ days completed)
+- checkAndResetProgress() - Ensures resets happen only once per day, manages both daily and weekly resets
+- getWeeklyProgress() - Returns formatted weekly progress including days remaining and days needed for streak
+- updateStreakOnCompletion() - Updates streak counter when daily program is completed
+- hasCompletedToday() - Checks if user already completed their program today (prevents duplicate tracking)
+
+HOW STREAKS WORK:
+- Users need to complete exercises on 5+ days per week
+- Streak counts consecutive weeks where user met this goal
+- Streak resets to 0 only if user completes fewer than 5 days in a week
+- Within each week, days don't need to be consecutive
+- Weekly progress resets every Sunday
 
 * ------------------------- helpers.ts ------------------------- *
 (Might need cleaning or deleting) Helper functions - that might not be necessary

@@ -35,6 +35,7 @@
     onMount(async () => {
         try {
             if (!$authStore.currentUser) return;
+            
             await checkAndResetProgress($authStore.currentUser.uid);
             const exerciseId = $page.params.exerciseId;
 
@@ -66,11 +67,11 @@
             }
 
             adjustedValues = {
-                sets: currentExercise.sets || 0,
-                reps: currentExercise.reps || 0,
-                steps: currentExercise.steps || 0,
-                seconds: currentExercise.seconds || 0,
-                weight: currentExercise.weight || 0,
+                sets: currentExercise.sets ?? 0,
+                reps: currentExercise.reps ?? 0,
+                steps: currentExercise.steps ?? 0,
+                seconds: currentExercise.seconds ?? 0,
+                weight: currentExercise.weight ?? 0,
             };
         } catch (err) {
             console.error("Error loading exercise:", err);
@@ -93,6 +94,43 @@
         return currentIndex !== -1
             ? ((currentIndex + 1) / program.exercises.length) * 100
             : 0;
+    }
+
+    function getProjectedStatsIncrease() {
+        if (!stats || !currentExercise) return null;
+        
+        const result = { ...stats };
+        
+        if (currentExercise.exerciseType === 'distance') {
+            return {
+                stat: 'distance',
+                current: stats.totalDistance,
+                projected: stats.totalDistance + (adjustedValues.sets * adjustedValues.steps)
+            };
+        } 
+        else if (currentExercise.exerciseType === 'weight') {
+            return {
+                stat: 'weight',
+                current: stats.totalWeight,
+                projected: stats.totalWeight + (adjustedValues.sets * adjustedValues.reps * adjustedValues.weight)
+            };
+        }
+        else if (currentExercise.exerciseType === 'time') {
+            return {
+                stat: 'time',
+                current: stats.totalTime,
+                projected: stats.totalTime + (adjustedValues.reps * adjustedValues.seconds)
+            };
+        }
+        
+        return null;
+    }
+
+    function formatTime(seconds: number): string {
+        if (!seconds) return "0m 0s";
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}m ${secs}s`;
     }
 
     async function handleComplete() {
@@ -165,6 +203,7 @@
             const allCompleted = program.exercises.every(
                 (ex) => ex.completed || ex.skipped,
             );
+            
             if (allCompleted) {
                 goto("/exploration/firebase-test/program-complete");
                 return;
@@ -173,10 +212,7 @@
             let nextIndex = -1;
 
             for (let i = currentIndex + 1; i < program.exercises.length; i++) {
-                if (
-                    !program.exercises[i].completed &&
-                    !program.exercises[i].skipped
-                ) {
+                if (!program.exercises[i].completed && !program.exercises[i].skipped) {
                     nextIndex = i;
                     break;
                 }
@@ -184,10 +220,7 @@
 
             if (nextIndex === -1) {
                 for (let i = 0; i < currentIndex; i++) {
-                    if (
-                        !program.exercises[i].completed &&
-                        !program.exercises[i].skipped
-                    ) {
+                    if (!program.exercises[i].completed && !program.exercises[i].skipped) {
                         nextIndex = i;
                         break;
                     }
@@ -195,9 +228,7 @@
             }
 
             if (nextIndex !== -1) {
-                goto(
-                    `/exploration/firebase-test/exercise-flow/${program.exercises[nextIndex].exerciseId}`,
-                );
+                goto(`/exploration/firebase-test/exercise-flow/${program.exercises[nextIndex].exerciseId}`);
             } else {
                 goto("/exploration/firebase-test/program-complete");
             }
@@ -210,9 +241,14 @@
 
 <div class="exercise-flow-container">
     {#if loading}
-        <p>Loading exercise...</p>
+        <div class="loading">
+            <p>Loading exercise...</p>
+        </div>
     {:else if error}
-        <p class="error">{error}</p>
+        <div class="error">
+            <p>{error}</p>
+            <button on:click={() => location.reload()}>Try Again</button>
+        </div>
     {:else if program && currentExercise}
         <div class="progress-overview">
             <div class="progress-bar">
@@ -316,11 +352,11 @@
                             </div>
                             <div class="stat-item">
                                 <span>After Completion</span>
-                                <span
-                                    >{stats.totalDistance +
+                                <span>
+                                    {stats.totalDistance +
                                         adjustedValues.sets *
-                                            adjustedValues.steps} steps</span
-                                >
+                                            adjustedValues.steps} steps
+                                </span>
                             </div>
                         {:else if currentExercise.exerciseType === "weight"}
                             <div class="stat-item">
@@ -336,18 +372,18 @@
                                             adjustedValues.weight} lbs
                                 </span>
                             </div>
-                        {:else}
+                        {:else if currentExercise.exerciseType === "time"}
                             <div class="stat-item">
                                 <span>Current Total Time</span>
-                                <span>{stats.totalTime} seconds</span>
+                                <span>{formatTime(stats.totalTime)}</span>
                             </div>
                             <div class="stat-item">
                                 <span>After Completion</span>
-                                <span
-                                    >{stats.totalTime +
+                                <span>
+                                    {formatTime(stats.totalTime +
                                         adjustedValues.reps *
-                                            adjustedValues.seconds} seconds</span
-                                >
+                                            adjustedValues.seconds)}
+                                </span>
                             </div>
                         {/if}
                     </div>
@@ -407,6 +443,31 @@
         padding: 1.5rem;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+    }
+
+    .error {
+        color: #ef4444;
+        padding: 1rem;
+        background-color: #fee2e2;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .error button {
+        margin-top: 0.5rem;
+        padding: 0.375rem 0.75rem;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
     }
 
     .equipment {
@@ -496,9 +557,5 @@
 
     .skip-btn:hover {
         background: #dc2626;
-    }
-
-    .error {
-        color: #ef4444;
     }
 </style>
