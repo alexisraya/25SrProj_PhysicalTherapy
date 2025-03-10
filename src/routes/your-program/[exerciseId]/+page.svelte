@@ -201,7 +201,10 @@
     {:else if program && currentExercise && exerciseDetails}
         <div class="exercise_container--top">
             <div class="exercise_nav">
-            <img class="back_button" src={LeftArrow} alt="left arrow"/>
+            <a href="/your-program">
+                <img class="back_button" src={LeftArrow} alt="left arrow"/>
+            </a>
+            
             <ProgressBar totalExercises={program.exercises.length} completedExercises={completedExercises} />
             </div>
             <!-- <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" /> -->
