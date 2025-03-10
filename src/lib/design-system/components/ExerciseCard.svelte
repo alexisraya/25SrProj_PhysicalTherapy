@@ -3,18 +3,31 @@
     import { typography } from "$lib/design-system";
     import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import DraggableIcon from '$lib/assets/iconography/DraggableIcon.svg';
-    import CompletedCheckmark from "./CompletedCheckmark.svelte";
-    import Checkbox from "./Checkbox.svelte";
-
+    import CheckboxEmptyIcon from '$lib/assets/iconography/CheckboxExmptyIcon.svg';
+    import CheckboxSelectedIcon from '$lib/assets/iconography/CheckboxSelectedIcon.svg'; 
+    import CompletedCheckmark from "$lib/design-system/components/CompletedCheckmark.svelte";
+    
     export let orderable = false;
     export let editMode = false;
     export let isComplete = false;
     export let isTooPainful = false;
 
     export let exerciseName: string;
-    export let exerciseSet: string = null;
-    export let exerciseEquipment: string = null;
+    export let exerciseSet: string;
+    export let exerciseEquipment: string;
     export let exerciseId: string;
+    
+    // Add prop to connect with parent selection state
+    export let onToggleSelection: (id: string, selected: boolean) => void = () => {};
+    export let isSelected = false;
+
+    function toggleCheckbox(event: Event) {
+        // Prevent button click from triggering card click
+        event.stopPropagation();
+        
+        isSelected = !isSelected;
+        onToggleSelection(exerciseId, isSelected);
+    }
 
     const onClick = () => {
         if(!editMode){
@@ -50,14 +63,21 @@
         {/if}
     </div>
     <div class="exercise-container--right">
-        <!-- add logic for each state here -->
-         {#if isComplete}            
-            <!--Logic for too painful will be added once BE is being pulled-->
-            <CompletedCheckmark isTooPainful={isTooPainful}/>
-         {:else if editMode}
-            <Checkbox />
-         {:else if orderable}
+        {#if editMode}
+            <button 
+                class="checkbox-button" 
+                on:click={toggleCheckbox}
+                aria-label={isSelected ? "Deselect exercise" : "Select exercise"}
+            >
+                <img 
+                    src={isSelected || isComplete ? CheckboxSelectedIcon : CheckboxEmptyIcon} 
+                    alt={isSelected ? "Selected" : "Not selected"} 
+                />
+            </button>
+         {:else if orderable && !isComplete}
             <img src={DraggableIcon} alt="draggable dots" />
+         {:else if isComplete}            
+            <CompletedCheckmark isTooPainful={isTooPainful}/>
          {/if}
     </div>
 </button>
@@ -101,5 +121,17 @@
         justify-content: center;
         padding: 4px 10px;
         width: fit-content;
+    }
+    .checkbox-button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hidden-checkbox {
+        display: none; /* Hide the default checkbox */
     }
 </style>
