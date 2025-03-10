@@ -1,61 +1,19 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { authStore } from "$stores/authStore";
-    import { getCurrentProgram } from "$firebase/services/programService";
-    import {
-        getUserStats,
-        getWeeklyProgress,
-        checkAndResetProgress,
-    } from "$firebase/services/statService";
-    import type { Program } from "$firebase/types/userType";
-    import type { UserStats } from "$firebase/types/userType";
     import { typography } from "$lib/design-system";
     import Streak from "$lib/design-system/components/Streak.svelte";
     import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
     import ProgramCompletePlayButton from "$lib/assets/iconography/ProgramCompletePlayButton.svg";
     import SummaryBlob from "$lib/assets/background-images/SummaryBlob.svg";
 
-    let program: Program | null = null;
-    let stats: UserStats | null = null;
-    let weeklyProgress: any = null;
-    let loading = true;
-    let error: string | null = null;
+    export let data;
 
-    const today = new Date();
-    console.log(`today ${today}`);
-    // 2025-03-03T02:14:02.010Z
-    onMount(async () => {
-        try {
-            if (!$authStore.currentUser) return;
-            const userId = $authStore.currentUser.uid;
-            await checkAndResetProgress($authStore.currentUser.uid);
-
-            const [programData, statsData, weeklyData] = await Promise.all([
-                getCurrentProgram(userId),
-                getUserStats(userId),
-                getWeeklyProgress(userId),
-            ]);
-
-            program = programData;
-            stats = statsData;
-            weeklyProgress = weeklyData;
-        } catch (err) {
-            console.error("Error loading completion data:", err);
-            error =
-                err instanceof Error
-                    ? err.message
-                    : "Failed to load completion data";
-        } finally {
-            console.log("Completed Data");
-            console.log("Program:");
-            console.log(program);
-            console.log("Stats:");
-            console.log(stats);
-            console.log("Weekly Progress:");
-            console.log(weeklyProgress);
-            loading = false;
-        }
-    });
+    $: program = data.program;
+    $: stats = data.stats;
+    $: weeklyProgress = data.weeklyProgress;
+    $: error = data.error;
+    
+    // Determine if we're in a loading state
+    $: loading = !error && !program && !stats && !weeklyProgress;
 </script>
 
 <div class="summary-page-container">
