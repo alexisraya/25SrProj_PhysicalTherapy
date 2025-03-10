@@ -9,6 +9,7 @@
     export let orderable = false;
     export let editMode = false;
     export let isComplete = false;
+    export let isTooPainful = false;
 
     export let exerciseName: string;
     export let exerciseSet: string = null;
@@ -50,9 +51,9 @@
     </div>
     <div class="exercise-container--right">
         <!-- add logic for each state here -->
-         {#if isComplete}
+         {#if isComplete}            
             <!--Logic for too painful will be added once BE is being pulled-->
-            <CompletedCheckmark />
+            <CompletedCheckmark isTooPainful={isTooPainful}/>
          {:else if editMode}
             <Checkbox />
          {:else if orderable}
