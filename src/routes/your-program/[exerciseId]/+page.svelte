@@ -20,6 +20,11 @@
     import { getExercise } from '$firebase/services/exerciseService';
     import { derived, get } from 'svelte/store';
     import Interstital from "$lib/design-system/components/Interstital.svelte";
+    import DownArrow from "$lib/assets/iconography/DownArrow.svg";
+    import InstructionsIcon from "$lib/assets/iconography/InstructionsIcon.svg";
+    import InformationIcon from "$lib/assets/iconography/InformationIcon.svg";
+    import ModificationsIcon from "$lib/assets/iconography/ModificationsIcon.svg";
+    import SelectModelIcon from "$lib/assets/iconography/SelectModelIcon.svg";
 
     let currentExercise: AssignedExercise | null = null;
     let program: Program | null = null;
@@ -196,7 +201,7 @@
     {:else if program && currentExercise && exerciseDetails}
         <div class="exercise_container--top">
             <div class="exercise_nav">
-            <img class="back_button" src={LeftArrow} />
+            <img class="back_button" src={LeftArrow} alt="left arrow"/>
             <ProgressBar totalExercises={program.exercises.length} completedExercises={completedExercises} />
             </div>
             <!-- <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" /> -->
@@ -207,29 +212,67 @@
         </div>
         <div class="exercise_container-bottom">
             <div class="exercise_description">
-            <div class="exercise_description--section">
-                <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Instructions</h6>
-                <ol>
-                    {#each exerciseInstructions as instruction}
-                        <li style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
-                            {instruction}
-                        </li>
-                    {/each}
-                </ol>
-            </div>
-            <div class="exercise_description--section">
-                <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Information</h6>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
-                {exerciseDetails.information} 
-                </p>
-            </div>
-            <div class="exercise_description--section">
-                <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
-                <CharacterSelect />
-            </div>
+                <details class="exercise_description--section">
+                    <summary>
+                        <div class="exercise_description--title">
+                            <img src={InstructionsIcon} alt="Instructions Icon" />
+                            <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Instructions</h6>
+                        </div>
+                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                    </summary>
+                    <div class="content-wrapper">
+                        <ol>
+                            {#each exerciseInstructions as instruction}
+                                <li style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
+                                    {instruction}
+                                </li>
+                            {/each}
+                        </ol>
+                    </div>
+                </details>
+                <details class="exercise_description--section">
+                    <summary>
+                        <div class="exercise_description--title">
+                            <img src={InformationIcon} alt="Information Icon" />
+                            <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Information</h6>
+                        </div>
+                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                    </summary>
+                    <div class="content-wrapper">
+                        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
+                        {exerciseDetails.information} 
+                        </p>
+                    </div>
+                </details>
+                <details class="exercise_description--section">
+                    <summary>
+                        <div class="exercise_description--title">
+                            <img src={ModificationsIcon} alt="Modifications Icon" />
+                            <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Modifications</h6>
+                        </div>
+                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                    </summary>
+                    <div class="content-wrapper">
+                        <!-- TODO: ALEXIS CHANGE TO PULL FROM BE ONCE UPDATED -->
+                        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
+                            This is an example of a suggested modification, they're all pretty short.
+                        </p>
+                    </div>
+                </details>
+                <details class="exercise_description--section">
+                    <summary>
+                        <div class="exercise_description--title">
+                            <img src={SelectModelIcon} alt="Select Model Icon" />
+                            <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
+                        </div>
+                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                    </summary>
+                    <div class="content-wrapper character-content">
+                        <CharacterSelect />
+                    </div>
+                </details>
             </div>
         </div>
-        <!-- TODO: ALEXIS this will be a component later -->
         <div class="buttons">
             <div class="skip_btn">
             <Button cta="Skip" buttonType="secondary" onClickFunc={handleSkip}/>
@@ -240,82 +283,117 @@
 </div>
 
 <style>
-  h6, p{
-    margin: 0;
-  }
-  .page_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-  }
-  .exercise_container--top {
-    box-sizing: border-box;
-    background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 515px;
-    border-radius: 0 0 60px 60px;
-    padding: 20px;
-  }
-  .exercise_nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .exercise_container-bottom {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 50vh;
-    padding: 16px 24px;
-  }
-  .exercise_description {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: 24px;
-  }
-  .exercise_description--section {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    row-gap: 4px;
-  }
-  .exercise_description--section ol {
-    margin: 0;
-    padding: 0;
-    list-style-position: inside;
-  }
-  .exercise_description--section p {
-    color: var(--color-grey-400);
-  }
-  .exercise_description--section li {
-    color: var(--color-grey-400);
-    text-align: left;
-  }
-  .exercise_description--section li:not(:last-child) {
-    margin-bottom: 16px;
-  }
-  .buttons {
-    background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
-    position: sticky;
-    bottom: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-    height: 96px;
-    flex-shrink: 0;
-    padding-bottom: 16px;
-  }
-  .skip_btn{
-    padding-left: 24px;
-    width: 108px;
-  }
+    h6, p{
+        margin: 0;
+    }
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    summary {
+        list-style: none;
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        margin-bottom: 14px;
+    }
+    .arrow-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    details[open] .arrow-icon {
+        transform: rotate(180deg);
+    }
+    .content-wrapper {
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.4s ease-out, opacity 0.4s ease-out, transform 0.4s ease-out;
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    
+    details[open] .content-wrapper {
+        max-height: 500px; /* Adjust based on your content size */
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .page_container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+    }
+    .exercise_container--top {
+        box-sizing: border-box;
+        background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 515px;
+        border-radius: 0 0 60px 60px;
+        padding: 20px;
+    }
+    .exercise_nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .exercise_container-bottom {
+        width: 100%;
+    }
+    .exercise_description {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: 24px;
+        padding: 16px 24px;
+    }
+    .exercise_description--section {
+        width: 100%;
+    }
+    .content-wrapper ol {
+        margin: 0;
+        padding: 0;
+        list-style-position: inside;
+    }
+    .content-wrapper p {
+        color: var(--color-grey-400);
+    }
+    .content-wrapper li {
+        color: var(--color-grey-400);
+        text-align: left;
+    }
+    .character-content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .exercise_description--section li:not(:last-child) {
+        margin-bottom: 16px;
+    }
+    .exercise_description--title {
+        display: inline-flex;
+        align-items: center;
+        column-gap: 12px;
+    }
+    .buttons {
+        background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
+        position: sticky;
+        bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: 100%;
+        height: 96px;
+        flex-shrink: 0;
+        padding-bottom: 16px;
+    }
+    .skip_btn{
+        padding-left: 24px;
+        width: 108px;
+    }
 </style>
