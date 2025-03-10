@@ -44,6 +44,7 @@
 		if (path === "/patient-dashboard") return true;
 		if (path === "/your-program") return true;
 		if (path === "/your-program/summary") return true;
+		if (path === "/profile") return true;
 
 		return false;
 	}
