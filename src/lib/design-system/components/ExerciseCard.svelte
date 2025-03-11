@@ -16,6 +16,7 @@
     export let exerciseSet: string;
     export let exerciseEquipment: string;
     export let exerciseId: string;
+    export let cardType: string; // "your-program" or "summary"
     
     // Add prop to connect with parent selection state
     export let onToggleSelection: (id: string, selected: boolean) => void = () => {};
@@ -35,7 +36,7 @@
         }
     }
 </script>
-<button class="exercise-container" on:click={onClick}>
+<button class="exercise-container {cardType}" on:click={onClick}>
     <div class="exercise-container--left">
         <div class="exercise-container--name">
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">
@@ -94,8 +95,13 @@
         align-items: center;
         justify-content: space-between;
         padding: 12px;
-        width: 326px;
         cursor: pointer;
+    }
+    .your-program {
+        width: 326px;
+    }
+    .summary {
+        width: 100%;
     }
     .exercise-container--left {
         display: flex;

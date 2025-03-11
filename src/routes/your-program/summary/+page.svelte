@@ -36,7 +36,7 @@
                 <div class="horizontal-box"></div>
                 <div class="completed-exerecises-container">
                     {#each program.exercises.filter((ex) => ex.completed) as exercise}
-                        <ExerciseCard isComplete exerciseName={exercise.exerciseName} isTooPainful={exercise.skipped}/>
+                        <ExerciseCard isComplete exerciseName={exercise.exerciseName} isTooPainful={exercise.skipped} cardType="summary"/>
                     {/each}
                 </div>
             </div>

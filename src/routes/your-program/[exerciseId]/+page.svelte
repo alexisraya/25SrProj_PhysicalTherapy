@@ -179,6 +179,7 @@
         }
     }
 
+    /**
     async function handleComplete() {
         if (!$authStore.currentUser || !currentExercise) {
             error = "No exercise selected.";
@@ -231,7 +232,7 @@
             const nextExercise = program.exercises.find(ex => !ex.completed && !ex.skipped);
             if (nextExercise) {
                 goto(`/your-program/${nextExercise.exerciseId}`);
-                await tick(); // Ensures UI updates
+                await tick();
             } else {
                 goto("/your-program/interstital");
             }
@@ -239,6 +240,79 @@
             console.error("Error navigating to next exercise:", err);
         }
     }
+   **/
+
+    async function handleComplete() {
+        if (!$authStore.currentUser || !currentExercise) {
+            error = "No exercise selected.";
+            return;
+        }
+
+        try {
+            // Check if this is the last exercise before showing any interstitial
+            program = await getCurrentProgram($authStore.currentUser.uid);
+            const remainingExercises = program?.exercises?.filter(ex => !ex.completed && !ex.skipped && ex.exerciseId !== currentExercise.exerciseId).length ?? 0;
+            const isLastExercise = remainingExercises === 0;
+            
+            // If it's the last exercise, don't show interstitial here
+            // Just complete the exercise and navigate directly
+            if (!isLastExercise) {
+                interstitialType = "completed";
+                showInterstitial = true;
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+            
+            console.log("Before completing exercise:", currentExercise.exerciseId);
+            
+            // Update Firebase
+            await completeExercise(
+                $authStore.currentUser.uid,
+                currentExercise.exerciseId,
+                adjustedValues
+            );
+            
+            console.log("After completing exercise, fetching updated program");
+            
+            // Explicitly refresh the program data before navigating
+            program = await getCurrentProgram($authStore.currentUser.uid);
+            console.log("Updated program:", program);
+            
+            completedExercises = program?.exercises?.filter(ex => ex.completed).length ?? 0;
+            console.log("Completed exercises count:", completedExercises);
+            
+            await navigateToNext();
+        } catch (err) {
+            console.error("Error completing exercise:", err);
+            error = err instanceof Error ? err.message : "Failed to complete exercise";
+        } finally {
+            interstitialType = null;
+            showInterstitial = false;
+        }
+    }
+
+    async function navigateToNext() {
+    if (!$authStore.currentUser || !currentExercise) return;
+
+    try {
+        program = await getCurrentProgram($authStore.currentUser.uid);
+        if (!program || !program.exercises.length) {
+            goto("/your-program");
+            return;
+        }
+
+        const nextExercise = program.exercises.find(ex => !ex.completed && !ex.skipped);
+        if (nextExercise) {
+            goto(`/your-program/${nextExercise.exerciseId}`);
+            await tick(); // Ensures UI updates
+        } else {
+            // If we're here, all exercises are completed or skipped
+            // Go directly to the final interstitial
+            goto("/your-program/interstital");
+        }
+    } catch (err) {
+        console.error("Error navigating to next exercise:", err);
+    }
+}
 </script>
 
 <div class="page_container">
@@ -247,7 +321,7 @@
     {:else if program && currentExercise && exerciseDetails}
         <div class="exercise_container--top">
             <div class="exercise_nav">
-            <a href="/your-program">
+            <a href="/your-program" class="back-button--link">
                 <img class="back_button" src={LeftArrow} alt="left arrow"/>
             </a>
             
@@ -370,6 +444,10 @@
     /* Use a CSS custom property to control visibility before JavaScript runs */
     :root {
         --details-initialized: 0;
+    }
+
+    .back-button--link {
+        display: inline-flex;
     }
     
     /* Hide all content-wrappers initially to prevent flash */

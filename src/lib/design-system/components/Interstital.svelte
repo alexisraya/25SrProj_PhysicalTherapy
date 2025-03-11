@@ -7,7 +7,7 @@
 </script>
 <div class="interstital-container">
     {#if interstitalType === "completed"}
-        <Icon name="program-interstitial-completed" />
+        <Icon name="program-interstitial-completed-test" />
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Exercise <br /> completed</h2>
     {:else if interstitalType === "skipped"}
         <Icon name="program-interstitial-skipped" />
@@ -24,7 +24,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        row-gap: 32px;
+        /* row-gap: 32px; */
+        row-gap: 0px;
         height: 100vh;
     }
     .interstital-container h2{

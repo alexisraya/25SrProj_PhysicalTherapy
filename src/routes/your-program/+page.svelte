@@ -327,6 +327,7 @@
                         editMode={isEditing}
                         isSelected={selectedExercises[exercise.exerciseId] || false}
                         onToggleSelection={handleToggleSelection}
+                        cardType="your-program"
                     />
                 {/each}
             {:else}
@@ -353,7 +354,7 @@
 <style>
     .background-wave {
         position: absolute;
-        top: 0;
+        top: -30px;
         right: 0;
         z-index: -1;
     }
