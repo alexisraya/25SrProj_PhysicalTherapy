@@ -25,6 +25,7 @@
     import InformationIcon from "$lib/assets/iconography/InformationIcon.svg";
     import ModificationsIcon from "$lib/assets/iconography/ModificationsIcon.svg";
     import SelectModelIcon from "$lib/assets/iconography/SelectModelIcon.svg";
+    import { browser } from "$app/environment";
 
     let currentExercise: AssignedExercise | null = null;
     let program: Program | null = null;
@@ -44,6 +45,49 @@
         seconds: 0,
         weight: 0,
     };
+
+    let sectionsOpen = {
+        instructions: true,
+        information: false,
+        modifications: false,
+        modelSelect: false
+    };
+
+    let detailsInitialized = false;
+
+    function initializeDetails() {
+        if (browser) {
+            // Use a short timeout to let Svelte complete its initial rendering
+            setTimeout(() => {
+                detailsInitialized = true;
+                
+                // Add the 'initialized' class to all details elements
+                const detailsElements = document.querySelectorAll('.exercise_description--section');
+                detailsElements.forEach(el => {
+                    el.classList.add('initialized');
+                });
+            }, 50);
+        }
+    }
+    
+    // Function to toggle a specific section
+    function toggleSection(section: keyof typeof sectionsOpen) {
+        sectionsOpen[section] = !sectionsOpen[section];
+    }
+    
+    // Function to open all sections
+    function openAllSections() {
+        Object.keys(sectionsOpen).forEach(key => {
+            sectionsOpen[key as keyof typeof sectionsOpen] = true;
+        });
+    }
+    
+    // Function to close all sections
+    function closeAllSections() {
+        Object.keys(sectionsOpen).forEach(key => {
+            sectionsOpen[key as keyof typeof sectionsOpen] = false;
+        });
+    }
 
     function parseInstructions(text: string) {
         return text.split(/\d+\.\s/).filter(step => step.trim() !== '');
@@ -107,6 +151,8 @@
         if ($currentPage.params?.exerciseId) {
             loadExercise($currentPage.params.exerciseId);
         }
+
+        initializeDetails();
     });
 
     async function handleSkip() {
@@ -215,7 +261,10 @@
         </div>
         <div class="exercise_container-bottom">
             <div class="exercise_description">
-                <details class="exercise_description--section">
+                <details 
+                    class="exercise_description--section {detailsInitialized ? 'initialized' : ''}" 
+                    bind:open={sectionsOpen.instructions}
+                >
                     <summary>
                         <div class="exercise_description--title">
                             <img src={InstructionsIcon} alt="Instructions Icon" />
@@ -233,7 +282,10 @@
                         </ol>
                     </div>
                 </details>
-                <details class="exercise_description--section">
+                <details 
+                    class="exercise_description--section {detailsInitialized ? 'initialized' : ''}" 
+                    bind:open={sectionsOpen.information}
+                >
                     <summary>
                         <div class="exercise_description--title">
                             <img src={InformationIcon} alt="Information Icon" />
@@ -247,7 +299,10 @@
                         </p>
                     </div>
                 </details>
-                <details class="exercise_description--section">
+                <details 
+                    class="exercise_description--section {detailsInitialized ? 'initialized' : ''}" 
+                    bind:open={sectionsOpen.modifications}
+                >
                     <summary>
                         <div class="exercise_description--title">
                             <img src={ModificationsIcon} alt="Modifications Icon" />
@@ -262,7 +317,10 @@
                         </p>
                     </div>
                 </details>
-                <details class="exercise_description--section">
+                <details 
+                    class="exercise_description--section {detailsInitialized ? 'initialized' : ''}" 
+                    bind:open={sectionsOpen.modelSelect}
+                >
                     <summary>
                         <div class="exercise_description--title">
                             <img src={SelectModelIcon} alt="Select Model Icon" />
@@ -308,6 +366,22 @@
     details[open] .arrow-icon {
         transform: rotate(180deg);
     }
+    
+    /* Use a CSS custom property to control visibility before JavaScript runs */
+    :root {
+        --details-initialized: 0;
+    }
+    
+    /* Hide all content-wrappers initially to prevent flash */
+    .exercise_description--section {
+        visibility: hidden;
+    }
+    
+    /* Once JavaScript loads, this class will be added */
+    .exercise_description--section.initialized {
+        visibility: visible;
+    }
+    
     .content-wrapper {
         overflow: hidden;
         max-height: 0;
@@ -321,6 +395,7 @@
         opacity: 1;
         transform: translateY(0);
     }
+    
     .page_container {
         display: flex;
         flex-direction: column;
@@ -339,6 +414,7 @@
         border-radius: 0 0 60px 60px;
         padding: 20px;
     }
+    /* Rest of your styles remain the same */
     .exercise_nav {
         display: flex;
         align-items: center;
