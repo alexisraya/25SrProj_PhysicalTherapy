@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import { authStore } from '$stores/authStore';
     import { goalStore } from '$stores/goalStore';
+    import Goal from '$lib/design-system/components/Goal.svelte';
+    import { typography } from '$lib/design-system';
 
     onMount(() => {
         if ($authStore.currentUser) {
@@ -14,16 +16,11 @@
     }
 </script>
 
-<div class="goals-page">
-    <header>
-        <h1>Goals</h1>
-        <a href="/your-progress" class="back-link">Back to Progress</a>
-    </header>
-
-    <div class="info-panel">
-        <p>These goals are set by your physical therapist and are based on the timeline of your recovery. They are subject to change.</p>
+<div class="goals-page-container">
+    <div class="goals-header">
+        <h3 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h3}; font-weight: {typography.fontWeights.regular};">Goals</h3>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">These goals are <b>set by your physical therapist</b> and are based on the timeline of your recovery. They are subject to change.</p>
     </div>
-
     {#if $goalStore.isLoading}
         <div class="loading-container">
             <p>Loading goals...</p>
@@ -43,37 +40,55 @@
             </button>
         </div>
     {:else}
-        <div class="timeline">
-            {#each Object.entries($goalStore.goals).sort(([a], [b]) => parseInt(a) - parseInt(b)) as [month, goals] }
-                <div class="month-container">
-                    <h2 class="month-title">{formatMonth(month)}</h2>
-                    <div class="goals-container">
-                        {#each goals as goal}
-                            <div class="goal-card {goal.unlocked ? 'unlocked' : 'locked'}">
-                                <div class="goal-header">
-                                    <h3 class="goal-name">{goal.goalName}</h3>
-                                    <span class="goal-timeframe">{goal.timeframe}</span>
-                                </div>
-                                
-                                {#if goal.unlocked}
-                                    <div class="goal-content">
-                                        <p class="goal-description">{goal.description}</p>
-                                    </div>
-                                    <div class="goal-status unlocked">
-                                        <span class="status-text">✓ Unlocked</span>
-                                    </div>
-                                {:else}
-                                    <div class="goal-content locked">
-                                        <p class="locked-message">
-                                            This goal will be unlocked by your therapist as you progress.
-                                        </p>
-                                    </div>
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
+        {#each Object.entries($goalStore.goals).sort(([a], [b]) => parseInt(a) - parseInt(b)) as [month, goals] }
+            <div class="goals-month-container">
+                <p class="achievement-type-title" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium};">{formatMonth(month)}</p>
+                <div class="horizontal-box" />
+                <div class="goals-container">
+                    {#each goals as goalItem}
+                        <Goal goalName={goalItem.goalName} isLocked={!goalItem.unlocked} extraInfo={goalItem.timeframe}/>
+                    {/each}
                 </div>
-            {/each}
-        </div>
+            </div>
+        {/each}
     {/if}
 </div>
+
+<style>
+    p, h3 {
+        margin: 0;
+    }
+    .goals-page-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 32px;
+        padding: 40px 24px;
+    }
+    .goals-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        row-gap: 25px;
+        text-align: center;
+    }
+    .goals-month-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+    }
+    .horizontal-box {
+        background-color: var(--color-blue-50);
+        width: 100%;
+        height: 2px;
+        margin-bottom: 8px;
+    }
+    .goals-container {
+        display: grid;
+        grid-template-columns: repeat(3, 92.5px);
+        align-items: flex-start;
+        justify-content: center;
+        column-gap: 25.5px;
+        row-gap: 16px;
+    }
+</style>

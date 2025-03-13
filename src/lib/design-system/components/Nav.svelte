@@ -33,19 +33,19 @@
         </button>
         <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
             <img class="nav-icon" src={HomeIcon} alt="home icon"/>
-            <a href="./patient-dashboard" on:click={closeMenu}>Home</a>
+            <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
         </div>
         <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
             <img class="nav-icon" src={ProgressIcon} alt="progress icon"/>
-            <a href="./your-progress" on:click={closeMenu}>Progress</a>
+            <a href="/your-progress" on:click={closeMenu}>Progress</a>
         </div>
         <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
             <img class="nav-icon" src={ProgramIcon} alt="program icon"/>
-            <a href="./your-program" on:click={closeMenu}>Program</a>
+            <a href="/your-program" on:click={closeMenu}>Program</a>
         </div>
         <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
             <img class="nav-icon" src={ProfileIcon} alt="profile icon"/>
-            <a href="./profile" on:click={closeMenu}>Profile</a>
+            <a href="/profile" on:click={closeMenu}>Profile</a>
         </div>
     </div>
 </nav>

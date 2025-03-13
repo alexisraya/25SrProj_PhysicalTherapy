@@ -8,7 +8,7 @@ export const typography = {
         h0: '3.5rem',
         h1: '3rem',
         h2: '2rem',
-        h3: '1.625rem',
+        h3: '2rem',
         h4: '1rem',
         h5: '0.875rem',
         regular: '1rem',

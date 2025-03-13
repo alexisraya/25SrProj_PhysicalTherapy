@@ -2,49 +2,17 @@
     import { onMount } from "svelte";
     import { authStore } from "$stores/authStore";
     import { achievementStore, achievementsByType } from "$stores/achieveStore";
+    import AchievmentCard from "$lib/design-system/components/AchievmentCard.svelte";
+    import { typography } from "$lib/design-system";
 
     onMount(() => {
         if ($authStore.currentUser) {
             achievementStore.loadAchievements($authStore.currentUser.uid);
         }
     });
-
-    function formatTarget(achievement: {
-        achieveType: string;
-        targetValue: number;
-    }) {
-        if (achievement.achieveType === "distance") {
-            return `${achievement.targetValue} steps`;
-        } else if (achievement.achieveType === "weight") {
-            return `${achievement.targetValue} lbs`;
-        } else if (achievement.achieveType === "time") {
-            // Convert seconds to minutes for easier reading if over 60 seconds
-            if (achievement.targetValue >= 60) {
-                const minutes = Math.floor(achievement.targetValue / 60);
-                const seconds = achievement.targetValue % 60;
-                return seconds > 0
-                    ? `${minutes}m ${seconds}s`
-                    : `${minutes} minutes`;
-            }
-            return `${achievement.targetValue} seconds`;
-        }
-        return `${achievement.targetValue}`;
-    }
 </script>
 
-<div class="goals-page">
-    <header>
-        <h1>Achievements</h1>
-        <a href="/your-progress" class="back-link">Back to Progress</a>
-    </header>
-
-    <div class="info-panel">
-        <p>
-            Achievements are based on your exercises done in the app. Stay on
-            track to unlock them all!
-        </p>
-    </div>
-
+<div class="achievement-page-container">
     {#if $achievementStore.isLoading}
         <div class="loading-container">
             <p>Loading achievements...</p>
@@ -63,111 +31,77 @@
             </button>
         </div>
     {:else}
-        <div class="timeline">
-            <div class="month-container">
-                <h2 class="month-title">Strength</h2>
-                <div class="goals-container">
-                    {#each $achievementsByType.weight as achievement}
-                        <div
-                            class="goal-card {achievement.unlocked
-                                ? 'unlocked'
-                                : 'locked'}"
-                        >
-                            <div class="goal-header">
-                                <h3 class="goal-name">
-                                    {achievement.achieveName}
-                                </h3>
-                                <span class="goal-timeframe"
-                                    >{formatTarget(achievement)}</span
-                                >
-                            </div>
-
-                            {#if achievement.unlocked}
-                                <div class="goal-status unlocked">
-                                    <span class="status-text">✓ Unlocked</span>
-                                </div>
-                            {:else}
-                                <div class="goal-content locked">
-                                    <p class="locked-message">
-                                        Complete exercises to unlock this
-                                        achievement.
-                                    </p>
-                                </div>
-                            {/if}
-                        </div>
-                    {/each}
-                </div>
+        <div class="achievement-header">
+            <h3 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h3}; font-weight: {typography.fontWeights.regular};">Achievements</h3>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Achievements are based on your exercises done in the app. Stay on track to unlock them all!</p>
+        </div>
+        <div class="achievement-type-container">
+            <p class="achievement-type-title" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium};">Strength</p>
+            <div class="horizontal-box"></div>
+            <div class="achievement-container">
+                {#each $achievementsByType.weight as achievement}
+                    <AchievmentCard achievementTitle={achievement.achieveName} achievementMark={achievement.targetUnits} achievementValue={achievement.targetValue} isLocked={!achievement.unlocked}/>
+                {/each}
             </div>
+        </div>
 
-            <div class="month-container">
-                <h2 class="month-title">Time</h2>
-                <div class="goals-container">
-                    {#each $achievementsByType.time as achievement}
-                        <div
-                            class="goal-card {achievement.unlocked
-                                ? 'unlocked'
-                                : 'locked'}"
-                        >
-                            <div class="goal-header">
-                                <h3 class="goal-name">
-                                    {achievement.achieveName}
-                                </h3>
-                                <span class="goal-timeframe"
-                                    >{formatTarget(achievement)}</span
-                                >
-                            </div>
-
-                            {#if achievement.unlocked}
-                                <div class="goal-status unlocked">
-                                    <span class="status-text">✓ Unlocked</span>
-                                </div>
-                            {:else}
-                                <div class="goal-content locked">
-                                    <p class="locked-message">
-                                        Complete exercises to unlock this
-                                        achievement.
-                                    </p>
-                                </div>
-                            {/if}
-                        </div>
-                    {/each}
-                </div>
+        <div class="achievement-type-container">
+            <p class="achievement-type-title" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium};">Time</p>
+            <div class="horizontal-box"></div>
+            <div class="achievement-container">
+                {#each $achievementsByType.time as achievement}
+                    <AchievmentCard achievementTitle={achievement.achieveName} achievementMark={achievement.targetUnits} achievementValue={achievement.targetValue} isLocked={!achievement.unlocked}/>
+                {/each}
             </div>
+        </div>
 
-            <div class="month-container">
-                <h2 class="month-title">Distance</h2>
-                <div class="goals-container">
-                    {#each $achievementsByType.distance as achievement}
-                        <div
-                            class="goal-card {achievement.unlocked
-                                ? 'unlocked'
-                                : 'locked'}"
-                        >
-                            <div class="goal-header">
-                                <h3 class="goal-name">
-                                    {achievement.achieveName}
-                                </h3>
-                                <span class="goal-timeframe"
-                                    >{formatTarget(achievement)}</span
-                                >
-                            </div>
-
-                            {#if achievement.unlocked}
-                                <div class="goal-status unlocked">
-                                    <span class="status-text">✓ Unlocked</span>
-                                </div>
-                            {:else}
-                                <div class="goal-content locked">
-                                    <p class="locked-message">
-                                        Complete exercises to unlock this
-                                        achievement.
-                                    </p>
-                                </div>
-                            {/if}
-                        </div>
-                    {/each}
-                </div>
+        <div class="achievement-type-container">
+            <p class="achievement-type-title" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium};">Distance</p>
+            <div class="horizontal-box"></div>
+            <div class="achievement-container">
+                {#each $achievementsByType.distance as achievement}
+                    <AchievmentCard achievementTitle={achievement.achieveName} achievementMark={achievement.targetUnits} achievementValue={achievement.targetValue} isLocked={!achievement.unlocked}/>
+                {/each}
             </div>
         </div>
     {/if}
 </div>
+
+<style>
+    p, h3 {
+        margin: 0;
+    }
+    .achievement-page-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 32px;
+        padding: 40px 24px;
+    }
+    .achievement-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        row-gap: 25px;
+        text-align: center;
+    }
+    .achievement-type-container {
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+    }
+    .horizontal-box {
+        background-color: var(--color-blue-50);
+        width: 100%;
+        height: 2px;
+        margin-bottom: 8px;
+    }
+    .achievement-container {
+        display: grid;
+        grid-template-columns: repeat(3, 92.5px);
+        align-items: flex-start;
+        justify-content: center;
+        column-gap: 25.5px;
+        row-gap: 16px;
+    }
+</style>

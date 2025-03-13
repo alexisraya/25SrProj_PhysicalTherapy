@@ -6,6 +6,7 @@
     import { browser } from '$app/environment';
 
     export let nextPage: string;
+    export let navigateFunc;
 
     let isGrowing: boolean = false;
     let hasFilledScreen: boolean = false;
@@ -57,7 +58,8 @@
 
                 // Optional: Delay navigation for smooth transition
                 setTimeout(() => {
-                    if (nextPage) goto(nextPage);
+                    navigateFunc();
+                    radius = 0;
                 }, 300); // Adjust delay as needed
             }
         }, 5);
