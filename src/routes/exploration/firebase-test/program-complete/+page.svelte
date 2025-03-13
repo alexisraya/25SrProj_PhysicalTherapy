@@ -14,6 +14,12 @@
     let program: Program | null = null;
     let stats: UserStats | null = null;
     let weeklyProgress: any = null;
+    let todaysStats = {
+        exercisesCompleted: 0,
+        timeSpent: 0,
+        distanceCovered: 0,
+        weightLifted: 0
+    };
     let loading = true;
     let error: string | null = null;
 
@@ -32,6 +38,32 @@
             program = programData;
             stats = statsData;
             weeklyProgress = weeklyData;
+
+            if (program && program.exercises) {
+                todaysStats.exercisesCompleted = program.exercises.filter(ex => ex.completed).length;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const todaysExercises = program.exercises.filter(ex => 
+                    ex.completed && ex.completedAt?.startsWith(today)
+                );
+                
+                todaysStats.timeSpent = 0;
+                todaysStats.distanceCovered = 0;
+                todaysStats.weightLifted = 0;
+
+                todaysExercises.forEach(ex => {
+                    if (ex.exerciseType === 'time' && ex.reps && ex.seconds) {
+                        todaysStats.timeSpent += ex.reps * ex.seconds;
+                    }
+                    else if (ex.exerciseType === 'distance' && ex.sets && ex.steps) {
+                        todaysStats.distanceCovered += ex.sets * ex.steps;
+                    }
+                    else if (ex.exerciseType === 'weight' && ex.sets && ex.reps && ex.weight) {
+                        todaysStats.weightLifted += ex.sets * ex.reps * ex.weight;
+                    }
+                });
+            }
+            
         } catch (err) {
             console.error("Error loading completion data:", err);
             error =
@@ -53,9 +85,14 @@
 
 <div class="completion-container">
     {#if loading}
-        <p>Loading completion details...</p>
+        <div class="loading">
+            <p>Loading completion details...</p>
+        </div>
     {:else if error}
-        <p class="error">{error}</p>
+        <div class="error">
+            <p>{error}</p>
+            <button on:click={() => location.reload()}>Try Again</button>
+        </div>
     {:else}
         <div class="completion-header">
             <h1>Program Complete!</h1>
@@ -67,8 +104,8 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h3>Current Streak</h3>
-                        <p class="stat-value">{stats.currentStreak} days</p>
-                        <p class="stat-label">Keep it going!</p>
+                        <p class="stat-value">{stats.currentStreak} weeks</p>
+                        <p class="stat-label">Weekly streak</p>
                     </div>
                     <div class="stat-card">
                         <h3>Weekly Progress</h3>
@@ -91,25 +128,50 @@
                     <div class="stat-list">
                         <div class="stat-item">
                             <span>Exercises Completed</span>
-                            <span
-                                >{program?.exercises.filter(
-                                    (ex) => ex.completed,
-                                ).length || 0}</span
-                            >
+                            <span>{todaysStats.exercisesCompleted}</span>
                         </div>
-                        <div class="stat-item">
-                            <span>Total Time</span>
-                            <span>{formatTime(stats.totalTime)}</span>
-                        </div>
+                        
+                        {#if todaysStats.timeSpent > 0}
+                            <div class="stat-item">
+                                <span>Time Spent Today</span>
+                                <span>{formatTime(todaysStats.timeSpent)}</span>
+                            </div>
+                        {/if}
+                        
+                        {#if todaysStats.distanceCovered > 0}
+                            <div class="stat-item">
+                                <span>Distance Covered Today</span>
+                                <span>{todaysStats.distanceCovered} steps</span>
+                            </div>
+                        {/if}
+                        
+                        {#if todaysStats.weightLifted > 0}
+                            <div class="stat-item">
+                                <span>Weight Lifted Today</span>
+                                <span>{todaysStats.weightLifted} lbs</span>
+                            </div>
+                        {/if}
+                        
+                        <!-- Overall All-Time Stats -->
+                        <div class="stat-divider">All-Time Stats</div>
+                        
+                        {#if stats.totalTime > 0}
+                            <div class="stat-item">
+                                <span>Total Exercise Time</span>
+                                <span>{formatTime(stats.totalTime)}</span>
+                            </div>
+                        {/if}
+                        
                         {#if stats.totalDistance > 0}
                             <div class="stat-item">
-                                <span>Distance Covered</span>
+                                <span>Total Distance</span>
                                 <span>{stats.totalDistance} steps</span>
                             </div>
                         {/if}
+                        
                         {#if stats.totalWeight > 0}
                             <div class="stat-item">
-                                <span>Weight Lifted</span>
+                                <span>Total Weight Lifted</span>
                                 <span>{stats.totalWeight} lbs</span>
                             </div>
                         {/if}
@@ -141,6 +203,31 @@
     .completion-header {
         text-align: center;
         margin-bottom: 2rem;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #6b7280;
+    }
+
+    .error {
+        color: #ef4444;
+        padding: 1rem;
+        background-color: #fee2e2;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .error button {
+        margin-top: 0.5rem;
+        padding: 0.375rem 0.75rem;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
     }
 
     .stats-grid {
@@ -191,6 +278,16 @@
         background: #f9fafb;
         border-radius: 0.25rem;
     }
+    
+    .stat-divider {
+        margin-top: 1rem;
+        padding: 0.25rem 0.5rem;
+        background: #e5e7eb;
+        color: #4b5563;
+        font-weight: 500;
+        border-radius: 0.25rem;
+        text-align: center;
+    }
 
     .action-buttons {
         display: flex;
@@ -213,10 +310,5 @@
     .btn.secondary {
         background: #e5e7eb;
         color: #374151;
-    }
-
-    .error {
-        color: #ef4444;
-        text-align: center;
     }
 </style>

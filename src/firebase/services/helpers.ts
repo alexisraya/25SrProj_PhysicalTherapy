@@ -1,7 +1,9 @@
-// NOT SURE IF THIS FILE IS STILL NEEDED - DONT WORRY ABOUT THIS FOR NOW - SAB MIGHT REMOVE IT
-
 import type { UserStats } from "../types/userType";
 
+/**
+ * Gets the start date (Sunday) of the week containing the provided date
+ * Returns it as an ISO string
+ */
 export function getWeekStartDate(date: Date = new Date()): string {
     const sunday = new Date(date);
     sunday.setDate(date.getDate() - date.getDay());
@@ -9,10 +11,14 @@ export function getWeekStartDate(date: Date = new Date()): string {
     return sunday.toISOString();
 }
 
+/**
+ * Creates and returns an initialized UserStats object
+ * Used when creating new users or if stats don't exist
+ */
 export function initializeUserStats(): UserStats {
     return {
         currentStreak: 0,
-        longestStreak: 0,
+        longestStreak: 0,  // Keeping this even though not actively used
         lastCompletedDate: null,
         weeklyProgress: {
             weekStartDate: getWeekStartDate(),
