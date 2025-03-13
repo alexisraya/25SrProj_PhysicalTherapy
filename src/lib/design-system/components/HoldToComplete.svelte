@@ -208,6 +208,7 @@
         align-items: center;
         column-gap: 4px;
         height: 44px;
+        user-select: none;
     }
     .hold_to_complete_label {
         display: flex;
