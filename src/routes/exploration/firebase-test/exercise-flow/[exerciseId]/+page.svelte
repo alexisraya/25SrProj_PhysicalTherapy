@@ -3,7 +3,10 @@
     import { page } from "$app/stores";
     import { goto } from "$app/navigation";
     import { authStore } from "$stores/authStore";
-    import { getCurrentProgram } from "$firebase/services/programService";
+    import { 
+        getCurrentProgram,
+        moveExerciseToEnd,
+    } from "$firebase/services/programService";
     import {
         completeExercise,
         skipExercise,
@@ -31,6 +34,8 @@
         weight: 0,
     };
     let isCompleting = false;
+    let showSkipOptions = false;
+    let isMovingExercise = false;
 
     onMount(async () => {
         try {
@@ -96,6 +101,21 @@
             : 0;
     }
 
+    // Check if the current exercise is the last one in the program
+    function isLastExercise(): boolean {
+        if (!program || !currentExercise) return false;
+
+        const currentIndex = program.exercises.findIndex(
+            (ex) => ex.exerciseId === currentExercise?.exerciseId,
+        );
+        
+        const remainingExercises = program.exercises.filter(
+            (ex, index) => index > currentIndex && !ex.completed && !ex.skipped
+        );
+        
+        return remainingExercises.length === 0;
+    }
+
     function getProjectedStatsIncrease() {
         if (!stats || !currentExercise) return null;
         
@@ -159,13 +179,26 @@
         }
     }
 
-    async function handleSkip() {
+    // Skip options modal
+    function handleSkipClick() {
+        // If current exercise is the last one, skip without asking
+        if (isLastExercise()) {
+            handleSkipExercise();
+            return;
+        }
+        
+        showSkipOptions = true;
+    }
+
+    // Skip the exercise (mark as too painful)
+    async function handleSkipExercise() {
         if (!$authStore.currentUser || !currentExercise) {
             error = "No exercise selected.";
             return;
         }
 
         try {
+            showSkipOptions = false;
             await skipExercise(
                 $authStore.currentUser.uid,
                 currentExercise.exerciseId,
@@ -175,6 +208,35 @@
             console.error("Error skipping exercise:", err);
             error =
                 err instanceof Error ? err.message : "Failed to skip exercise";
+        }
+    }
+
+    async function handleMoveToEnd() {
+        if (!$authStore.currentUser || !currentExercise) {
+            error = "No exercise selected.";
+            return;
+        }
+
+        try {
+            isMovingExercise = true;
+            
+            const nextExerciseId = await moveExerciseToEnd(
+                $authStore.currentUser.uid,
+                currentExercise.exerciseId
+            );
+            
+            showSkipOptions = false;
+            
+            if (nextExerciseId) {
+                goto(`/exploration/firebase-test/exercise-flow/${nextExerciseId}`);
+            } else {
+                goto("/exploration/firebase-test/program-complete");
+            }
+        } catch (err) {
+            console.error("Error moving exercise to end:", err);
+            error = err instanceof Error ? err.message : "Failed to move exercise";
+        } finally {
+            isMovingExercise = false;
         }
     }
 
@@ -236,6 +298,10 @@
             console.error("Error navigating to next exercise:", err);
             goto("/exploration/firebase-test/program-view");
         }
+    }
+
+    function handleCancelSkip() {
+        showSkipOptions = false;
     }
 </script>
 
@@ -397,7 +463,7 @@
                 >
                     {isCompleting ? "Completing..." : "Complete Exercise"}
                 </button>
-                <button class="skip-btn" on:click={handleSkip}>
+                <button class="skip-btn" on:click={handleSkipExercise}>
                     Skip Exercise
                 </button>
             </div>

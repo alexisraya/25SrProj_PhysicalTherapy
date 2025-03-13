@@ -2,7 +2,7 @@
     import { typography } from '$lib/design-system';
 
     export let statTitle: string;
-    export let stat: string;
+    export let stat: number;
 </script>
 
 <div class="program-stat-container">
@@ -20,7 +20,7 @@
     .program-stat-container {
         display: flex;
         column-gap: 24px;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         width: 155px;
         height: 98px;

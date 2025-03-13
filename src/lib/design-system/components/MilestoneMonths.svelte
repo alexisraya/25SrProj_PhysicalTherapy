@@ -35,6 +35,7 @@
     .active-container {
         width: 119px;
         height: 70px;
+        margin: 0 -29px;
     }
     .milestone-month {
         position: absolute;

@@ -4,11 +4,12 @@
     export let isDisabled = false;
     export let buttonType = "primary"; // "primary" or "secondary"
     export let cta: string;
+    export let onClickFunc;
 
 </script>
 
 
-<button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled}>
+<button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled} on:click={onClickFunc}>
 
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}
