@@ -11,6 +11,8 @@
     $: stats = data.stats;
     $: weeklyProgress = data.weeklyProgress;
     $: error = data.error;
+
+    console.log(data);
     
     // Determine if we're in a loading state
     $: loading = !error && !program && !stats && !weeklyProgress;
@@ -38,7 +40,7 @@
                     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Exercise Summary</p>
                     <div class="horizontal-box"></div>
                     <div class="completed-exerecises-container">
-                        {#each program.exercises.filter((ex) => ex.completed) as exercise}
+                        {#each program.exercises.filter((ex) => ex.completed || ex.skipped) as exercise}
                             <ExerciseCard isComplete exerciseName={exercise.exerciseName} isTooPainful={exercise.skipped} cardType="summary"/>
                         {/each}
                     </div>

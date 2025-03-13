@@ -84,6 +84,7 @@
                             : "Failed to load program",
                     );
                 } finally {
+                    console.log($program);
                     isLoading.set(false);
                 }
             }
@@ -301,7 +302,7 @@
             <div class="your-program-title-container--text">
                 <h3 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h3}; font-weight: {typography.fontWeights.medium};">Your Program</h3>
                 <div class="your-program-title-container--details">
-                    <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">~{$program?.estimatedTime} Min</p>
+                    <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};" class="time">~{$program?.estimatedTime} Min</p>
                     {#each equipment as eq}
                             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">•</p>
                             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{eq}</p>
@@ -382,6 +383,10 @@
         display: flex;
         justify-content: flex-start;
         column-gap: 8px;
+    }
+    .your-program-title-container--details p{
+        width: fit-content;
+        max-width: 65px;
     }
     .play-btn {
         background-color: transparent;

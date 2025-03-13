@@ -114,6 +114,9 @@
             console.error("Error loading exercise:", err);
             error = err instanceof Error ? err.message : "An unknown error occurred";
         } finally {
+            console.log("CURRENT EXERCISE REPS")
+            console.log(currentExercise?.reps);
+            console.log(adjustedValues);
             loading = false;
         }
     }
@@ -295,7 +298,7 @@
             <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
             <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
             <ExerciseModel modelPath="/models/SmallTest2.glb" />
-            <ExerciseInfoBlock exerciseName={currentExercise.exerciseName} sets={currentExercise.adjustedSets} reps={currentExercise.adjustedReps} time={currentExercise.adjustedSeconds} steps={currentExercise.adjustedSteps} weight={currentExercise.adjustedWeight} equipment={currentExercise.equipment}/>
+            <ExerciseInfoBlock exerciseName={currentExercise.exerciseName} sets={adjustedValues.sets} reps={adjustedValues.reps} time={adjustedValues.seconds} steps={adjustedValues.steps} weight={adjustedValues.weight} equipment={currentExercise.equipment}/>
         </div>
         <div class="exercise_container-bottom">
             <div class="exercise_description">

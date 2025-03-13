@@ -2,6 +2,7 @@
     import { typography } from "$lib/design-system/typography";
     import Editicon from '$lib/assets/iconography/EditIcon.svg';
     import DoneIcon from '$lib/assets/iconography/DoneIcon.svg';
+    import { niceNum } from "chart.js/helpers";
     
     // Props for the exercise information
     export let exerciseName: string | null = null;
@@ -26,7 +27,12 @@
     console.log(time);
     console.log("sets");
     console.log(sets);
+    console.log("reps");
+    console.log(reps);
     console.log(editedSets);
+    console.log("equipment");
+    console.log(equipment);
+    console.log(equipment!=null);
     
     // Toggle edit mode
     function toggleEdit() {
@@ -102,7 +108,6 @@
                     />
                     <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">lbs</span>
                 </div>
-                <div class="line"></div>
             {/if}
             {#if time && time != 0}
                 <div class="edit-field">
@@ -115,7 +120,6 @@
                     />
                     <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">secs</span>
                 </div>
-                <div class="line"></div>
             {/if}
             {#if steps && steps != 0}
                 <div class="edit-field">
@@ -128,9 +132,11 @@
                     />
                     <span style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">steps</span>
                 </div>
-                <div class="line"></div>
             {/if}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
+            {#if equipment!=null}
+                <div class="line"></div>
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
+            {/if}
         {:else}
             <!-- Display view -->
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{sets} sets</p>
@@ -139,17 +145,17 @@
             <div class="line"></div>
             {#if weight && weight != 0}
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{weight}lbs</p>
-                <div class="line"></div>
             {/if}
             {#if time && time != 0}
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{time} secs</p>
-                <div class="line"></div>
             {/if}
             {#if steps && steps != 0}
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{steps} steps</p>
-                <div class="line"></div>
             {/if}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
+            {#if equipment!=null}
+                <div class="line equipment"></div>
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">{equipment}</p>
+            {/if}
         {/if}
     </div>
 </div>
