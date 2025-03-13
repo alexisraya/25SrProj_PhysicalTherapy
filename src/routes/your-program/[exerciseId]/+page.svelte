@@ -12,7 +12,7 @@
     import { page } from "$app/stores";
     import { goto } from "$app/navigation";
     import { authStore } from "$stores/authStore";
-    import { getCurrentProgram } from "$firebase/services/programService";
+    import { getCurrentProgram, moveExerciseToEnd } from "$firebase/services/programService";
     import { completeExercise, skipExercise } from "$firebase/services/userexerciseService";
     import { getUserStats, checkAndResetProgress } from "$firebase/services/statService";
     import type { Program, UserStats, AssignedExercise } from "$firebase/types/userType";
@@ -143,29 +143,37 @@
     }
 
     async function handleAddToEnd() {
-        if (!$authStore.currentUser || !currentExercise) {
-            error = "No exercise selected.";
-            return;
-        }
-
-        try {
-            modalOpen = false;
-            interstitialType = "skipped";
-            showInterstitial = true;
-
-            
-            program = await getCurrentProgram($authStore.currentUser.uid);
-            completedExercises = program?.exercises?.filter(ex => ex.completed).length ?? 0;
-            
-            await navigateToNext();
-        } catch (err) {
-            console.error("Error handling exercise:", err);
-            error = err instanceof Error ? err.message : "Failed to process exercise";
-        } finally {
-            interstitialType = null;
-            showInterstitial = false;
-        }
+    if (!$authStore.currentUser || !currentExercise) {
+        error = "No exercise selected.";
+        return;
     }
+
+    try {
+        modalOpen = false;
+        interstitialType = "skipped";
+        showInterstitial = true;
+        
+        const nextExerciseId = await moveExerciseToEnd(
+            $authStore.currentUser.uid,
+            currentExercise.exerciseId
+        );
+        
+        program = await getCurrentProgram($authStore.currentUser.uid);
+        completedExercises = program?.exercises?.filter(ex => ex.completed).length ?? 0;
+        
+        if (nextExerciseId) {
+            goto(`/your-program/${nextExerciseId}`);
+        } else {
+            goto("/your-program/interstital");
+        }
+    } catch (err) {
+        console.error("Error handling exercise:", err);
+        error = err instanceof Error ? err.message : "Failed to process exercise";
+    } finally {
+        interstitialType = null;
+        showInterstitial = false;
+    }
+}
 
     async function handleSkip() {
         if (!$authStore.currentUser || !currentExercise) {
