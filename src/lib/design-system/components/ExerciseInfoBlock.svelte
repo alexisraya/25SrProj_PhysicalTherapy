@@ -160,6 +160,7 @@ h5, p {
 }
 .exercise_info {
     position: relative;
+    bottom: 15px;
     background: var(--color-grey-opactity-dark);
     border-radius: 30px;
     color: var(--color-blue-1100);
@@ -168,7 +169,8 @@ h5, p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 343px;
+    min-width: 268px;
+    max-width: 80%;
 }
 .exercise_text--description {
     display: flex;
@@ -176,7 +178,9 @@ h5, p {
     justify-content: center;
     column-gap: 12px;
     height: 45px;
+    text-align: center;
 }
+
 .line{
     border: 0.5px solid var(--color-purple-100);
     height: 28px;
@@ -191,7 +195,7 @@ h5, p {
     width: 25px;
     height: 25px;
     position: absolute;
-    left: 0px;
+    right: 0px;
     top: 0px;
     cursor: pointer;
 }
@@ -200,7 +204,7 @@ h5, p {
     border: 1px solid var(--color-purple-100);
     border-radius: 4px;
     padding: 2px 4px;
-    width: 26px;
+    width: 14px;
     max-width: 26px;
     text-align: center;
     color: var(--color-blue-1100);

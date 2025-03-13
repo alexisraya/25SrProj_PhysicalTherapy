@@ -446,8 +446,8 @@
         align-items: center;
         width: 100%;
         min-height: 515px;
-        border-radius: 0 0 60px 60px;
-        padding: 20px;
+        border-radius: 0 0 44px 44px;
+        padding: 20px 20px 0px 20px;
     }
     /* Rest of your styles remain the same */
     .exercise_nav {
