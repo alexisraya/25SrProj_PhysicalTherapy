@@ -34,7 +34,10 @@
                     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Program Summary</p>
                     <div class="horizontal-box"></div>
                     <!-- TODO: Alexis check Streak with Sabrina -->
-                    <Streak streakType="program" streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak} streakDaysCompleted={weeklyProgress.daysCompleted} overallStreak={stats?.completedPrograms}/>
+                    <Streak streakType="program" 
+                    streakTotalDays={5} 
+                    streakDaysCompleted={weeklyProgress.daysCompleted} 
+                    overallStreak={stats?.currentStreak}/>
                 </div>
                 <div class="exercise-summary">
                     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Exercise Summary</p>
