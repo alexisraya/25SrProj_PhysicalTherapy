@@ -51,8 +51,10 @@
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI;
-    controls.minDistance = 10;
+    // Prevent looking up by setting minimum polar angle to 90 degrees (horizontal)
+    controls.minPolarAngle = Math.PI / 2; // This prevents looking up above the horizontal plane
+    controls.maxPolarAngle = Math.PI / 2; // Allow full downward rotation
+    controls.minDistance = 50;
     controls.maxDistance = 500;
 
     // Animation loop
