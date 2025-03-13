@@ -25,6 +25,7 @@
     import { goto } from "$app/navigation";
 
     let isEditing = false;
+    // TODO: Alexis update button copy
     let buttonLabel = "Mark them complete here";
 
     let program = writable<Program | null>(null);

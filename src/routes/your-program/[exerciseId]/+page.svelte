@@ -26,6 +26,7 @@
     import ModificationsIcon from "$lib/assets/iconography/ModificationsIcon.svg";
     import SelectModelIcon from "$lib/assets/iconography/SelectModelIcon.svg";
     import { browser } from "$app/environment";
+    import SkipModal from "$lib/design-system/components/SkipModal.svelte";
 
     let currentExercise: AssignedExercise | null = null;
     let program: Program | null = null;
@@ -54,6 +55,7 @@
     };
 
     let detailsInitialized = false;
+    let modalOpen: boolean = false;
 
     function initializeDetails() {
         if (browser) {
@@ -68,25 +70,6 @@
                 });
             }, 50);
         }
-    }
-    
-    // Function to toggle a specific section
-    function toggleSection(section: keyof typeof sectionsOpen) {
-        sectionsOpen[section] = !sectionsOpen[section];
-    }
-    
-    // Function to open all sections
-    function openAllSections() {
-        Object.keys(sectionsOpen).forEach(key => {
-            sectionsOpen[key as keyof typeof sectionsOpen] = true;
-        });
-    }
-    
-    // Function to close all sections
-    function closeAllSections() {
-        Object.keys(sectionsOpen).forEach(key => {
-            sectionsOpen[key as keyof typeof sectionsOpen] = false;
-        });
     }
 
     function parseInstructions(text: string) {
@@ -154,6 +137,35 @@
 
         initializeDetails();
     });
+    
+    function openModal(): void {
+        modalOpen = true;
+    }
+
+    async function handleAddToEnd() {
+        if (!$authStore.currentUser || !currentExercise) {
+            error = "No exercise selected.";
+            return;
+        }
+
+        try {
+            modalOpen = false;
+            interstitialType = "skipped";
+            showInterstitial = true;
+
+            
+            program = await getCurrentProgram($authStore.currentUser.uid);
+            completedExercises = program?.exercises?.filter(ex => ex.completed).length ?? 0;
+            
+            await navigateToNext();
+        } catch (err) {
+            console.error("Error handling exercise:", err);
+            error = err instanceof Error ? err.message : "Failed to process exercise";
+        } finally {
+            interstitialType = null;
+            showInterstitial = false;
+        }
+    }
 
     async function handleSkip() {
         if (!$authStore.currentUser || !currentExercise) {
@@ -162,6 +174,9 @@
         }
 
         try {
+            modalOpen = false;
+            interstitialType = "too-painful";
+            showInterstitial = true;
             // Update Firebase
             await skipExercise(
                 $authStore.currentUser.uid,
@@ -177,70 +192,11 @@
             console.error("Error skipping exercise:", err);
             error = err instanceof Error ? err.message : "Failed to skip exercise";
         }
-    }
-
-    /**
-    async function handleComplete() {
-        if (!$authStore.currentUser || !currentExercise) {
-            error = "No exercise selected.";
-            return;
-        }
-
-        try {
-            interstitialType = "completed";
-            showInterstitial = true;
-            console.log("Before completing exercise:", currentExercise.exerciseId);
-            
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            // Update Firebase
-            await completeExercise(
-                $authStore.currentUser.uid,
-                currentExercise.exerciseId,
-                adjustedValues
-            );
-            
-            console.log("After completing exercise, fetching updated program");
-            
-            // Explicitly refresh the program data before navigating
-            program = await getCurrentProgram($authStore.currentUser.uid);
-            console.log("Updated program:", program);
-            
-            completedExercises = program?.exercises?.filter(ex => ex.completed).length ?? 0;
-            console.log("Completed exercises count:", completedExercises);
-            
-            await navigateToNext();
-        } catch (err) {
-            console.error("Error completing exercise:", err);
-            error = err instanceof Error ? err.message : "Failed to complete exercise";
-        } finally {
+        finally {
             interstitialType = null;
             showInterstitial = false;
         }
     }
-
-    async function navigateToNext() {
-        if (!$authStore.currentUser || !currentExercise) return;
-
-        try {
-            program = await getCurrentProgram($authStore.currentUser.uid);
-            if (!program || !program.exercises.length) {
-                goto("/your-program");
-                return;
-            }
-
-            const nextExercise = program.exercises.find(ex => !ex.completed && !ex.skipped);
-            if (nextExercise) {
-                goto(`/your-program/${nextExercise.exerciseId}`);
-                await tick();
-            } else {
-                goto("/your-program/interstital");
-            }
-        } catch (err) {
-            console.error("Error navigating to next exercise:", err);
-        }
-    }
-   **/
 
     async function handleComplete() {
         if (!$authStore.currentUser || !currentExercise) {
@@ -410,10 +366,11 @@
         </div>
         <div class="buttons">
             <div class="skip_btn">
-            <Button cta="Skip" buttonType="secondary" onClickFunc={handleSkip}/>
+            <Button cta="Skip" buttonType="secondary" onClickFunc={openModal}/>
             </div>
             <HoldToComplete nextPage="" navigateFunc={handleComplete}/>
         </div>
+        <SkipModal bind:open={modalOpen} handleTooPainful={handleSkip} handleAddToEnd={handleAddToEnd}/>
     {/if}
 </div>
 

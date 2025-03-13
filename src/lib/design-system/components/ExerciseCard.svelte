@@ -77,7 +77,7 @@
             </button>
          {:else if orderable && !isComplete}
             <img src={DraggableIcon} alt="draggable dots" />
-         {:else if isComplete}            
+         {:else if isComplete || isTooPainful}            
             <CompletedCheckmark isTooPainful={isTooPainful}/>
          {/if}
     </div>
@@ -96,13 +96,14 @@
         justify-content: space-between;
         padding: 12px;
         cursor: pointer;
+        width: 100%;
     }
-    .your-program {
+    /* .your-program {
         width: 326px;
     }
     .summary {
         width: 100%;
-    }
+    } */
     .exercise-container--left {
         display: flex;
         flex-direction: column;
