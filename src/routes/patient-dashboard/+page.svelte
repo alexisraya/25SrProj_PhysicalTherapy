@@ -16,6 +16,8 @@
     import Chart from '$lib/design-system/components/Chart.svelte';
     import UserExerciseView from '$lib/design-system/components/UserExerciseView.svelte';
     import Streak from '$lib/design-system/components/Streak.svelte';
+    import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
+    import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
 
     // let user = null;
     // let userData = null;
@@ -86,8 +88,17 @@
     <Streak streakType="home" streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak} streakDaysCompleted={weeklyProgress.daysCompleted} overallStreak={stats?.completedPrograms}/>
     <div class="break"/>
     <div class="metrics-container">
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
-        <Chart />
+        <div class="metrics-header">
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
+            <PainMoodDropdown />
+        </div>
+        
+        <!-- <Chart /> -->
+         <div class="no-metrics-container">
+            <img src={NoMetricsIcon} alt="indeterminate icon" />
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">No metrics yet</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Complete your check in to see up-to-date data here</p>
+         </div>
     </div>
 </div>
 {:else}
@@ -180,7 +191,27 @@
         flex-direction: column;
         row-gap: 12px;
         align-items: flex-start;
+        width: 100%;
     }
+
+    .metrics-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .no-metrics-container {
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        max-width: 182px;
+        margin-top: 32px;
+    }
+
     @media (min-width: 505px) {
         .background-wave {
             content: url('/background-images/home-background-large.svg');

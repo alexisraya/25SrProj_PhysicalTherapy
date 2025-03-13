@@ -386,6 +386,7 @@
     .play-btn {
         background-color: transparent;
         border: 0;
+        padding: 0;
     }
     .play-btn-img {
         width: 90px;
