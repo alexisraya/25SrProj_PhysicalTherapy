@@ -37,12 +37,23 @@
 		});
 		return unsubscribe;
 	});
+
+	function shouldShowNav(path: string) {
+        // For "/your-progress" but not "/your-progress/goals"
+        if (path === "/your-progress") return true;
+		if (path === "/patient-dashboard") return true;
+		if (path === "/your-program") return true;
+		if (path === "/your-program/summary") return true;
+		if (path === "/profile") return true;
+
+		return false;
+	}
 </script>
 
 <ThemeProvider>
 	<div class="main-container">
-		{#if $page.url.pathname != "/login"}
-		<Nav />
+		{#if shouldShowNav($page.url.pathname)}
+			<Nav />
 		{/if}
 		<slot />
 	</div>

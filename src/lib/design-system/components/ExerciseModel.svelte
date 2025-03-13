@@ -7,7 +7,7 @@
   export let modelPath = ''; // Path to the 3D model
   let container;
   let mixer; // Animation mixer
-
+// limit zoom in and out, x axis, y axis. intial camera view
   onMount(() => {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 1, 1000);
@@ -29,16 +29,16 @@
     const loader = new GLTFLoader();
     loader.load(
       modelPath,
-      (gltf) => {
-        const model = gltf.scene;
+      (glb) => {
+        const model = glb.scene;
         model.scale.set(30, 30, 30);
         model.position.set(-2, -20, 0);
         scene.add(model);
 
         // Handle animations
-        if (gltf.animations.length > 0) {
+        if (glb.animations.length > 0) {
           mixer = new THREE.AnimationMixer(model);
-          const action = mixer.clipAction(gltf.animations[0]); // Play the first animation
+          const action = mixer.clipAction(glb.animations[0]); // Play the first animation
           action.loop = THREE.LoopRepeat; // Make it loop
           action.play();
         }

@@ -122,8 +122,8 @@
 
                 // Optional: Delay navigation for smooth transition
                 setTimeout(() => {
-                    navigateFunc()
-                    radius = 0
+                    navigateFunc();
+                    radius = 0;
                 }, 300); // Adjust delay as needed
             }
         }, 5);

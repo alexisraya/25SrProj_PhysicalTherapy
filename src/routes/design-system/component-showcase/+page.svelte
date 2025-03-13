@@ -16,6 +16,8 @@
     import CharacterSelect from "$lib/design-system/components/CharacterSelect.svelte";
     import ExerciseInfoBlock from "$lib/design-system/components/ExerciseInfoBlock.svelte";
     import InfoModal from "$lib/design-system/components/InfoModal.svelte";
+    import Skeleton from "$lib/design-system/components/Skeleton.svelte";
+    import SkipModal from "$lib/design-system/components/SkipModal.svelte";
 
 </script>
 
@@ -143,6 +145,12 @@
             <InfoModal isLocked isGoal infoName="Goal"/>
         </div>
         
+    </div>
+
+    <!-- Skeleton Block -->
+    <div class="component-section">
+        <h2>Skeleton Loader</h2>
+        <Skeleton />
     </div>
 </div>
 

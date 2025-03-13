@@ -2,24 +2,30 @@
     import Icon from "./Icon.svelte";
     import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import { typography } from "$lib/design-system/typography";
+    import { goto } from "$app/navigation";
 
     export let type: string; // "program", "milestones"
     export let achievementDescription: string;
+
+    const onClick = () => {
+        goto('/your-progress/achievements');
+    }
 </script>
 
-<div class="achievement-card-container {type}">
+<button class="achievement-card-container {type}" on:click={onClick}>
     <div class="achievement-header">
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Achievements</p>
         <img src={RightArrow} alt="rigth arrow" />
     </div>
     <div class="achievement-body">
-        <div class="achievement-image-container" >
+        <!-- TODO: ALEXIS make dynamic -->
+        <div class="achievement-image-container" > 
             <Icon name="polar-bear" size="small"/>
         </div>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{achievementDescription}</p>
     </div>
     
-</div>
+</button>
 
 <style>
     p {
@@ -27,13 +33,16 @@
     }
 
     .achievement-card-container {
+        position: relative;
         display: flex;
         flex-direction: column;
         row-gap: 12px;
         border-radius: 4px;
         border: 1px solid var(--color-yellow-600);
         background: var(--color-yellow-100);
-        padding: 16px 12px 12px 12px;
+        padding: 12px;
+        cursor: pointer;
+        z-index: 5;
     }
 
     .milestones {
@@ -50,6 +59,7 @@
         display: flex;
         flex-direction: column;
         row-gap: 8px;
+        text-align: left;
     }
 
     .achievement-image-container {

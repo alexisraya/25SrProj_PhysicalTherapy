@@ -4,7 +4,19 @@
 
     export let achievementTitle: string;
     export let achievementMark: string;
+    export let achievementValue: number;
     export let isLocked= false;
+
+    let valueLabel = `${achievementValue} ${achievementMark}`
+
+    if (achievementMark=="seconds" && achievementValue>=60) {
+        const minutes = Math.floor(achievementValue / 60);
+        const seconds = achievementValue % 60;
+
+        seconds > 0
+            ? valueLabel = `${minutes}m ${seconds}s`
+            : valueLabel = `${minutes} minutes`;
+    }
 </script>
 
 <div class="achievement-card-container">
@@ -21,7 +33,7 @@
         {:else}
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;">{achievementTitle}</p>
         {/if}
-        <p class="achievement-mark" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">{achievementMark}</p>
+        <p class="achievement-mark" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">{valueLabel}</p>
     </div>
     
 </div>

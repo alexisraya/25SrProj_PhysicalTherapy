@@ -29,5 +29,10 @@
         justify-content: center;
         border-radius: 4px;
         height: 44px;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+    .check-in-item-container:active {
+        transform: scale(95%);
     }
 </style>
