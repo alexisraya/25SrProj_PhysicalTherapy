@@ -5,10 +5,8 @@
 export type ContentKey = 
   // Home page
   | 'home_program_cta_1'
-  
-  // Program CTAs
-  | 'program_cta_2'
-  | 'program_cta_3'
+  | 'home_program_cta_2'
+  | 'home_program_cta_3'
   
   // Complete messages
   | 'complete_1'
@@ -59,13 +57,11 @@ export const toneContent: ToneContentDictionary = {
     "tough": "No excuses—start your program.",
     "kind": "Start your program for today."
   },
-  
-  // Program CTAs
-  "program_cta_2": {
+    "home_program_cta_2": {
     "tough": "Get to it— your program won't do itself.",
     "kind": "You've got this—let's start your program!"
   },
-  "program_cta_3": {
+  "home_program_cta_3": {
     "tough": "Want results? Start your program.",
     "kind": "Time to start your program!"
   },

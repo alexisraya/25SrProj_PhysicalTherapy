@@ -18,8 +18,7 @@
     import Streak from '$lib/design-system/components/Streak.svelte';
     import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
-    import { toneStore } from '$stores/toneStore.ts';
-    import { toneContent } from '$lib/toneContent.ts';
+    import { getTone } from '$lib/helpers/toneContext.js';
 
     // let user = null;
     // let userData = null;
@@ -36,9 +35,12 @@
     $: loading = !error && !program && !stats && !weeklyProgress;
 
     //Tone Text
-    $: homeCTALabel = $toneStore.currentTone === 'tough' 
-        ? toneContent[`home_program_cta_1`]?.tough 
-        : toneContent[`home_program_cta_1`]?.kind;
+    const programCTATextOptions = [`home_program_cta_1`, `home_program_cta_2`, `home_program_cta_3`];
+    const programCTAText = programCTATextOptions[Math.floor(Math.random() * programCTATextOptions.length)];
+    const { tone, text } = getTone();
+    // $: homeCTALabel = $toneStore.currentTone === 'tough' 
+    //     ? toneContent[programCTAText]?.tough 
+    //     : toneContent[programCTAText]?.kind;
 
 
     /* Sab Commented this out for now  */
@@ -85,7 +87,7 @@
     <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{homeCTALabel}</p>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{$text('home_program_cta_1')}</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
