@@ -14,14 +14,19 @@ export type ContentKey =
   | 'complete_3'
   
   // Check-in feelings
-  | 'checkin_motivated'
-  | 'hopeful'
-  | 'indifferent'
-  | 'uncertain'
-  | 'discouraged'
+  | 'motivated_title'
+  | 'motivated_subtitle'
+  | 'hopeful_title'
+  | 'hopeful_subtitle'
+  | 'indifferent_title'
+  | 'indifferent_subtitle'
+  | 'uncertain_title'
+  | 'uncertain_subtitle'
+  | 'discouraged_title'
+  | 'discouraged_subtitle'
   
   // Streaks
-  | 'streak_complete_na'
+  | 'streak_complete'
   
   // Goal complete variants
   | 'goal_complete_1'
@@ -59,7 +64,7 @@ export const toneContent: ToneContentDictionary = {
   },
     "home_program_cta_2": {
     "tough": "Get to it— your program won't do itself.",
-    "kind": "You've got this—let's start your program!"
+    "kind": "You’ve got this—let's start your program!"
   },
   "home_program_cta_3": {
     "tough": "Want results? Start your program.",
@@ -76,94 +81,114 @@ export const toneContent: ToneContentDictionary = {
     "kind": "You did it—today's program is complete!"
   },
   "complete_3": {
-    "tough": "You finished what you started. Next.",
-    "kind": "Great job completing your program today!"
+    "tough": "Program's done for today—don’t let up.",
+    "kind": "Great work! You finished today's program!"
   },
   
   // Check-in feelings
-  "checkin_motivated": {
-    "tough": "Channel that motivation into your recovery.",
-    "kind": "That's wonderful to hear! Use that motivation to keep going."
+  "motivated_title": {
+    "tough": "You’re motivated? Prove it.",
+    "kind": "Keep channeling that motivation"
   },
-  "hopeful": {
-    "tough": "Hope isn't enough. Action is what gets results.",
-    "kind": "That's a positive mindset to have. Let's build on that hope!"
+  "motivated_subtitle": {
+    "tough": "90% of people improved their quality of life with PT. Join them.",
+    "kind": "90% of people improved their quality of life with PT—you’re on your way!"
   },
-  "indifferent": {
-    "tough": "Indifference leads to mediocre results. Choose better.",
-    "kind": "That's okay. Some days are just like that. Let's work through it together."
+  "hopeful_title": {
+    "tough": "Intention is nice. Execution is better.",
+    "kind": "Belief opens the door to possibility."
   },
-  "uncertain": {
-    "tough": "Uncertainty is just an excuse. Commit and move forward.",
-    "kind": "It's normal to have uncertain days. Let's take it one step at a time."
+  "hopeful_subtitle": {
+    "tough": "79% saw pain relief by doing the work. Pain won't fix itself.",
+    "kind": "79% saw pain relief with PT—stick with it!"
   },
-  "discouraged": {
-    "tough": "Everyone faces setbacks. The strong push through anyway.",
-    "kind": "I'm sorry you're feeling discouraged. Remember each day is a new opportunity."
+  "indifferent_title": {
+    "tough": "Comfort is the enemy of growth.",
+    "kind": "Small steps today, big leaps tomorrow."
+  },
+  "indifferent_subtitle": {
+    "tough": "25% of adults experience knee pain—now is the time to do something about it.",
+    "kind": "25% of adults experience knee pain—you're not alone."
+  },
+  "uncertain_title": {
+    "tough": "Stop overthinking, and start moving.",
+    "kind": "It will be okay—just trust the process"
+  },
+  "uncertain_subtitle": {
+    "tough": "70% show improvement with PT—why not you?",
+    "kind": "70% people show improvement with PT—recovery is possible"
+  },
+  "discouraged_title": {
+    "tough": "Recovery isn't supposed to be easy, so keep pushing.",
+    "kind": "Recovery is tough, but it does get better."
+  },
+  "discouraged_subtitle": {
+    "tough": "3 out of 4 adults improve or fully recover from a knee injury after a year—don't be the one who doesn't.",
+    "kind": "75% of adults with knee injuries improve or fully recover after one year—you can too"
   },
   
   // Streak related
-  "streak_complete_na": {
-    "tough": "One day down. Keep the momentum going.",
-    "kind": "You've started a streak! Keep up the great work!"
+  "streak_complete": {
+    "tough": "Nice work—now prove you can keep it going next week",
+    "kind": "Nice work on your program this week. Keep it up!"
   },
   
   // Goal complete variants
   "goal_complete_1": {
-    "tough": "Goal achieved. Set a bigger one.",
-    "kind": "Congratulations on achieving your goal!"
+    "tough": "You met that goal—time to aim higher.",
+    "kind": "Great job working towards this goal!"
   },
   "goal_complete_2": {
-    "tough": "You hit your target. Now raise the bar.",
-    "kind": "You've reached your goal! That's something to celebrate!"
+    "tough": "Now it's time to crush the next one.",
+    "kind": "Nice job hitting this goal—keep it up!"
   },
   "goal_complete_3": {
-    "tough": "Goal complete. What's next?",
-    "kind": "Goal accomplished! You should be proud of yourself!"
+    "tough": "Don't stop now, look towards the next one.",
+    "kind": "Celebrate this win—you deserve it!"
   },
   
   // Recap measurements
   "recap_rom_decrease": {
-    "tough": "Your range decreased. Work harder next time.",
-    "kind": "Your range of motion has decreased slightly. Let's focus on gentle stretching."
+    "tough": "This happens—but what you do next matters. Stick with your program.",
+    "kind": "Don't worry, this can happen. Your program will help get these numbers up!"
   },
   "rom_steady": {
-    "tough": "Your range stayed the same. Push for improvement.",
-    "kind": "Your range of motion is holding steady. That's still progress!"
+    "tough": "Stick with it, and you’ll see improvement.",
+    "kind": "This is still progress—gains are coming!"
   },
   "rom_increase": {
-    "tough": "Range improved. Keep pushing those limits.",
-    "kind": "Your range of motion has improved! That's wonderful progress!"
+    "tough": "There’s more work to do—don’t stop now.",
+    "kind": "Keep it up—the numbers will keep rising!"
   },
   "strength_decrease": {
-    "tough": "Your strength decreased. Time to step it up.",
-    "kind": "Your strength has decreased a bit. Let's adjust and build back up."
+    "tough": "This is normal. Put in the work, and you'll get back on track.",
+    "kind": "This is normal. Keep up with your program and you'll get back on track!"
   },
   "strength_steady": {
-    "tough": "Strength maintained. Now aim for gains.",
-    "kind": "Your strength is holding steady. That's consistency at work!"
+    "tough": "Keep at it—every rep counts.",
+    "kind": "Stay mentally strong—results will follow!"
   },
   "strength_increase": {
-    "tough": "Strength up. That's what happens when you put in the work.",
-    "kind": "Your strength has increased! Your hard work is paying off!"
+    "tough": "Nice progress—now keep raising the bar.",
+    "kind": "This is the result of your hard work!"
   },
   "goals": {
-    "tough": "Goals: complete.",
-    "kind": "You've achieved your goals!"
+    "tough": "Impressive—now let’s tackle the next one.",
+    "kind": "This is a big step in your recovery!"
   },
   
   // Program interstitial
   "you_did_it_bubble": {
-    "tough": "Did it. Next.",
-    "kind": "You did it!"
+    "tough": "That wasn't so bad, was it?",
+    "kind": "Your hard work is paying off"
   },
   "nice_work_star": {
-    "tough": "Work done.",
-    "kind": "Nice work!"
+    "tough": "Put in the same effort next time",
+    "kind": "You're making real progress"
   },
   "way_to_go_stairs": {
-    "tough": "Progress made.",
-    "kind": "Way to go!"
+    "tough": "Now stay the course",
+    "kind": "You're one step closer to recovery"
   }
 };
 
