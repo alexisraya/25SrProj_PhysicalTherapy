@@ -5,7 +5,7 @@
     import Streak from '$lib/design-system/components/Streak.svelte';
     import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
-    import { getTone } from '$lib/helpers/toneContext.js';
+    import { getTone } from '$lib/helpers/toneContext';
 
     export let data;
 
