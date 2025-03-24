@@ -18,6 +18,8 @@
     import Streak from '$lib/design-system/components/Streak.svelte';
     import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
+    import { toneStore } from '$stores/toneStore.ts';
+    import { toneContent } from '$lib/toneContent.ts';
 
     // let user = null;
     // let userData = null;
@@ -32,6 +34,11 @@
     
     // Determine if we're in a loading state
     $: loading = !error && !program && !stats && !weeklyProgress;
+
+    //Tone Text
+    $: homeCTALabel = $toneStore.currentTone === 'tough' 
+        ? toneContent[`home_program_cta_1`]?.tough 
+        : toneContent[`home_program_cta_1`]?.kind;
 
 
     /* Sab Commented this out for now  */
@@ -78,7 +85,7 @@
     <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">Start your program for today</p>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{homeCTALabel}</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
