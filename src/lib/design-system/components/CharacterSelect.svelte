@@ -54,6 +54,9 @@
         align-items: center;
         column-gap: 16px;
     }
+    .select-character-section * {
+        transition: ease-in-out 0.2s;
+    }
     .character {
         border-radius: 10px;
         position: relative;
@@ -89,9 +92,11 @@
     /* Styling for the selected character */
     .selected {
         border: 1px solid var(--color-blue-1100);
+        transition: ease-in-out 0.2s;
     }
     .selected-overlay {
-        display: none;
+        transition: ease-in-out 0.2s;
+        opacity: 0;    
     }
     .selected-name {
         color: var(--color-grey-0) !important;
