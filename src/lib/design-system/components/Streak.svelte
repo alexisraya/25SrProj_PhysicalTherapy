@@ -26,15 +26,15 @@
     <div class="streaks-container">
         {#each Array(streakDaysCompleted).fill(0) as _, i}
             <div class="streak-container">
-                <div class="streak completed {streakType!=="home" ? 'tall' : ''}"></div>
+                <div class="streak completed {streakType!=='home' ? 'tall' : ''} {i === streakDaysCompleted - 1 ? 'animate-fill' : ''}"></div>
                 {#if streakType=="home"}
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+1}</p>
+                    <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+1}</p>
                 {/if}
             </div>
         {/each}
         {#each Array(remainingDays).fill(0) as _, i}
             <div class="streak-container">
-                <div class="streak {streakType!=="home" ? 'tall' : ''}"></div>
+                <div class="streak {streakType!=='home' ? 'tall' : ''}"></div>
                 {#if streakType=="home"}
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Day {i+streakDaysCompleted+1}</p>
                 {/if}
@@ -100,12 +100,26 @@
     .completed {
         background-color: var(--color-purple-600);
     }
+    .animate-fill {
+        transform: scaleX(0); /* Start from zero width */
+        transform-origin: left; /* Expand from the left */
+        animation: fillAnimation 1s ease-in-out forwards;
+    }
+
+    @keyframes fillAnimation {
+        from {
+            transform: scaleX(0);
+        }
+        to {
+            transform: scaleX(1);
+        }
+    }
     .program-days-container {
         display: flex;
         align-items: flex-end;
         column-gap: 6px;
     }
-    .program-days-container p{
+    .program-days-container p {
         padding-bottom: 5px;
     }
     .streak-count {
