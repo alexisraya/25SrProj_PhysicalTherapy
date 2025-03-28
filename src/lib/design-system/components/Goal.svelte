@@ -54,7 +54,7 @@
   }
 
   .unlocked {
-    background-color: var(--color-blue-200);
+    background-color: var(--color-blue-550);
   }
 
   .locked {
