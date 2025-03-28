@@ -5,7 +5,6 @@
 	import { userStore } from "../stores/userStore";
 	import { programStore } from "../stores/programStore";
 	import { goalStore } from "../stores/goalStore";
-	import ThemeProvider from "$lib/design-system/ThemeProvider.svelte";
 	import '../app.css';
     import Nav from "$lib/design-system/components/Nav.svelte";
 	import { page } from '$app/stores';
@@ -50,19 +49,14 @@
 	}
 </script>
 
-<ThemeProvider>
-	<div class="main-container">
-		{#if shouldShowNav($page.url.pathname)}
-			<Nav />
-		{/if}
-		<slot />
-	</div>
-</ThemeProvider>
+<div class="main-container">
+	{#if shouldShowNav($page.url.pathname)}
+		<Nav />
+	{/if}
+	<slot />
+</div>
 
 <style>
-	/* * {
-		line-height: 150%;
-	} */
 	.main-container {
 		padding: 0;
 	}

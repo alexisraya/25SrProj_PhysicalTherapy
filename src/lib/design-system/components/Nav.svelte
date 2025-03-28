@@ -7,6 +7,7 @@
     import ProgressIcon from "$lib/assets/iconography/ProgressIcon.svg";
     import ProgramIcon from "$lib/assets/iconography/ProgramIcon.svg";
     import ProfileIcon from "$lib/assets/iconography/ProfileIcon.svg";
+    import ThemeToggle from './ThemeToggle.svelte';
 
     let isOpen = writable(false);
 

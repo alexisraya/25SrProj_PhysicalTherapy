@@ -78,16 +78,26 @@
     --color-grey-400: #6F7679;
     --color-grey-opactity-dark: #FFFFFF50;
   
-    /* Other Colors */
-    --color-primary-text: var(--color-blue-1100);
-    --color-secondary-text: var(--color-blue-300);
-  
-    /* Button-specific */
-    --button-primary-bg: var(--color-blue-1100);
-    --button-primary-disabled-bg: var(--color-blue-50);
-    --button-secondary-border: var(--color-blue-110);
-    --button-secondary-disabled-border: var(--color-blue-50);
+    /* Base Light Mode Theme */
+    --text-primary: var(--color-blue-1100);
+    --background: var(--color-grey-0);
+    --background-break: var(--color-blue-50);
+
+    /* Component Specific Light Mode Theme*/
+    --progress-bar-empty: var(--color-purple-200);
+    --progress-bar-filled: var(--color-purple-600);
   }
+
+  [data-theme="dark"] {
+    /* Dark mode overrides */
+    --text-primary: var(--color-grey-0);
+    --background: var(--color-blue-1100);
+    --background-break: var(--color-blue-1000);
+    
+    /* Component-specific variables for dark mode */
+    --progress-bar-empty: var(--color-purple-opacity);
+    --progress-bar-filled: var(--color-purple-550);
+  }  
   
 
 @font-face {
@@ -120,10 +130,11 @@
 
 body {
     font-family: 'Albert Sans', sans-serif;
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
+    background-color: var(--background);
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
     margin: 0;
 }
