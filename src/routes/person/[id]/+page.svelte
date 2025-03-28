@@ -339,6 +339,11 @@
                 isLoading={isAssigning}
             />
         </div>
+        <div class="pain-logs-section">
+            <h2>Exercise Pain Logs</h2>
+            <p>View logs of exercises the patient marked as too painful to complete.</p>
+            <a href="/person/{patient.userId}/pain-logs" class="logs-btn">View Pain Logs</a>
+        </div>
         <div class="goals-section">
             <h2>Patient Goals</h2>
             <p class="goals-hint">
@@ -672,5 +677,22 @@
         border: none;
         border-radius: 0.25rem;
         cursor: pointer;
+    }
+
+    .pain-logs-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: #f9fafb;
+        border-radius: 0.5rem;
+    }
+    
+    .logs-btn {
+        display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 0.25rem;
     }
 </style>
