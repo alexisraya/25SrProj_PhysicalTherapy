@@ -52,9 +52,9 @@
             </div>
         </div>
 
-        <div>
-            <ToneSwitch />
+        <div class="toggles-container">
             <ThemeToggle />
+            <ToneSwitch />
         </div>
     </div>
 </nav>
@@ -63,8 +63,8 @@
     nav {
         background-color: transparent;
         padding: 10px 20px;
-        color: var(--color-blue-1100);
-        position: fixed; /* Changed from absolute to fixed */
+        color: var(--text-primary);
+        position: fixed;
         top: 0;
         right: 0;
         z-index: 100;
@@ -81,25 +81,25 @@
         display: none;
         flex-direction: column;
         justify-content: space-between;
-        background-color: var(--color-blue-50);
-        position: fixed; /* Changed from relative to fixed */
-        top: 0; /* Changed from -34px to 0 */
-        right: 0; /* Changed from -20px to 0 */
+        background-color: var(--background-secondary);
+        position: fixed;
+        top: 0;
+        right: 0;
         padding: 74px 16px 24px 16px;
         height: 100vh;
-        width: 277px; /* Explicitly set width */
-        box-sizing: border-box; /* Added to ensure padding is included in width/height */
-        overflow-y: auto; /* Added to handle content that might overflow */
+        width: 277px;
+        box-sizing: border-box;
+        overflow-y: auto;
     }
   
     .menu a {
         display: block;
         text-decoration: none;
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
     }
 
     .menu-items {
-        display: flex; /* Added display: flex */
+        display: flex;
         flex-direction: column;
         row-gap: 22px;
     }
@@ -116,7 +116,14 @@
     }
 
     .menu-item.active {
-        background-color: #fff; /* Highlight active menu item */
+        background-color: var(--background);
+    }
+
+    .toggles-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        row-gap: 16px;
     }
   
     .hamburger {

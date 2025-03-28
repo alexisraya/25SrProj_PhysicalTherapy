@@ -71,7 +71,7 @@
         position: relative;
         width: 100vw;
         height: 8px;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
     }
     .background-wave {
         position: absolute;
@@ -100,44 +100,6 @@
         justify-content: center;
         align-items: center;
         row-gap: 8px;
-    }
-    .program-streak-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        row-gap: 12px;
-    }
-    .program-streak-container--title {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-    }
-    .program-title--streak {
-        display: flex;
-        column-gap: 4px;
-    }
-    .program-streak-container--streaks {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        column-gap: 2px;
-    }
-    .streak-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        row-gap: 8px;
-    }
-    .streak-item--rect {
-        height: 12px;
-        width: 100%;
-        background-color: var(--color-purple-200);
-        border-radius: 4px;
-    }
-    .day-one {
-        background-color: var(--color-purple-600);
     }
 
     .metrics-container {

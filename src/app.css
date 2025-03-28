@@ -81,22 +81,38 @@
     /* Base Light Mode Theme */
     --text-primary: var(--color-blue-1100);
     --background: var(--color-grey-0);
-    --background-break: var(--color-blue-50);
+    --background-secondary: var(--color-blue-50);
 
     /* Component Specific Light Mode Theme*/
-    --progress-bar-empty: var(--color-purple-200);
-    --progress-bar-filled: var(--color-purple-600);
+    --streak-empty: var(--color-purple-200);
+    --streak-filled: var(--color-purple-600);
+    --streak-background: var(--color-purple-100);
+    --streak-border: var(--color-purple-600);
+    --streak-tall-empty: var(--color-purple-300)
+
+    --button-primary-bg: var(--color-blue-1100);
+    --button-primary-disabled-bg: var(--color-blue-50);
+    --button-secondary-border: var(--color-blue-1100);
+    --button-secondary-disabled-border: var(--color-blue-50);
   }
 
   [data-theme="dark"] {
     /* Dark mode overrides */
     --text-primary: var(--color-grey-0);
     --background: var(--color-blue-1100);
-    --background-break: var(--color-blue-1000);
+    --background-secondary: var(--color-blue-1000);
     
     /* Component-specific variables for dark mode */
-    --progress-bar-empty: var(--color-purple-opacity);
-    --progress-bar-filled: var(--color-purple-550);
+    --streak-empty: var(--color-purple-opacity);
+    --streak-filled: var(--color-purple-550);
+    --streak-background: var(--color-purple-opacity);
+    --streak-border: var(--color-purple-550);
+    --streak-tall-empty: var(--color-purple-opacity);
+
+    --button-primary-bg: var(--color-grey-0);
+    --button-primary-disabled-bg: var(--color-blue-1000);
+    --button-secondary-border: var(--color-grey-0);
+    --button-secondary-disabled-border: var(--color-blue-800);
   }  
   
 

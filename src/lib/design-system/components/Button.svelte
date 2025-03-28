@@ -65,7 +65,7 @@
     .secondary {
         background-color: transparent;
         color: var(--button-secondary-border);
-        border: 1px solid var(--color-blue-1100);
+        border: 1px solid var(--button-secondary-border);
     }
 
     /* Secondary Hover */
