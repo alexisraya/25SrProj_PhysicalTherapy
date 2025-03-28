@@ -85,8 +85,7 @@
         height: 100vh;
         overflow: hidden;
         transform: translateX(100%); /* Start off-screen */
-        transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
-        opacity: 0; /* Start hidden */
+        transition: transform 0.3s ease-out;
     }
 
     /* Show when menu is open */
