@@ -11,6 +11,10 @@ Interfaces:
 • AssignedExercise
 • Program
 • UserStats
+• TooPainfulLog
+• RangeOfMotion
+• Strength
+• UserMetrics
 
 * ------------------------- exerciseType.ts ------------------------- *
 Interfaces:
@@ -68,6 +72,22 @@ Achievement Functions:
 - checkAchievements()
 - getUserAchievements()
 
+* ------------------------- metricsService.ts ------------------------- *
+Handles Range of Motion and Strength for the user
+
+Functions:
+- getUserMetrics()
+- updateRangeOfMotion()
+- updateStrength()
+- deleteRangeOfMotion()
+- deleteStrength()
+
+* ------------------------- tooPainfulService.ts ------------------------- *
+Handle "Too Painful to complete" Logs
+
+Functions:
+- logTooPainful()
+- getTooPainfulLogs()
 
 * ------------------------- statService.ts ------------------------- *
 Handles statistics tracking, streak management, and progress resets
