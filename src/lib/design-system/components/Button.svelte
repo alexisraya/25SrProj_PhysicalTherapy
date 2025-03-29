@@ -1,5 +1,6 @@
 <script lang="ts">
     import { typography } from '$lib/design-system';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     export let isDisabled = false;
     export let buttonType = "primary"; // "primary" or "secondary"
@@ -12,7 +13,7 @@
 
 <button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled} on:click={onClickFunc}>
     {#if buttonIcon}
-        <img src={buttonIcon} alt="button icon" />
+        <RemixIcon name={buttonIcon} />
     {/if}
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}

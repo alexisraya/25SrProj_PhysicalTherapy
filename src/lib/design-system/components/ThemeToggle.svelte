@@ -1,6 +1,8 @@
 <!-- ThemeToggle.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+    // import 'remixicon/fonts/remixicon.css';
     
     type Theme = 'light' | 'dark';
     
@@ -39,10 +41,10 @@
       <input type="checkbox" checked={theme === 'dark'} on:change={toggleTheme}>
       <span class="slider">
         <span class="icon sun">
-            <img src="/icons/remix/sun.svg" alt="sun" />
+          <RemixIcon name="sun-line" color="var(--color-grey-0)" />
         </span>
         <span class="icon moon">
-            <img src="/icons/remix/moon.svg" alt="moon" />
+          <RemixIcon name="moon-line" color="var(--color-blue-1100)"/>
         </span>
       </span>
     </label>

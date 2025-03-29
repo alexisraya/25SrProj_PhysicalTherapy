@@ -1,14 +1,9 @@
 <script>
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
-    import NavIcon from "$lib/assets/iconography/NavIcon.svg";
-    import CloseIcon from "$lib/assets/iconography/CloseIcon.svg";
-    import HomeIcon from "$lib/assets/iconography/HomeIcon.svg";
-    import ProgressIcon from "$lib/assets/iconography/ProgressIcon.svg";
-    import ProgramIcon from "$lib/assets/iconography/ProgramIcon.svg";
-    import ProfileIcon from "$lib/assets/iconography/ProfileIcon.svg";
     import ToneSwitch from './ToneSwitch.svelte';
     import ThemeToggle from './ThemeToggle.svelte';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     let isOpen = writable(false);
 
@@ -24,30 +19,30 @@
 <nav>
     <div class="nav-container">
         <button on:click={toggleMenu} class="hamburger">
-            <img class="hamburger-icon" alt="nav icon" src={NavIcon} />
+            <RemixIcon name="menu-3-line" />
         </button>
     </div>
 
     <!-- Subscribe to isOpen using $ -->
     <div class={$isOpen ? 'menu show-menu' : 'menu'}>
         <button class="close-button" on:click={closeMenu}>
-            <img class="close-icon" src={CloseIcon} alt="close button icon" />
+            <RemixIcon name="close-fill" />
         </button>
         <div class='menu-items'>
             <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
-                <img class="nav-icon" src={HomeIcon} alt="home icon"/>
+                <RemixIcon name="dashboard-line" />
                 <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
             </div>
             <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
-                <img class="nav-icon" src={ProgressIcon} alt="progress icon"/>
+                <RemixIcon name="line-chart-line" />
                 <a href="/your-progress" on:click={closeMenu}>Progress</a>
             </div>
             <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
-                <img class="nav-icon" src={ProgramIcon} alt="program icon"/>
+                <RemixIcon name="list-check-2" />
                 <a href="/your-program" on:click={closeMenu}>Program</a>
             </div>
             <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
-                <img class="nav-icon" src={ProfileIcon} alt="profile icon"/>
+                <RemixIcon name="user-3-line" />
                 <a href="/profile" on:click={closeMenu}>Profile</a>
             </div>
         </div>

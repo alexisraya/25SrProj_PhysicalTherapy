@@ -1,8 +1,8 @@
 <script lang="ts">
     import Icon from "./Icon.svelte";
-    import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import { typography } from "$lib/design-system/typography";
     import { goto } from "$app/navigation";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
 
     export let type: string; // "program", "milestones"
     export let achievementDescription: string;
@@ -15,7 +15,7 @@
 <button class="achievement-card-container {type}" on:click={onClick}>
     <div class="achievement-header">
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Achievements</p>
-        <img src={RightArrow} alt="rigth arrow" />
+        <RemixIcon name="arrow-right-s-line" />
     </div>
     <div class="achievement-body">
         <!-- TODO: ALEXIS make dynamic -->

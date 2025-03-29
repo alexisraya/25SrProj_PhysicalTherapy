@@ -1,7 +1,6 @@
 <script lang="ts">
     import { typography, Colors } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
-    import EditPencil from "$lib/assets/iconography/EditPencil.svg";
     import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
 
     import { onMount } from "svelte";
@@ -23,6 +22,7 @@
     import { authStore } from "$stores/authStore";
     import { writable } from "svelte/store";
     import { goto } from "$app/navigation";
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     let isEditing = false;
     // TODO: Alexis update button copy
@@ -338,13 +338,13 @@
         </div>
 
         <div class="exercise-message-container">
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: {Colors.grey[300]};">Already completed some exercises today?</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;">Already completed some exercises today?</p>
             <button 
                 class="exercise-edit-button" 
                 on:click={toggleEditMode}
                 disabled={isSaving}
             >
-                <img src={EditPencil} alt="edit pencil"/>
+                <RemixIcon name={isEditing ? "check-line" : "pencil-fill"} size="12px"/>
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">
                     {isSaving ? 'Saving...' : buttonLabel}
                 </p>

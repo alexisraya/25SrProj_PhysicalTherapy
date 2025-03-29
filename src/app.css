@@ -1,3 +1,5 @@
+@import 'remixicon/fonts/remixicon.css';
+
 :root {
     /* Blue Palette */
     --color-blue-50: #F1F6F8;
@@ -80,6 +82,7 @@
   
     /* Base Light Mode Theme */
     --text-primary: var(--color-blue-1100);
+    --text-secondary: var(--color-grey-400);
     --background: var(--color-grey-0);
     --background-secondary: var(--color-blue-50);
 
@@ -88,17 +91,22 @@
     --streak-filled: var(--color-purple-600);
     --streak-background: var(--color-purple-100);
     --streak-border: var(--color-purple-600);
-    --streak-tall-empty: var(--color-purple-300)
+    --streak-tall-empty: var(--color-purple-300);
+    --streak-complete: var(--color-yellow-600);
 
     --button-primary-bg: var(--color-blue-1100);
     --button-primary-disabled-bg: var(--color-blue-50);
     --button-secondary-border: var(--color-blue-1100);
     --button-secondary-disabled-border: var(--color-blue-50);
+
+    --too-painful-circle: var(--color-yellow-600);
+    --complete-circle: var(--color-green-600);
   }
 
   [data-theme="dark"] {
     /* Dark mode overrides */
     --text-primary: var(--color-grey-0);
+    --text-secondary: var(--color-grey-300);
     --background: var(--color-blue-1100);
     --background-secondary: var(--color-blue-1000);
     
@@ -108,11 +116,15 @@
     --streak-background: var(--color-purple-opacity);
     --streak-border: var(--color-purple-550);
     --streak-tall-empty: var(--color-purple-opacity);
+    --streak-complete: var(--color-yellow-550);
 
     --button-primary-bg: var(--color-grey-0);
     --button-primary-disabled-bg: var(--color-blue-1000);
     --button-secondary-border: var(--color-grey-0);
     --button-secondary-disabled-border: var(--color-blue-800);
+
+    --too-painful-circle: var(--color-yellow-550);
+    --complete-circle: var(--color-green-550);
   }  
   
 
@@ -153,4 +165,8 @@ body {
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary);
     margin: 0;
+}
+
+a {
+    text-decoration: none;
 }

@@ -3,9 +3,9 @@
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
     import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
     import Streak from '$lib/design-system/components/Streak.svelte';
-    import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
     import { getTone } from '$lib/helpers/toneContext';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     export let data;
 
@@ -49,7 +49,7 @@
         
         <!-- <Chart /> -->
          <div class="no-metrics-container">
-            <img src={NoMetricsIcon} alt="indeterminate icon" />
+            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)"/>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">No metrics yet</p>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Complete your check in to see up-to-date data here</p>
          </div>
@@ -118,6 +118,7 @@
     }
 
     .no-metrics-container {
+        color: var(--text-secondary);
         align-self: center;
         display: flex;
         flex-direction: column;

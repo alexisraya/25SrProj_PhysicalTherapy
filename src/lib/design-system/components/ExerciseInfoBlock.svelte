@@ -1,8 +1,6 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
-    import Editicon from '$lib/assets/iconography/EditIcon.svg';
-    import DoneIcon from '$lib/assets/iconography/DoneIcon.svg';
-    import { niceNum } from "chart.js/helpers";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
     
     // Props for the exercise information
     export let exerciseName: string | null = null;
@@ -66,9 +64,9 @@
 <div class="exercise_info">
     <button class="edit_btn" on:click={toggleEdit}>
         {#if isEditing}
-            <img src={DoneIcon} alt="edit btn"/>
+            <RemixIcon name="check-fill" color="var(--color-blue-1100" size="15px" />
         {:else}
-            <img src={Editicon} alt="edit btn"/>
+            <RemixIcon name="pencil-fill" color="var(--color-blue-1100" size="15px" />
         {/if}
     </button>
     <h5 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.h5}; font-weight: {typography.fontWeights.bold};">{exerciseName}</h5>

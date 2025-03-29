@@ -1,11 +1,10 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { typography } from "$lib/design-system";
-    import RightArrow from '$lib/assets/iconography/RightArrow.svg';
-    import DraggableIcon from '$lib/assets/iconography/DraggableIcon.svg';
     import CheckboxEmptyIcon from '$lib/assets/iconography/CheckboxExmptyIcon.svg';
     import CheckboxSelectedIcon from '$lib/assets/iconography/CheckboxSelectedIcon.svg'; 
     import CompletedCheckmark from "$lib/design-system/components/CompletedCheckmark.svelte";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
     
     export let orderable = false;
     export let editMode = false;
@@ -42,7 +41,7 @@
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">
                 {exerciseName}
             </p>
-            <img src={RightArrow} alt="Right Arrow" />
+            <RemixIcon name="arrow-right-s-line" />
         </div>
         {#if !isComplete}
         <div class="tags-container">
@@ -70,13 +69,14 @@
                 on:click={toggleCheckbox}
                 aria-label={isSelected ? "Deselect exercise" : "Select exercise"}
             >
+            <!-- TODO: ALEXIS check icon w Cam and Dane -->
                 <img 
                     src={isSelected || isComplete ? CheckboxSelectedIcon : CheckboxEmptyIcon} 
                     alt={isSelected ? "Selected" : "Not selected"} 
                 />
             </button>
          {:else if orderable && !isComplete}
-            <img src={DraggableIcon} alt="draggable dots" />
+            <RemixIcon name="draggable" />
          {:else if isComplete || isTooPainful}            
             <CompletedCheckmark isTooPainful={isTooPainful}/>
          {/if}

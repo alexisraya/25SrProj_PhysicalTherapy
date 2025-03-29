@@ -1,6 +1,6 @@
 <script lang="ts">
     import Icon from "$lib/design-system/components/Icon.svelte";
-    import CloseIcon from "$lib/assets/iconography/CloseIcon.svg";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
     import { typography } from "../typography";
 
     export let isGoal = false;
@@ -14,7 +14,7 @@
 </script>
 <div class="modal-container">
     <button class="close-button" on:click={closeModal}>
-        <img class="close-icon" src={CloseIcon} alt="close button icon" />
+        <RemixIcon name="close-line" />
     </button>
     <div class="modal-icon-container {isGoal ? 'goal' : 'achievement'}">
         {#if isLocked}

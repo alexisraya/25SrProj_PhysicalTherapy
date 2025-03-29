@@ -1,6 +1,6 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
-    import StreakComplete from "$lib/assets/iconography/StreakCompleted.svg";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
 
     export let streakType: string; // "home", "milestones", or "program"
     export let streakTotalDays: number;
@@ -18,7 +18,7 @@
         {/if}
         <div class="streak-count">
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">{overallStreak}</p>
-            <img class="streak-icon" src={StreakComplete} alt="lightning"/>
+            <RemixIcon name="flashlight-fill" color="var(--streak-complete)"/>
         </div>
     </div>
     <div class="streaks-container">

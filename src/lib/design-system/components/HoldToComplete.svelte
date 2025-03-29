@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte';
     import { Colors, typography } from '$lib/design-system';
-    import RightArrow from '$lib/assets/iconography/RightArrow.svg';
     import { goto } from '$app/navigation'; // Import SvelteKit navigation for page transition
     import { browser } from '$app/environment';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     export let nextPage: string;
     export let navigateFunc;
@@ -161,7 +161,7 @@
 <div class="hold_to_complete_container">
     <div class="hold_to_complete_label">
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Hold to complete</p>
-        <img src={RightArrow} alt="right arrow"/>
+        <RemixIcon name="arrow-right-s-line" />
     </div>
     <div class="press_hold_btn_container"> 
         <button
