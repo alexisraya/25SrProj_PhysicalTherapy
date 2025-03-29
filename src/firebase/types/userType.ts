@@ -89,3 +89,21 @@ export interface TooPainfulLog {
     exerciseType: 'distance' | 'weight' | 'time';
     loggedAt: string;
 }
+
+/* ------------------------- METRICS (ROM AND STRENGTH) DETAILS ------------------------- */
+export interface RangeOfMotion {
+    month: number;
+    degrees: number;
+}
+
+export interface Strength {
+    month: number;
+    strengthScale: number;
+}
+
+export interface UserMetrics {
+    userId: string;
+    rangeOfMotion: RangeOfMotion[];
+    strength: Strength[];
+    updatedAt: string;
+}
