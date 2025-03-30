@@ -2,6 +2,7 @@
     import { typography, Colors } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
     import EditPencil from "$lib/assets/iconography/EditPencil.svg";
+    import CheckmarkSmall from "$lib/assets/iconography/CheckmarkSmall.svg";
     import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
 
     import { onMount } from "svelte";
@@ -27,6 +28,7 @@
     let isEditing = false;
     // TODO: Alexis update button copy
     let buttonLabel = "Mark them complete here";
+    let buttonIcon = EditPencil;
 
     let program = writable<Program | null>(null);
     let stats = writable<UserStats | null>(null);
@@ -250,6 +252,7 @@
             // Exit edit mode
             isEditing = false;
             buttonLabel = "Mark them complete here";
+            buttonIcon = EditPencil
             resetSelections();
             
         } catch (err) {
@@ -283,11 +286,13 @@
                 saveCompletedExercises();
             } else {
                 isEditing = false;
-                buttonLabel = "Mark them complete here";
+                buttonLabel = "Mark exercises you've completed";
+                buttonIcon = EditPencil
             }
         } else {
             isEditing = true;
             buttonLabel = "Save changes";
+            buttonIcon = CheckmarkSmall
             resetSelections();
         }
     }
@@ -338,13 +343,13 @@
         </div>
 
         <div class="exercise-message-container">
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: {Colors.grey[300]};">Already completed some exercises today?</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: {Colors.grey[300]};">Started your program already?</p>
             <button 
                 class="exercise-edit-button" 
                 on:click={toggleEditMode}
                 disabled={isSaving}
             >
-                <img src={EditPencil} alt="edit pencil"/>
+                <img src={buttonIcon} alt="button-icon"/>
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">
                     {isSaving ? 'Saving...' : buttonLabel}
                 </p>
@@ -381,12 +386,15 @@
     }
     .your-program-title-container--details {
         display: flex;
+        flex-wrap: wrap;
+        width: 100%;
         justify-content: flex-start;
         column-gap: 8px;
     }
     .your-program-title-container--details p{
         width: fit-content;
-        max-width: 65px;
+        line-height: 0;
+        /* max-width: 65px; */
     }
     .play-btn {
         background-color: transparent;
@@ -407,6 +415,7 @@
     }
     .exercise-message-container {
         margin-top: 12px;
+        line-height: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -415,13 +424,14 @@
     }
     .exercise-edit-button {
         background-color: transparent;
-        border: 2px solid var(--color-blue-50);
+        line-height: 0px;
+        border: 1px solid var(--color-grey-400);
         border-radius: 999px;
         display: flex;
         align-items: center;
         justify-content: center;
         column-gap: 8px;
-        padding: 12px 32px;
+        padding: 8px 32px;
         cursor: pointer;
     }
 </style>
