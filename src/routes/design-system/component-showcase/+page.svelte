@@ -3,7 +3,7 @@
     import DoubleButton from "$lib/design-system/components/DoubleButton.svelte";
     import HoldToComplete from "$lib/design-system/components/HoldToComplete.svelte";
     import Goal from "$lib/design-system/components/Goal.svelte";
-    import { defaultGoals } from "$lib/design-system/components/Goal.svelte";    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
+    import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
     import StatBlock from "$lib/design-system/components/StatBlock.svelte";
     import CheckInPain from "$lib/design-system/components/CheckInPain.svelte";
     import CheckInMood from "$lib/design-system/components/CheckInMood.svelte";
@@ -19,6 +19,12 @@
     import Skeleton from "$lib/design-system/components/Skeleton.svelte";
     import SkipModal from "$lib/design-system/components/SkipModal.svelte";
 
+    const defaultGoals = [
+        { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false },
+        { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time" },
+        { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false },
+        { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time" }
+    ];
 </script>
 
 <div class="container">
