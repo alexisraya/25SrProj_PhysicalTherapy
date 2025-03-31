@@ -2,6 +2,7 @@
     import MoodCheckInItem from "$lib/design-system/components/MoodCheckInItem.svelte";
     import { scale } from 'svelte/transition';
     import { onMount } from 'svelte';
+    import { setMoodLevel } from '$stores/checkInStore';
     
     let numbers = Array.from({ length: 5 }, (_, i) => i + 1);
     let selectedRating: number | null = null;
@@ -13,6 +14,7 @@
 
     function handleSelect(event: CustomEvent<number>) {
         selectedRating = event.detail;
+        setMoodLevel(selectedRating);
         selectedRatingImg = moodIcons[selectedRating-1];
     }
 

@@ -16,6 +16,7 @@ import { assignGoalsToUser, initializeUserAchievements, checkAchievements } from
 const db = getFirestore();
 
 interface AuthState {
+    userId: any;
     isLoading: boolean;
     currentUser: any | null;
     error: string | null;
@@ -23,13 +24,17 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
+    userId: null,
     isLoading: true,
     currentUser: null,
     error: null,
     isTherapist: false
 };
 
+
 export const authStore = writable<AuthState>(initialState);
+
+export const userId = derived(authStore, $state => $state.userId);
 export const currentUser = derived(authStore, $state => $state.currentUser);
 export const isLoading = derived(authStore, $state => $state.isLoading);
 export const isAuthenticated = derived(authStore, $state => !!$state.currentUser);
@@ -117,7 +122,6 @@ export const authHandlers = {
     }
 };
 
-// Initialize auth state listener
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
         console.warn("No user signed in.");
@@ -140,6 +144,7 @@ onAuthStateChanged(auth, async (user) => {
             const userData = userSnap.exists() ? userSnap.data() : {};
             
             authStore.set({
+                userId: user.uid,
                 isLoading: false,
                 currentUser: {
                     ...user,
