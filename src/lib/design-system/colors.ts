@@ -75,18 +75,18 @@ export const Colors = {
     300: '#9BA1A3',
     400: '#6F7679',
     500: '#FFFFFF20',
-    600: '#FFFFFF50'
-  }
+    600: '#FFFFFF50',
+  },
 };
 
 export const lightColors = {
-  background: "#FFFFFF",
+  background: '#FFFFFF',
   text: Colors.blue[1100],
 };
 
 export const darkColors = {
   background: Colors.blue[1100],
-  text: "#F3F2ED",
+  text: '#F3F2ED',
 };
 
 export type ColorScheme = typeof lightColors;

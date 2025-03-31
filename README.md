@@ -3,6 +3,7 @@
 A web application built with SvelteKit and designed in Figma, created as part of a senior project. Deployed and hosted on Vercel.
 
 ## 📋 Table of Contents
+
 - [Project Setup](#project-setup)
 - [Development](#development)
 - [Building](#building)
@@ -46,12 +47,14 @@ npm run dev -- --open
 ### Contributing to the Project
 
 1. **Clone the Repository**
+
    ```bash
    git clone [repository-url]
    cd [project-name]
    ```
 
 2. **Create a New Branch**
+
    ```bash
    # Create a branch using a descriptive name
    git checkout -b your-feature-name
@@ -60,11 +63,13 @@ npm run dev -- --open
    ```
 
 3. **Make Your Changes**
+
    - Write clean, documented code
    - Follow existing code style and patterns
    - Test your changes locally
 
 4. **Start the Development Server**
+
    ```bash
    npm run dev
 
@@ -73,17 +78,20 @@ npm run dev -- --open
    ```
 
 5. **Commit Your Changes**
+
    ```bash
    git add .
    git commit -m "descriptive commit message"
    ```
 
    Commit message guidelines:
+
    - Be clear and descriptive
    - Start with a verb (add, fix, update, etc.)
    - Reference issue numbers if applicable
 
 6. **Push to GitHub**
+
    ```bash
    git push origin your-branch-name
    ```
@@ -97,6 +105,7 @@ npm run dev -- --open
    - Request review from project maintainers
 
 ### Pull Request Guidelines
+
 - Link related issues (if applicable)
 - Include screenshots for UI changes
 - Describe what was changed
@@ -110,10 +119,12 @@ npm run dev -- --open
 This project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
 
 ### Production Environment
+
 - Production URL: https://mend.vercel.app/
 - Production Branch: main
 
 ### Preview Environments
+
 - Every pull request gets a unique preview deployment
 - Preview URLs are automatically posted in PR comments
 - Great for testing changes before merging to main
@@ -125,6 +136,7 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Getting Started with QA Testing
 
 1. **Setup Requirements**
+
    - Request collaborator access from the development team
    - Familiarize yourself with the GitHub Issues tab
 
@@ -135,6 +147,7 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
    - User experience evaluation
 
 ### Testing Environments
+
 - Production: https://mend.vercel.app/
 - Preview: Check PR comments for preview URLs
 - Local: http://localhost:5173 (when running `npm run dev`)
@@ -142,24 +155,28 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Testing Checklist
 
 #### Design Verification
+
 - Compare implementation against Figma designs
 - Check spacing, colors, and typography
 - Verify responsive behavior
 - Test dark/light mode (if applicable)
 
 #### Functionality Testing
+
 - Test all interactive elements
 - Complete end-to-end user flows
 - Verify edge cases and error states
 - Test with various input types
 
 #### Responsive Testing
+
 - Test on different screen sizes
 - Check both orientations (landscape/portrait)
 - Verify content alignment
 - Ensure readability across devices
 
 #### User Experience
+
 - Identify unclear interactions
 - Verify feedback mechanisms
 - Test loading states
@@ -185,12 +202,14 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Best Practices
 
 1. **Before Reporting**
+
    - Check if the issue has already been reported
    - Test on different browsers/devices
    - Specify which environment (production/preview/local) the issue was found in
    - Gather all necessary screenshots/recordings
 
 2. **Writing the Report**
+
    - Use clear, descriptive titles
    - Provide step-by-step reproduction steps
    - Include visual evidence

@@ -24,72 +24,149 @@
       <button class="edit_btn">
         <img src={Editicon} />
       </button>
-      <h5 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.h5}; font-weight: {typography.fontWeights.bold};">Long Sitting Quad Set</h5>
+      <h5
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .h5}; font-weight: {typography.fontWeights.bold};"
+      >
+        Long Sitting Quad Set
+      </h5>
       <div class="exercise_text--description">
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3 sets</p>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          3 sets
+        </p>
         <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">10 reps</p>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          10 reps
+        </p>
         <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">3lbs</p>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          3lbs
+        </p>
         <div class="line"></div>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Kettle Bell</p>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          Kettle Bell
+        </p>
       </div>
     </div>
   </div>
   <div class="exercise_container-bottom">
     <div class="exercise_description">
       <div class="exercise_description--section">
-        <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Instructions</h6>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
-          These are instructions on how you should do this exercise and some tips on good form! yay wahoo
+        <h6
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography
+            .lineHeight.expanded}"
+        >
+          Instructions
+        </h6>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography
+            .lineHeight.expanded}"
+        >
+          These are instructions on how you should do this exercise and some tips on good form! yay
+          wahoo
         </p>
       </div>
       <div class="exercise_description--section">
-        <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Information</h6>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
-          This exercise helps to strengthen your quad muscle. The motion mimics walking up the stairs and will help you achieve your goal. 
+        <h6
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography
+            .lineHeight.expanded}"
+        >
+          Information
+        </h6>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography
+            .lineHeight.expanded}"
+        >
+          This exercise helps to strengthen your quad muscle. The motion mimics walking up the
+          stairs and will help you achieve your goal.
         </p>
       </div>
       <div class="exercise_description--section">
-          <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
-          <div class="select-character-section">
-            <div class="character selected">
-              <img class="character--img selected-img" src={Character} alt="Character" />
-              <div class="character--overlay selected-overlay"></div>
-              <div class="character--name selected-name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}" class="selected-name">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
-            </div>
-            <div class="character">
-              <img src={Character} alt="Character" />
-              <div class="character--overlay"></div>
-              <div class="character--name">
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography.lineHeight.expanded}">Name</p>
-              </div>
+        <h6
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography
+            .lineHeight.expanded}"
+        >
+          Select model
+        </h6>
+        <div class="select-character-section">
+          <div class="character selected">
+            <img class="character--img selected-img" src={Character} alt="Character" />
+            <div class="character--overlay selected-overlay"></div>
+            <div class="character--name selected-name">
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography
+                  .lineHeight.expanded}"
+                class="selected-name"
+              >
+                Name
+              </p>
             </div>
           </div>
+          <div class="character">
+            <img src={Character} alt="Character" />
+            <div class="character--overlay"></div>
+            <div class="character--name">
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography
+                  .lineHeight.expanded}"
+              >
+                Name
+              </p>
+            </div>
+          </div>
+          <div class="character">
+            <img src={Character} alt="Character" />
+            <div class="character--overlay"></div>
+            <div class="character--name">
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .regular}; font-weight: {typography.fontWeights.medium}; line-height: {typography
+                  .lineHeight.expanded}"
+              >
+                Name
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <!-- TODO: ALEXIS this will be a component later -->
   <div class="buttons">
     <div class="skip_btn">
-      <Button cta="Skip" buttonType="secondary"/>
+      <Button cta="Skip" buttonType="secondary" />
     </div>
     <div class="hold_to_complete_container">
       <div class="hold_to_complete_label">
-          <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">hold to complete</p>
-          <img src={RightArrow} />
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          hold to complete
+        </p>
+        <img src={RightArrow} />
       </div>
       <!-- NOTE: THIS SHOULD NOT GO TO YOUR-PROGRESS BUT BACK TO THE YOUR PROGRAM IN A DIFF STATE -->
-      <a href="/your-progress"> 
+      <a href="/your-progress">
         <img src={HoldToCompleteButton} />
       </a>
     </div>
@@ -97,7 +174,9 @@
 </div>
 
 <style>
-  h5, h6, p{
+  h5,
+  h6,
+  p {
     margin: 0;
   }
   .page_container {
@@ -109,7 +188,7 @@
   }
   .exercise_container--top {
     box-sizing: border-box;
-    background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
+    background: linear-gradient(to bottom, var(--color-purple-550), #6c5786); /*TODO: ALEXIS*/
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -142,7 +221,7 @@
   }
   .exercise_info {
     position: relative;
-    background: rgba(255, 255, 255, 0.50);
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 30px;
     color: var(--color-blue-1100);
     padding: 12px 40px;
@@ -151,7 +230,7 @@
     align-items: center;
     justify-content: center;
   }
-  .line{
+  .line {
     border: 0.5px solid var(--color-purple-100);
     height: 28px;
   }
@@ -256,7 +335,7 @@
     flex-shrink: 0;
     padding-bottom: 16px;
   }
-  .skip_btn{
+  .skip_btn {
     padding-left: 24px;
     width: 108px;
   }

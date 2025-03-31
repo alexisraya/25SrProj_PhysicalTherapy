@@ -12,32 +12,30 @@ const TONE_KEY = Symbol('tone');
 export function setupToneContext(initialTone: ToneType = 'kind') {
   // Create the writable store
   const toneStore = writable<ToneType>(initialTone);
-  
+
   // Create a derived store that gives easy access to text content
-  const toneText = derived(toneStore, $tone => {
+  const toneText = derived(toneStore, ($tone) => {
     // Return a function that gets text for a given content key
     return (contentKey: ContentKey, fallback: string = ''): string => {
       if (toneContent[contentKey]) {
-        return $tone === 'tough' 
-          ? toneContent[contentKey].tough 
-          : toneContent[contentKey].kind;
+        return $tone === 'tough' ? toneContent[contentKey].tough : toneContent[contentKey].kind;
       }
       return fallback;
     };
   });
-  
+
   // Expose functions for manipulating the tone
   const setTone = (newTone: ToneType) => toneStore.set(newTone);
-  const toggleTone = () => toneStore.update(t => t === 'kind' ? 'tough' : 'kind');
-  
+  const toggleTone = () => toneStore.update((t) => (t === 'kind' ? 'tough' : 'kind'));
+
   // Set the tone interface in context
   const toneInterface = {
     tone: toneStore,
     text: toneText,
     setTone,
-    toggleTone
+    toggleTone,
   };
-  
+
   setContext(TONE_KEY, toneInterface);
   return toneInterface;
 }

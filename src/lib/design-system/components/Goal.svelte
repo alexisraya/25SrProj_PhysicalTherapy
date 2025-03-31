@@ -1,6 +1,15 @@
+<script context="module">
+  export const defaultGoals = [
+    { goalName: 'Unlocked Goal', isLocked: false, hasExtraInfo: false },
+    { goalName: 'Unlocked Goal', isLocked: false, hasExtraInfo: true, extraInfo: 'Time' },
+    { goalName: 'Locked Goal', isLocked: true, hasExtraInfo: false },
+    { goalName: 'Locked Goal', isLocked: true, hasExtraInfo: true, extraInfo: 'Time' },
+  ];
+</script>
+
 <script lang="ts">
-  import { typography } from "$lib/design-system/typography";
-  import Icon from "./Icon.svelte";
+  import { typography } from '$lib/design-system/typography';
+  import Icon from './Icon.svelte';
 
   export let goalName: string;
   export let isLocked: boolean = false;
@@ -8,26 +17,29 @@
   export let extraInfo: string;
 </script>
 
-<script context="module">
-  export const defaultGoals = [
-    { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false },
-    { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time" },
-    { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false },
-    { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time" }
-  ];
-</script>
-
 <div class="goal-container">
   <div class="goal-icon {isLocked ? 'locked' : 'unlocked'}">
     {#if isLocked}
-      <Icon name="lock-light" size="small"/>
+      <Icon name="lock-light" size="small" />
     {:else}
-      <Icon name="stairs" size="small"/>
+      <Icon name="stairs" size="small" />
     {/if}
   </div>
-  <p class="goal-name" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{goalName}</p>
+  <p
+    class="goal-name"
+    style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+      .xsmall}; font-weight: {typography.fontWeights.regular};"
+  >
+    {goalName}
+  </p>
   {#if extraInfo}
-    <p class="goal-extra" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic">{extraInfo}</p>
+    <p
+      class="goal-extra"
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic"
+    >
+      {extraInfo}
+    </p>
   {/if}
 </div>
 
