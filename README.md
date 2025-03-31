@@ -114,6 +114,49 @@ npm run dev -- --open
 - Test your changes
 - Check that your branch is up to date with main
 
+## 🧹 Code Style & Quality
+
+This project uses:
+
+- **[Prettier](https://prettier.io/)** for code formatting
+- **[ESLint](https://eslint.org/)** for code linting and enforcing consistent TypeScript/SvelteKit standards
+
+### ⚙️ Format & Lint Commands
+
+| Task                    | Command                        | Description                                   |
+|-------------------------|--------------------------------|-----------------------------------------------|
+| Format code             | `npm run format`              | Automatically formats all files               |
+| Check formatting        | `npm run check-format`        | Checks if files are properly formatted        |
+| Lint code               | `npm run lint`                | Runs ESLint on `.ts` and `.svelte` files      |
+| Fix lint issues         | `npm run lint:fix`            | Automatically fixes lint issues when possible |
+| Full validation         | `npm run validate`            | Runs type-checking, linting, and formatting   |
+
+> 🧠 **Tip**: Run `npm run validate` before committing or opening a PR to catch any issues early.
+
+### 🛠️ Format on Save (VSCode Recommended)
+
+Make sure you have these VSCode extensions installed:
+
+- [Prettier – Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Svelte for VSCode](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode)
+
+Recommended settings:
+
+```jsonc
+// .vscode/settings.json
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.validate": ["typescript", "svelte"]
+}
+```
+
 ## 🌐 Deployment
 
 This project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
