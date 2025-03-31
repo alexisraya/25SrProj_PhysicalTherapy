@@ -88,3 +88,56 @@ export async function updateExerciseOrder(
 
     await updateProgram(userId, { exercises: updatedExercises });
 }
+
+export async function moveExerciseToEnd(
+    userId: string,
+    exerciseId: string
+): Promise<string | null> {
+    try {
+        const program = await getCurrentProgram(userId);
+        if (!program) {
+            throw new Error("Program not found");
+        }
+
+        const currentExerciseIndex = program.exercises.findIndex(
+            (ex) => ex.exerciseId === exerciseId
+        );
+        
+        if (currentExerciseIndex === -1) {
+            throw new Error("Exercise not found in program");
+        }
+        
+        let updatedExercises = [...program.exercises];
+        const exerciseToMove = updatedExercises.splice(currentExerciseIndex, 1)[0];
+        updatedExercises.push(exerciseToMove);
+        updatedExercises = updatedExercises.map((ex, i) => ({
+            ...ex,
+            order: i
+        }));
+        
+        await updateProgram(userId, { exercises: updatedExercises });
+        
+        let nextExerciseId = null;
+        
+        for (let i = currentExerciseIndex; i < updatedExercises.length - 1; i++) {
+            if (!updatedExercises[i].completed && !updatedExercises[i].skipped) {
+                nextExerciseId = updatedExercises[i].exerciseId;
+                break;
+            }
+        }
+        
+        if (!nextExerciseId) {
+            for (let i = 0; i < currentExerciseIndex; i++) {
+                if (!updatedExercises[i].completed && !updatedExercises[i].skipped) {
+                    nextExerciseId = updatedExercises[i].exerciseId;
+                    break;
+                }
+            }
+        }
+        
+        return nextExerciseId;
+    } catch (error) {
+        console.error("Error moving exercise to end:", error);
+        throw error;
+    }
+}

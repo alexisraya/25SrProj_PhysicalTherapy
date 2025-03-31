@@ -17,6 +17,7 @@
     import ExerciseInfoBlock from "$lib/design-system/components/ExerciseInfoBlock.svelte";
     import InfoModal from "$lib/design-system/components/InfoModal.svelte";
     import Skeleton from "$lib/design-system/components/Skeleton.svelte";
+    import SkipModal from "$lib/design-system/components/SkipModal.svelte";
 
 </script>
 
@@ -151,7 +152,6 @@
         <h2>Skeleton Loader</h2>
         <Skeleton />
     </div>
-
 </div>
 
 <style>

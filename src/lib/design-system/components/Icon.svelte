@@ -6,4 +6,4 @@
     const iconPath = `/icons/${name}-${size}.svg`;
 </script>
 
-<img src={iconPath} alt={name} class="icon" />
+<img src={iconPath} alt={name} class="icon" style="overflow: visible;"/>

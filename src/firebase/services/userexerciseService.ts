@@ -54,23 +54,27 @@ export async function completeExercise(
 
         const stats = user.stats || initializeUserStats();
         
+        // Increment completed exercises count
         stats.completedExercises++;
         stats.weeklyProgress.exercisesCompleted++;
         
-        const sets = adjustedValues?.sets || exercise.sets || 0;
-        const reps = adjustedValues?.reps || exercise.reps || 0;
-        const steps = adjustedValues?.steps || exercise.steps || 0;
-        const seconds = adjustedValues?.seconds || exercise.seconds || 0;
-        const weight = adjustedValues?.weight || exercise.weight || 0;
+        // Get exercise values, using adjusted values if available
+        const sets = adjustedValues?.sets ?? exercise.sets ?? 0;
+        const reps = adjustedValues?.reps ?? exercise.reps ?? 0;
+        const steps = adjustedValues?.steps ?? exercise.steps ?? 0;
+        const seconds = adjustedValues?.seconds ?? exercise.seconds ?? 0;
+        const weight = adjustedValues?.weight ?? exercise.weight ?? 0;
 
         if (exercise.exerciseType === 'distance') {
             stats.totalSets += sets;
             stats.totalDistance += sets * steps;
-        } else if (exercise.exerciseType === 'weight') {
+        } 
+        else if (exercise.exerciseType === 'weight') {
             stats.totalSets += sets;
             stats.totalReps += sets * reps;
             stats.totalWeight += sets * reps * weight;
-        } else if (exercise.exerciseType === 'time') {
+        } 
+        else if (exercise.exerciseType === 'time') {
             stats.totalTime += reps * seconds;
         }
 
