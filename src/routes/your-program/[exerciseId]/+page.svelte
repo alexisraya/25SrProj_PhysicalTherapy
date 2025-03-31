@@ -455,7 +455,7 @@
     }
     .exercise_container--top {
         box-sizing: border-box;
-        background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
+        background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /* light mode dark mode exception */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -490,10 +490,10 @@
         list-style-position: inside;
     }
     .content-wrapper p {
-        color: var(--color-grey-400);
+        color: var(--text-secondary);
     }
     .content-wrapper li {
-        color: var(--color-grey-400);
+        color: var(--text-secondary);
         text-align: left;
     }
     .character-content {
@@ -510,7 +510,7 @@
         column-gap: 12px;
     }
     .buttons {
-        background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
+        background: linear-gradient(to top, var(--background) 60%, transparent);
         position: sticky;
         bottom: 0;
         display: flex;

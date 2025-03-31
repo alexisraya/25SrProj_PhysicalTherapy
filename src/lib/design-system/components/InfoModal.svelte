@@ -41,9 +41,9 @@
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Long description of goal goes here</p>
         {/if}
         {#if isGoal}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--color-grey-400);">Week #</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--text-secondary);">Week #</p>
         {:else}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--color-grey-400);">Metric</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--text-secondary);">Metric</p>
         {/if}
     </div>
 </div>
@@ -64,7 +64,7 @@
         text-align: center;
         padding: 32px 0;
         border-radius: 16px;
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
     }
     .modal-icon-container {
         height: 92px;
@@ -74,11 +74,11 @@
         justify-content: center;
     }
     .goal {
-        background-color: var(--color-blue-525);
+        background-color: var(--color-blue-525); /* Light/dark mode exception */
         border-radius: 100px;
     }
     .achievement {
-        background-color: var(--color-yellow-550);
+        background-color: var(--color-yellow-550); /* Light/dark mode exception */
         border-radius: 4px;
     }
     .modal-information {

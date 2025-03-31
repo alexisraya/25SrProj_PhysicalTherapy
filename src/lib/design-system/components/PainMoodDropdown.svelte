@@ -95,7 +95,7 @@
         column-gap: 8px;
         padding: 4px 4px 4px 8px;
         border-radius: 4px;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         cursor: pointer;
         user-select: none;
     }
@@ -125,7 +125,7 @@
         width: 71px;
         max-height: 200px;
         overflow-y: auto;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         border-radius: 4px;
         z-index: 1000;
     }
@@ -136,6 +136,6 @@
     }
     
     .dropdown-option.selected {
-        background-color: var(--color-blue-100); /* Your theme color */
+        background-color: var(--pain-mood-selected);
     }
 </style>

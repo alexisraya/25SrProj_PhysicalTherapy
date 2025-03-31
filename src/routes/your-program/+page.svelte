@@ -415,7 +415,7 @@
     }
     .exercise-edit-button {
         background-color: transparent;
-        border: 2px solid var(--color-blue-50);
+        border: 1px solid var(--mark-complete-button);
         border-radius: 999px;
         display: flex;
         align-items: center;

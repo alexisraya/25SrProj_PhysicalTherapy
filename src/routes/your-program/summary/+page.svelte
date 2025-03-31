@@ -114,7 +114,7 @@
     }
     
     .horizontal-box {
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         width: 100%;
         height: 2px;
         margin-top: 8px;

@@ -27,18 +27,18 @@
     }
 
     .time-frame-container {
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid var(--color-blue-50);
+        border: 1px solid var(--background-secondary);
         padding: 4px 10px;
         cursor: pointer;
     }
 
     .selected {
-        border: 1px solid var(--color-blue-1100);
+        border: 1px solid var(--text-primary);
     }
 
     .x-axis-container {

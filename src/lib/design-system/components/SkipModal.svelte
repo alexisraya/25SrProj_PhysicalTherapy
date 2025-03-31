@@ -61,7 +61,7 @@
     }
 
     .modal-container {
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
         border-radius: 16px;
         display: flex;
         flex-direction: column;

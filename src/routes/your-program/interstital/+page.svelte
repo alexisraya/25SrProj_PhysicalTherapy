@@ -43,7 +43,7 @@
         row-gap: 0px;
         height: 100vh;
         overflow: visible;
-        background-color: var(--color-green-500);
+        background-color: var(--color-green-500); /** Light mode dark mode exception */
     }
     .interstital-text h1{
         text-align: center;

@@ -58,8 +58,8 @@
     .achievement-image-container {
         padding: 0px 20px;
         border-radius: 4px;
-        background-color: var(--color-yellow-550);
-        border: 2px solid var(--color-yellow-550);
+        background-color: var(--color-yellow-550); /* light/dark mode exception */
+        border: 2px solid var(--color-yellow-550); /* light/dark mode exception */
         height: 101px;
         display: flex;
         align-items: center;
@@ -69,11 +69,11 @@
     .locked {
         background-color: transparent;
         border-radius: 4px;
-        border: 2px solid var(--color-yellow-200);
+        border: 2px solid var(--locked-achievement-image-border);
     }
 
     .achievement-mark {
-        color: var(--color-grey-300);
+        color: var(--color-grey-300); /* light/dark mode exception */
         text-align: center;
     }
 </style>

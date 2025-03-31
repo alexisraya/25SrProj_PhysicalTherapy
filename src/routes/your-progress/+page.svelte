@@ -38,7 +38,7 @@
         overflow: hidden;
     }
     .page-container {
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         padding-top: 40px;
         overflow: hidden;
         position: relative;

@@ -54,20 +54,20 @@
   }
 
   .unlocked {
-    background-color: var(--color-blue-200);
+    background-color: var(--unlocked-goal-background);
   }
 
   .locked {
     background-color: transparent;
-    border: 2px solid var(--color-blue-100);
+    border: 2px solid var(--locked-goal-border);
   }
 
   .goal-name {
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
     margin-top: 12px;
   }
 
   .goal-extra {
-    color: var(--color-grey-300);
+    color: var(--color-grey-300); /* light/dark mode exception */
   }
 </style>

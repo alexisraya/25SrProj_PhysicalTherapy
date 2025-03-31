@@ -13,13 +13,14 @@
     {#if isComplete}
     <svg width="60" height="60">
         <circle cx="30" cy="30" r="29.5" fill="none" stroke={Colors.green[550]} stroke-width="1" />
-        <circle cx="30" cy="30" r="25" fill={Colors.grey[0]} />
+        <circle cx="30" cy="30" r="25" />
     </svg>
     {:else if isUpcoming}
     <svg width="60" height="60">
-        <circle cx="30" cy="30" r="30" fill={Colors.grey[0]} />
+        <circle cx="30" cy="30" r="30" />
     </svg>
     {:else}
+    <!-- TODO: ALEXIS light/dark mode image -->
         <img src={ActiveMilestoneLight} alt="active milestone background"/>
     {/if}
 
@@ -27,6 +28,9 @@
 </div>
 
 <style>
+    circle {
+        fill: var(--background);
+    }
     .milestone-month-container {
         position: relative;
         width: 60px;
@@ -49,6 +53,6 @@
         transform: translate(-50%, -57%);
     }
     .upcoming {
-        color: var(--color-blue-150)
+        color: var(--upcoming-milestone)
     }
 </style>

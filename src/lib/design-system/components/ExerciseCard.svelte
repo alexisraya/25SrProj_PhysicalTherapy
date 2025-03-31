@@ -88,7 +88,8 @@
         margin: 0;
     }
     .exercise-container {
-        background-color: var(--color-blue-50);
+        color: var(--text-primary);
+        background-color: var(--background-secondary);
         border: 0;
         border-radius: 4px;
         display: flex;
@@ -121,7 +122,7 @@
         column-gap: 8px;
     }
     .tag {
-        border: 1px var(--color-blue-1100) solid;
+        border: 1px var(--text-primary) solid;
         border-radius: 50px;
         display: flex;
         align-items: center;

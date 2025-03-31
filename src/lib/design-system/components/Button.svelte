@@ -39,14 +39,15 @@
     .primary {
         background-color: var(--button-primary-bg);
         border: 1px solid var(--button-primary-bg);
-        color: var(--color-grey-0);
+        color: var(--background);
     }
 
     /* Primary Hover */
+    /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
     .primary:hover {
         background-color: var(--color-blue-900);
         border: 1px solid var(--button-primary-bg);
-        color: var(--color-grey-0);
+        color: var(--text-primary);
     }
 
     /* Primary Active */
@@ -55,10 +56,11 @@
     }
 
     /* Disabled Primary Button Styles */
+    /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
     .primary-disabled {
         background-color: var(--button-primary-disabled-bg);
         border: 1px solid var(--button-primary-disabled-bg);
-        color: var(--color-grey-300);
+        color: var(--button-primary-disabled-text);
         cursor: default;
     }
 

@@ -29,6 +29,6 @@
         width: 4px;
         height: 100%;
         border-radius: 30px;
-        background-color: var(--color-purple-550);
+        background-color: var(--color-purple-550); /* Light mode dark mode exception */
     }
 </style>

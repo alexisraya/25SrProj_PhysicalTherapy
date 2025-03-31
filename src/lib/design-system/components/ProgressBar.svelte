@@ -27,7 +27,7 @@
         height: 9px;
         /* width: 90px; */
         width: 100%;
-        background-color: var(--color-blue-1100);
+        background-color: var(--color-blue-1100); /* Light mode dark mode exception */
     }
     .empty {
         opacity: 40%;

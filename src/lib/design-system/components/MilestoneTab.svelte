@@ -49,7 +49,7 @@
 
 <style>
     a {
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
         text-decoration: none;
     }
     .milestone-header {
@@ -64,7 +64,7 @@
         }
     }
     .milestone-body {
-        background-color: white;
+        background-color: var(--background);
         min-height: 500px;
         padding: 16px 14px 32px 14px;
     }
