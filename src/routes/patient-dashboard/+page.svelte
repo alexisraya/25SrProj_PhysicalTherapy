@@ -1,26 +1,11 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { auth, db } from '$lib/helpers/firebase';
-    import { authStore } from '$stores/authStore';
-    import { doc, getDoc } from 'firebase/firestore';
-    import type { User } from '$firebase/types/userType'
-    import { checkAndResetProgress, getUserStats, getWeeklyProgress } from '$firebase/services/statService';
-    import { getCurrentProgram } from '$firebase/services/programService';
-
-    import { goto } from '$app/navigation';
     import { typography } from '$lib/design-system';
     import PlayButton from '$lib/assets/iconography/PlayButton.svg';
-    // import Streak from '$lib/assets/iconography/Streak.svg';
-    import homeBackgroundLarge from '$lib/assets/background-images/home-background-large.svg';
     import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
-    import Chart from '$lib/design-system/components/Chart.svelte';
-    import UserExerciseView from '$lib/design-system/components/UserExerciseView.svelte';
     import Streak from '$lib/design-system/components/Streak.svelte';
     import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
-
-    // let user = null;
-    // let userData = null;
+    import { getTone } from '$lib/helpers/toneContext';
 
     export let data;
 
@@ -33,44 +18,13 @@
     // Determine if we're in a loading state
     $: loading = !error && !program && !stats && !weeklyProgress;
 
+    //Tone Text
+    const { text } = getTone();
+    const programCTATextOptions = [`home_program_cta_1`, `home_program_cta_2`, `home_program_cta_3`];
+    const programCTAText = programCTATextOptions[Math.floor(Math.random() * programCTATextOptions.length)];
 
-    /* Sab Commented this out for now  */
-
-    // onMount(() => {
-    //     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-    //         if (authUser) {
-    //             try {
-    //                 user = authUser;
-    //                 await checkAndResetProgress(user.uid);
-
-    //                 const userDoc = await getDoc(doc(db, 'users', user.uid));
-    //                 if (userDoc.exists()) {
-    //                     userData = userDoc.data();
-    //                     if (userData.isTherapist) {
-    //                         goto('/therapist-dashboard');
-    //                         return;
-    //                     }
-    //                     [program, stats, weeklyProgress] = await Promise.all([
-    //                         getCurrentProgram(user.uid),
-    //                         getUserStats(user.uid),
-    //                         getWeeklyProgress(user.uid)
-    //                     ]);
-    //                     console.log("User data loaded:", userData);
-    //                 } else {
-    //                     console.error("User document not found");
-    //                 }
-    //             } catch (err) {
-    //                 console.error("Error loading dashboard data:", err);
-    //             } finally {
-    //                 loading = false;
-    //             }
-    //         } else {
-    //             goto('/login');
-    //         }
-    //     });
-        
-    //     return unsubscribe;
-    // });
+    const programCompleteTextOptions = [`complete_1`, `complete_2`, `complete_3`];
+    const programCompleteText = programCompleteTextOptions[Math.floor(Math.random() * programCompleteTextOptions.length)];
 </script>
 
 {#if program && stats && weeklyProgress}
@@ -78,7 +32,7 @@
     <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">Start your program for today</p>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{$text(programCTAText)}</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
