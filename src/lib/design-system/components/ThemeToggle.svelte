@@ -23,11 +23,14 @@
       // Apply the theme
       applyTheme(theme);
     });
-    
+
     function applyTheme(newTheme: Theme): void {
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
       theme = newTheme;
+      
+      // Dispatch a custom event that other components can listen for
+      window.dispatchEvent(new Event('themeChanged'));
     }
     
     function toggleTheme(): void {

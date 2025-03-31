@@ -1,26 +1,60 @@
 <script lang="ts">
   import { typography } from "$lib/design-system/typography";
+    import { onMount } from "svelte";
   import Icon from "./Icon.svelte";
 
   export let goalName: string;
   export let isLocked: boolean = false;
   export let hasExtraInfo: boolean = false;
   export let extraInfo: string;
-</script>
 
-<script context="module">
   export const defaultGoals = [
     { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: false },
     { goalName: "Unlocked Goal", isLocked: false, hasExtraInfo: true, extraInfo: "Time" },
     { goalName: "Locked Goal", isLocked: true, hasExtraInfo: false },
     { goalName: "Locked Goal", isLocked: true, hasExtraInfo: true, extraInfo: "Time" }
   ];
+
+  let currentTheme: 'light' | 'dark' = 'light';
+
+  function updateThemeFromStorage() {
+      // Check localStorage directly
+      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      
+      if (savedTheme) {
+          currentTheme = savedTheme;
+      } else {
+          // Fallback to system preference
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          currentTheme = prefersDark ? 'dark' : 'light';
+      }
+  }
+
+  onMount(() => {
+      // Initial check from localStorage
+      updateThemeFromStorage();
+
+      // Listen for custom theme change events
+      const handleThemeChange = () => {
+          updateThemeFromStorage();
+      };
+      
+      window.addEventListener('themeChanged', handleThemeChange);
+
+      return () => {
+          window.removeEventListener('themeChanged', updateThemeFromStorage);
+      };
+  });
 </script>
 
 <div class="goal-container">
   <div class="goal-icon {isLocked ? 'locked' : 'unlocked'}">
     {#if isLocked}
-      <Icon name="lock-light" size="small"/>
+      {#if currentTheme == 'light'}
+        <Icon name="lock-light" size="small"/>
+      {:else}
+        <Icon name="lock-dark" size="small"/>
+      {/if}
     {:else}
       <Icon name="stairs" size="small"/>
     {/if}

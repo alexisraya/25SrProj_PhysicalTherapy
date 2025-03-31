@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { typography, Colors } from '$lib/design-system';
-    import PlayButton from '$lib/assets/iconography/PlayButton.svg';
+    import { typography } from '$lib/design-system';
+    import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
+    import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
     import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
 
     import { onMount } from "svelte";
@@ -46,6 +47,21 @@
         $program?.exercises?.some((ex) => ex.completed || ex.skipped) || false;
     $: programCompleted = $program?.completed || false;
 
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
     onMount(() => {
         const unsubscribe = authStore.subscribe(async (store) => {
             if (!store.isLoading && store.currentUser) {
@@ -90,7 +106,19 @@
             }
         });
 
-        return () => unsubscribe();
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            unsubscribe();
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        }
     });
 
     function formatDate(dateString: string | undefined): string {
@@ -296,7 +324,7 @@
  {#if $program}
     <div class="your-program-container">
         <svg class="background-wave" xmlns="http://www.w3.org/2000/svg" width="332" height="213" viewBox="0 0 332 213" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M331.819 213C318.478 204.931 306.176 192.179 292.717 178.228C256.836 141.034 212.732 95.3173 118.798 107.096C28.3434 118.438 -3.70112 64.6624 0.372848 0L332 0V213H331.819Z" fill="#E4F4FA"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M331.819 213C318.478 204.931 306.176 192.179 292.717 178.228C256.836 141.034 212.732 95.3173 118.798 107.096C28.3434 118.438 -3.70112 64.6624 0.372848 0L332 0V213H331.819Z"/>
         </svg>
         <div class="your-program-title-container">
             <div class="your-program-title-container--text">
@@ -311,7 +339,11 @@
             </div>
             <!-- Change to Start Program -->
             <button class="play-btn" on:click={startProgram}>
-                <img class="play-btn-img" src={PlayButton} alt="play button"/>
+                {#if currentTheme == 'light'}
+                    <img class="play-btn-img" src={PlayButtonLight} alt="play button"/>
+                {:else}
+                    <img class="play-btn-img" src={PlayButtonDark} alt="play button"/>
+                {/if}
             </button>
         </div>
 
@@ -359,6 +391,7 @@
         top: -30px;
         right: 0;
         z-index: -1;
+        fill: var(--background-secondary);
     }
     .your-program-container {
         display: flex;

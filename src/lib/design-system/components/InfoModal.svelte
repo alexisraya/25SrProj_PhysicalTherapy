@@ -1,6 +1,7 @@
 <script lang="ts">
     import Icon from "$lib/design-system/components/Icon.svelte";
     import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
+    import { onMount } from "svelte";
     import { typography } from "../typography";
 
     export let isGoal = false;
@@ -11,6 +12,37 @@
     const closeModal = () => {
         return;
     }
+
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    onMount(() => {
+        // Initial check from localStorage
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        };
+    });
 </script>
 <div class="modal-container">
     <button class="close-button" on:click={closeModal}>
@@ -19,9 +51,17 @@
     <div class="modal-icon-container {isGoal ? 'goal' : 'achievement'}">
         {#if isLocked}
             {#if isGoal}
-                <Icon name="lock-light" size="small"/>
+                {#if currentTheme == 'light'}
+                    <Icon name="lock-light" size="small"/>
+                {:else}
+                    <Icon name="lock-dark" size="small"/>
+                {/if}
             {:else}
-                <Icon name="lock-yellow-light" size="small"/>
+                {#if currentTheme == 'light'}
+                    <Icon name="lock-yellow-light" size="small"/>
+                {:else}
+                    <Icon name="lock-yellow-dark" size="small"/>
+                {/if}
             {/if}
         {:else}
             <Icon name={iconName} size="small"/>

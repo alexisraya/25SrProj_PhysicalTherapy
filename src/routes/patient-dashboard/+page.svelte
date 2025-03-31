@@ -1,11 +1,14 @@
 <script lang="ts">
     import { typography } from '$lib/design-system';
-    import PlayButton from '$lib/assets/iconography/PlayButton.svg';
-    import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
+    import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
+    import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
+    import homeBackgroundSmallLight from '$lib/assets/background-images/HomeBackgroundSmallLight.svg';
+    import homeBackgroundSmallDark from '$lib/assets/background-images/HomeBackgroundSmallDark.svg';
     import Streak from '$lib/design-system/components/Streak.svelte';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
     import { getTone } from '$lib/helpers/toneContext';
     import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+    import { onMount } from 'svelte';
 
     export let data;
 
@@ -25,16 +28,55 @@
 
     const programCompleteTextOptions = [`complete_1`, `complete_2`, `complete_3`];
     const programCompleteText = programCompleteTextOptions[Math.floor(Math.random() * programCompleteTextOptions.length)];
+
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    onMount(() => {
+        // Initial check from localStorage
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        };
+    });
 </script>
 
 {#if program && stats && weeklyProgress}
 <div class="header-container">
-    <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
+    {#if currentTheme == 'light'}
+        <img class="background-wave" src={homeBackgroundSmallLight} alt="background wave"/>
+    {:else}
+        <img class="background-wave" src={homeBackgroundSmallDark} alt="background wave"/>
+    {/if}
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{$text(programCTAText)}</p>
         <a href='/your-program'>
-            <img src={PlayButton} />
+            {#if currentTheme == 'light'}
+                <img src={PlayButtonLight} alt="play button"/>
+            {:else}
+                <img src={PlayButtonDark} alt="play button"/>
+            {/if}
         </a>
     </div>
 </div>
