@@ -130,7 +130,7 @@
     </div>
 
     <!-- Exercise Info Block -->
-    <div class="component-section">
+    <div class="component-section purple">
         <h2>Exercise Info Block</h2>
         <ExerciseInfoBlock />
     </div>
@@ -199,5 +199,9 @@
         padding: 16px;
         row-gap: 16px;
         column-gap: 16px;
+    }
+
+    .purple {
+        background-color: #997cbe;
     }
 </style>

@@ -16,7 +16,7 @@
     <button class="close-button" on:click={closeModal}>
         <img class="close-icon" src={CloseIcon} alt="close button icon" />
     </button>
-    <div class="modal-icon-container {isGoal ? 'goal' : 'achievement'}">
+    <div class="modal-icon-container {isLocked ? (isGoal ? 'goal-locked' : 'achievement-locked') : (isGoal ? 'goal' : 'achievement')}">
         {#if isLocked}
             {#if isGoal}
                 <Icon name="lock-light" size="small"/>
@@ -26,7 +26,7 @@
         {:else}
             <Icon name={iconName} size="small"/>
         {/if}
-    </div>
+    </div>    
     <div class="modal-information">
         {#if isGoal}
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold};">{infoName}</p>
@@ -74,11 +74,21 @@
         justify-content: center;
     }
     .goal {
-        background-color: var(--color-blue-525);
+        background-color: var(--color-blue-550);
         border-radius: 100px;
     }
+
+    .goal-locked {
+        border: solid 2px var(--color-blue-100);
+        border-radius: 100px;
+    }
+
     .achievement {
         background-color: var(--color-yellow-550);
+        border-radius: 4px;
+    }
+    .achievement-locked {
+        border: solid 2px var(--color-yellow-200);
         border-radius: 4px;
     }
     .modal-information {

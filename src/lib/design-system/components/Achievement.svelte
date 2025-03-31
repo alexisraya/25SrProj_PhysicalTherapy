@@ -20,7 +20,9 @@
     <div class="achievement-body">
         <!-- TODO: ALEXIS make dynamic -->
         <div class="achievement-image-container" > 
-            <Icon name="polar-bear" size="small"/>
+            <div class="floating-icon">
+                <Icon name="polar-bear" size="small"/>
+            </div>
         </div>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{achievementDescription}</p>
     </div>
@@ -76,4 +78,15 @@
         color: var(--color-grey-300);
         text-align: center;
     }
+
+    @keyframes floatUpDown {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(4px); } /* Moves slightly up */
+    100% { transform: translateY(0px); } /* Moves back down */
+}
+
+.achievement-image-container:hover .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite;
+}
+
 </style>

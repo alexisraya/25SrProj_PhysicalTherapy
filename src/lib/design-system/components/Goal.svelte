@@ -19,11 +19,13 @@
 
 <div class="goal-container">
   <div class="goal-icon {isLocked ? 'locked' : 'unlocked'}">
-    {#if isLocked}
-      <Icon name="lock-light" size="small"/>
-    {:else}
-      <Icon name="stairs" size="small"/>
-    {/if}
+    <div class="floating-icon">
+      {#if isLocked}
+        <Icon name="lock-light" size="small"/>
+      {:else}
+        <Icon name="stairs" size="small"/>
+      {/if}
+    </div>
   </div>
   <p class="goal-name" style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{goalName}</p>
   {#if extraInfo}
@@ -53,8 +55,15 @@
     height: 92px;
   }
 
+  @keyframes floatUpDown {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(4px); } /* Moves slightly up */
+    100% { transform: translateY(0px); } /* Moves back down */
+}
+
   .unlocked {
-    background-color: var(--color-blue-200);
+    background-color: var(--color-blue-550);
+    transition: ease-in-out 0.3s;
   }
 
   .locked {
@@ -69,5 +78,8 @@
 
   .goal-extra {
     color: var(--color-grey-300);
+  }
+  .unlocked:hover .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
   }
 </style>
