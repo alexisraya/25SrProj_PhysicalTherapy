@@ -4,6 +4,7 @@
     import EditPencil from "$lib/assets/iconography/EditPencil.svg";
     import CheckmarkSmall from "$lib/assets/iconography/CheckmarkSmall.svg";
     import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
+    import { fade, scale, fly } from "svelte/transition";
 
     import { onMount } from "svelte";
     import {
@@ -26,9 +27,11 @@
     import { goto } from "$app/navigation";
 
     let isEditing = false;
-    // TODO: Alexis update button copy
+    let editingTransition = false; // Control for transition state
     let buttonLabel = "Mark them complete here";
     let buttonIcon = EditPencil;
+    let nextButtonLabel = ""; // Next text state for transition
+    let nextButtonIcon = null; // Next icon state for transition
 
     let program = writable<Program | null>(null);
     let stats = writable<UserStats | null>(null);
@@ -249,11 +252,8 @@
                 }
             }
             
-            // Exit edit mode
-            isEditing = false;
-            buttonLabel = "Mark them complete here";
-            buttonIcon = EditPencil
-            resetSelections();
+            // Transition to non-edit mode
+            toggleEditMode();
             
         } catch (err) {
             console.error("Error saving completed exercises:", err);
@@ -280,21 +280,40 @@
     }
 
     function toggleEditMode() {
+        if (editingTransition) return; // Prevent multiple clicks during transition
+        editingTransition = true;
+        
+        // Set up next state values based on current state
         if (isEditing) {
             // If we're leaving edit mode and have selected exercises, save them
             if (Object.values(selectedExercises).some(selected => selected)) {
                 saveCompletedExercises();
+                return; // saveCompletedExercises will call toggleEditMode again
             } else {
-                isEditing = false;
-                buttonLabel = "Mark exercises you've completed";
-                buttonIcon = EditPencil
+                nextButtonLabel = "Mark them complete here";
+                nextButtonIcon = EditPencil;
             }
         } else {
-            isEditing = true;
-            buttonLabel = "Save changes";
-            buttonIcon = CheckmarkSmall
-            resetSelections();
+            nextButtonLabel = "Save changes";
+            nextButtonIcon = CheckmarkSmall;
         }
+
+        // Trigger the transition after a brief delay
+        setTimeout(() => {
+            buttonLabel = nextButtonLabel;
+            buttonIcon = nextButtonIcon;
+            isEditing = !isEditing;
+            
+            // Reset selections if entering edit mode
+            if (isEditing) {
+                resetSelections();
+            }
+            
+            // End transition state after the transition duration
+            setTimeout(() => {
+                editingTransition = false;
+            }, 200);
+        }, 200); // This should match your CSS transition time
     }
 </script>
 
@@ -315,7 +334,10 @@
                 </div>
             </div>
             <!-- Change to Start Program -->
-            <button class="play-btn" on:click={startProgram}>
+            <button class="play-btn" 
+            on:click={startProgram}
+            transition:scale={{ duration: 300, delay:0}}
+            >
                 <img class="play-btn-img" src={PlayButton} alt="play button"/>
             </button>
         </div>
@@ -323,19 +345,19 @@
         <div class="exercises-container">
             {#if $program.exercises.length > 0}
                 {#each $program.exercises as exercise, i (exercise.exerciseId)}
-                    <ExerciseCard 
-                        exerciseName={exercise.exerciseName} 
-                        exerciseSet={`${exercise.sets || 0} sets of ${exercise.reps || 0}`} 
-                        exerciseEquipment={exercise.equipment} 
-                        orderable={false} 
-                        isComplete={exercise.completed} 
-                        exerciseId={exercise.exerciseId} 
-                        isTooPainful={exercise.skipped} 
-                        editMode={isEditing}
-                        isSelected={selectedExercises[exercise.exerciseId] || false}
-                        onToggleSelection={handleToggleSelection}
-                        cardType="your-program"
-                    />
+                        <ExerciseCard 
+                            exerciseName={exercise.exerciseName} 
+                            exerciseSet={`${exercise.sets || 0} sets of ${exercise.reps || 0}`} 
+                            exerciseEquipment={exercise.equipment} 
+                            orderable={false} 
+                            isComplete={exercise.completed} 
+                            exerciseId={exercise.exerciseId} 
+                            isTooPainful={exercise.skipped} 
+                            editMode={isEditing}
+                            isSelected={selectedExercises[exercise.exerciseId] || false}
+                            onToggleSelection={handleToggleSelection}
+                            cardType="your-program"
+                        />
                 {/each}
             {:else}
                 <p>No exercises in your program</p>
@@ -347,12 +369,25 @@
             <button 
                 class="exercise-edit-button" 
                 on:click={toggleEditMode}
-                disabled={isSaving}
+                disabled={isSaving || editingTransition}
             >
-                <img src={buttonIcon} alt="button-icon"/>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">
-                    {isSaving ? 'Saving...' : buttonLabel}
-                </p>
+                <div class="button-content-wrapper">
+                    {#key buttonIcon}
+                        <img 
+                            src={buttonIcon} 
+                            alt="button-icon" 
+                            in:fly={{ y: 20, duration: 200 }} 
+                        />
+                    {/key}
+                    {#key buttonLabel}
+                        <p 
+                            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};"
+                            in:fly={{ y: 20, duration: 200 }} 
+                        >
+                            {isSaving ? 'Saving...' : buttonLabel}
+                        </p>
+                    {/key}
+                </div>
             </button>
         </div>
     </div>
@@ -430,8 +465,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        column-gap: 8px;
         padding: 8px 32px;
         cursor: pointer;
+        overflow: hidden;
+        position: relative;
+        min-height: 36px; /* Fixed height to prevent jumping */
+        min-width: 180px; /* Fixed width to prevent resizing */
+        transition: 0.3s ease-in-out;
+    }
+    
+    .button-content-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 8px;
+        width: 100%;
+        position: relative;
+        height: 20px; /* Fixed height to maintain consistent layout */
     }
 </style>
