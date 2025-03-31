@@ -5,12 +5,15 @@
     export let buttonType = "primary"; // "primary" or "secondary"
     export let cta: string;
     export let onClickFunc;
+    export let buttonIcon;
 
 </script>
 
 
 <button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled} on:click={onClickFunc}>
-
+    {#if buttonIcon}
+        <img src={buttonIcon} alt="button icon" />
+    {/if}
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}
     </p>
@@ -26,6 +29,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        column-gap: 7px;
         cursor: pointer;
         transition: 0.25s ease;
     }
