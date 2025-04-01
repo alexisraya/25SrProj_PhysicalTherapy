@@ -81,7 +81,7 @@ export async function resetDailyProgress(userId: string) {
                 return { 
                     ...exercise, 
                     completed: false,
-                    completedAt: undefined,
+                    completedAt: null,
                     skipped: false 
                 };
             });
@@ -151,9 +151,15 @@ export async function checkAndResetProgress(userId: string) {
         if (!programSnap.exists()) return;
         
         const programData = programSnap.data();
-        const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+        const today = "2025-04-06";
+        // const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
         const lastResetDate = programData.lastResetDate || programData.assignedAt.split("T")[0];
         
+        console.log("DEBUG - Today's date:", today);
+        console.log("DEBUG - Last reset date:", lastResetDate);
+        console.log("DEBUG - Dates equal?", lastResetDate === today);
+        console.log("DEBUG - Program data:", programData);
+
         if (lastResetDate !== today) {
             console.log("New day detected - performing daily reset");
             
@@ -161,10 +167,12 @@ export async function checkAndResetProgress(userId: string) {
                 return { 
                     ...exercise, 
                     completed: false,
-                    completedAt: undefined,
+                    completedAt: null,
                     skipped: false 
                 };
             });
+
+            await resetDailyProgress(userId);
 
             await updateDoc(programRef, { 
                 exercises: updatedExercises,
