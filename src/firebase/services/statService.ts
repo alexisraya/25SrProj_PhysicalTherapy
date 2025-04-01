@@ -139,22 +139,39 @@ export async function resetWeeklyProgress(userId: string) {
 /* ---------------------- CHECK & RESET PROGRESS ---------------------- */
 /**
  * Checks if it's a new day and performs necessary resets
- * Uses localStorage to track the last check date
+ * Tracks the last check date
  * Calls resetDailyProgress for a new day and resetWeeklyProgress on Sundays
  */
 
 export async function checkAndResetProgress(userId: string) {
     try {
-        const lastCheck = localStorage.getItem(`lastProgressCheck_${userId}`);
-        const today = new Date().toDateString();
+        const programRef = doc(db, `users/${userId}/program/currentProgram`);
+        const programSnap = await getDoc(programRef);
         
-        // Only reset if it's a new day
-        if (lastCheck !== today) {
-            console.log("Performing daily progress check and reset if needed");
-            await resetDailyProgress(userId);
-            localStorage.setItem(`lastProgressCheck_${userId}`, today);
+        if (!programSnap.exists()) return;
+        
+        const programData = programSnap.data();
+        const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+        const lastResetDate = programData.lastResetDate || programData.assignedAt.split("T")[0];
+        
+        if (lastResetDate !== today) {
+            console.log("New day detected - performing daily reset");
             
-            // Check if it's Sunday (day 0) for weekly reset
+            const updatedExercises = programData.exercises.map((exercise: AssignedExercise) => {
+                return { 
+                    ...exercise, 
+                    completed: false,
+                    completedAt: undefined,
+                    skipped: false 
+                };
+            });
+
+            await updateDoc(programRef, { 
+                exercises: updatedExercises,
+                completed: false,
+                lastResetDate: today
+            });
+            
             if (new Date().getDay() === 0) {
                 console.log("Sunday detected - performing weekly reset");
                 await resetWeeklyProgress(userId);
