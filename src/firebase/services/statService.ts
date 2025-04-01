@@ -151,8 +151,8 @@ export async function checkAndResetProgress(userId: string) {
         if (!programSnap.exists()) return;
         
         const programData = programSnap.data();
-        const today = "2025-04-06";
-        // const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+        // const today = "2025-04-06"; // For testing purposes
+        const today = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
         const lastResetDate = programData.lastResetDate || programData.assignedAt.split("T")[0];
         
         console.log("DEBUG - Today's date:", today);
