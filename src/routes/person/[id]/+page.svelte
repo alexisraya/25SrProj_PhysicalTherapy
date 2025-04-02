@@ -17,6 +17,7 @@
     import type { User, Program } from "$firebase/types/userType";
     import type { Exercise } from "$firebase/types/exerciseType";
     import ProgramManagement from "$lib/design-system/components/ProgramManagement.svelte";
+    import PatientMetrics from "$lib/design-system/components/PatientMetrics.svelte";
 
     let patient: User | null = null;
     let currentProgram: Program | null = null;
@@ -101,6 +102,7 @@
                 console.error("Error fetching goals:", err);
                 debugInfo.errors.push(`Goals error: ${err}`);
             }
+
         } catch (err) {
             console.error("Error loading patient data:", err);
             error = "Error loading data";
@@ -249,7 +251,7 @@
             <p><strong>Email:</strong> {patient.email}</p>
             <p><strong>Start Date:</strong> {formatDate(patient.createdAt)}</p>
             <div class="program-header">
-                <h2>Exercise Program</h2>
+                <h2>Program Overview</h2>
                 {#if currentProgram}
                     <div class="program-status">
                         <p>
@@ -339,74 +341,16 @@
                 isLoading={isAssigning}
             />
         </div>
-        <div class="goals-section">
+        <PatientMetrics patientId={patient.userId} />
+        <div class="pain-logs-section">
+            <h2>Exercise Pain Logs</h2>
+            <p>View logs of exercises the patient marked as too painful to complete.</p>
+            <a href="/person/{patient.userId}/pain-logs" class="logs-btn">View Pain Logs</a>
+        </div>
+        <div class="goals-link-section">
             <h2>Patient Goals</h2>
-            <p class="goals-hint">
-                Unlock goals as your patient progresses through their recovery.
-            </p>
-
-            {#if goalsLoading}
-                <p class="loading-goals">Updating goals...</p>
-            {/if}
-
-            {#if Object.keys(patientGoals).length === 0}
-                <div class="empty-goals">
-                    <p>No goals found for this patient.</p>
-                    <button
-                        class="assign-goals-btn"
-                        on:click={handleAssignGoals}
-                    >
-                        Assign Default Goals
-                    </button>
-                </div>
-            {:else}
-                {#each sortedGoals() as [month, goals]}
-                    <div class="month-goals">
-                        <h3>Month {month}</h3>
-                        <div class="goals-grid">
-                            {#each goals as goal}
-                                <div
-                                    class="goal-card {goal.unlocked
-                                        ? 'unlocked'
-                                        : 'locked'}"
-                                >
-                                    <div class="goal-card-header">
-                                        <h4>{goal.goalName}</h4>
-                                        <div class="status-badge-container">
-                                            <span
-                                                class="status-badge {goal.unlocked
-                                                    ? 'unlocked'
-                                                    : 'locked'}"
-                                            >
-                                                {goal.unlocked
-                                                    ? "Unlocked"
-                                                    : "Locked"}
-                                            </span>
-                                        </div>
-                                        <button
-                                            class="toggle-btn {goal.unlocked
-                                                ? 'unlock-btn'
-                                                : 'lock-btn'}"
-                                            on:click={() =>
-                                                toggleGoalLock(
-                                                    goal.goalId,
-                                                    goal.unlocked,
-                                                )}
-                                            disabled={goalsLoading}
-                                        >
-                                            {goal.unlocked ? "Lock" : "Unlock"}
-                                        </button>
-                                    </div>
-                                    <p class="goal-description">
-                                        {goal.description ||
-                                            "No description available"}
-                                    </p>
-                                </div>
-                            {/each}
-                        </div>
-                    </div>
-                {/each}
-            {/if}
+            <p>Manage goals for patient to track their recovery milestones.</p>
+            <a href="/person/{patient.userId}/patient-goals" class="goals-btn">Manage Patient Goals</a>
         </div>
     {:else}
         <p>No patient data found</p>
@@ -543,134 +487,42 @@
         color: #6b7280;
     }
 
-    .goals-section {
-        margin-top: 2rem;
-    }
-
-    .goals-hint {
-        margin-bottom: 1rem;
-        color: #6b7280;
-        font-style: italic;
-    }
-
-    .loading-goals {
-        background-color: #f9fafb;
-        padding: 0.5rem;
-        text-align: center;
-        border-radius: 0.25rem;
-        margin: 1rem 0;
-    }
-
-    .month-goals {
-        margin-bottom: 2rem;
-    }
-
-    .month-goals h3 {
-        margin-bottom: 0.75rem;
-        padding-bottom: 0.25rem;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .goals-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1rem;
-    }
-
-    .goal-card {
-        background-color: #ffffff;
-        border-radius: 0.5rem;
+    .goals-link-section {
+        margin-top: 1.5rem;
         padding: 1rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease-in-out;
-    }
-
-    .goal-card.unlocked {
-        border-left: 4px solid #10b981;
-    }
-
-    .goal-card.locked {
-        border-left: 4px solid #d1d5db;
-    }
-
-    .goal-card-header {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        margin-bottom: 0.75rem;
-    }
-
-    .goal-card-header h4 {
-        margin: 0;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .status-badge-container {
-        margin: 0.25rem 0 0.5rem 0;
-    }
-
-    .status-badge.unlocked {
-        background-color: rgba(16, 185, 129, 0.1);
-        color: #10b981;
-    }
-
-    .status-badge.locked {
-        background-color: rgba(107, 114, 128, 0.1);
-        color: #6b7280;
-    }
-
-    .toggle-btn {
-        padding: 0.25rem 0.75rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
-        cursor: pointer;
-        border: none;
-        font-weight: 500;
-        align-self: flex-start;
-    }
-
-    .lock-btn {
-        background-color: #3b82f6;
-        color: white;
-    }
-
-    .unlock-btn {
-        background-color: #6b7280;
-        color: white;
-    }
-
-    .toggle-btn:hover {
-        opacity: 0.9;
-    }
-
-    .toggle-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .goal-description {
-        font-size: 0.875rem;
-        margin-bottom: 0.5rem;
-        color: #4b5563;
-        line-height: 1.4;
-    }
-
-    .empty-goals {
         background-color: #f9fafb;
         border-radius: 0.5rem;
-        padding: 2rem;
-        text-align: center;
-        margin-top: 1rem;
+        border: 1px solid #e5e7eb;
     }
-
-    .assign-goals-btn {
-        margin-top: 1rem;
+    
+    .goals-btn {
+        display: inline-block;
+        margin-top: 0.5rem;
         padding: 0.5rem 1rem;
         background-color: #3b82f6;
         color: white;
-        border: none;
+        text-decoration: none;
         border-radius: 0.25rem;
-        cursor: pointer;
+    }
+    
+    .goals-btn:hover {
+        background-color: #2563eb;
+    }
+
+    .pain-logs-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: #f9fafb;
+        border-radius: 0.5rem;
+    }
+    
+    .logs-btn {
+        display: inline-block;
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 0.25rem;
     }
 </style>

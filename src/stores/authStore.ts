@@ -217,3 +217,34 @@ async function checkUserRole(userId: string) {
         goto("/login");
     }
 }
+
+// COMMENTED OUT FOR NOW - NOT SURE IF WILL USE THIS YET
+// SINCE WE CANT BUY CLOUD FUNCTIONS, THIS COULD HELP WITH RESETTING PROGRAM
+// async function checkAndResetUserProgram(userId: string) {
+//     try {
+//       const program = await getCurrentProgram(userId);
+//       if (!program) return;
+      
+//       // Check if any exercises are completed
+//       const hasCompletedExercises = program.exercises.some(ex => ex.completed || ex.skipped);
+      
+//       if (hasCompletedExercises) {
+//         const lastCompletedDate = program.exercises
+//           .filter(ex => ex.completedAt)
+//           .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())[0]?.completedAt;
+        
+//         if (lastCompletedDate) {
+//           const lastDate = new Date(lastCompletedDate).toDateString();
+//           const today = new Date().toDateString();
+          
+//           // If the last completion was not today, reset exercises
+//           if (lastDate !== today) {
+//             await resetDailyProgress(userId);
+//             console.log("Exercises automatically reset on login - new day detected");
+//           }
+//         }
+//       }
+//     } catch (error) {
+//       console.error("Error checking/resetting user program:", error);
+//     }
+//   }

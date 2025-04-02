@@ -8,6 +8,7 @@ import {
     checkAndResetProgress, 
     updateStreakOnCompletion 
 } from "./statService";
+import { logTooPainful } from "./tooPainfulLogService";
 
 /* ------------------------- EXERCISE FUNCTIONS ------------------------- */
 export async function completeExercise(
@@ -106,7 +107,8 @@ export async function completeExercise(
 
 export async function skipExercise(
     userId: string,
-    exerciseId: string
+    exerciseId: string,
+    tooPainful: boolean = false
 ): Promise<void> {
     try {
         await checkAndResetProgress(userId);
@@ -147,6 +149,10 @@ export async function skipExercise(
                 }),
                 updateUser(userId, { stats })
             ]);
+        }
+
+        if (tooPainful && exercise) {
+            await logTooPainful(userId, exerciseId, exercise.exerciseName, exercise.exerciseType);
         }
 
     } catch (error) {

@@ -12,6 +12,7 @@ export interface User {
     assignedExercises: AssignedExercise[];
     stats: UserStats;
     estimatedTime?: number;
+    tooPainfulLogs?: TooPainfulLog[];
 }
 
 /* ------------------------- EACH EXERCISE DETAILS ------------------------- */
@@ -78,4 +79,31 @@ export interface UserStats {
         date: string;
         completed: boolean;
     }[];
+}
+
+
+/* ------------------------- TOO PAINFUL LOG DETAILS ------------------------- */
+export interface TooPainfulLog {
+    exerciseId: string;
+    exerciseName: string;
+    exerciseType: 'distance' | 'weight' | 'time';
+    loggedAt: string;
+}
+
+/* ------------------------- METRICS (ROM AND STRENGTH) DETAILS ------------------------- */
+export interface RangeOfMotion {
+    month: number;
+    degrees: number;
+}
+
+export interface Strength {
+    month: number;
+    strengthScale: number;
+}
+
+export interface UserMetrics {
+    userId: string;
+    rangeOfMotion: RangeOfMotion[];
+    strength: Strength[];
+    updatedAt: string;
 }

@@ -178,7 +178,7 @@
     }
 }
 
-    async function handleSkip() {
+    async function handleSkip(tooPainful: boolean = false) {
         if (!$authStore.currentUser || !currentExercise) {
             error = "No exercise selected.";
             return;
@@ -186,12 +186,13 @@
 
         try {
             modalOpen = false;
-            interstitialType = "too-painful";
+            interstitialType = tooPainful ? "too-painful": "skipped";
             showInterstitial = true;
             // Update Firebase
             await skipExercise(
                 $authStore.currentUser.uid,
                 currentExercise.exerciseId,
+                tooPainful
             );
             
             // Explicitly refresh the program data before navigating
@@ -381,7 +382,7 @@
             </div>
             <HoldToComplete nextPage="" navigateFunc={handleComplete}/>
         </div>
-        <SkipModal bind:open={modalOpen} handleTooPainful={handleSkip} handleAddToEnd={handleAddToEnd}/>
+        <SkipModal bind:open={modalOpen} handleTooPainful={() => handleSkip(true)} handleAddToEnd={handleAddToEnd}/>
     {/if}
 </div>
 
