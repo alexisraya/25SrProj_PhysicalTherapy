@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { scale } from "svelte/transition";
     import Icon from "./Icon.svelte";
     import { typography } from "$lib/design-system/typography";
     import { goto } from "$app/navigation";
@@ -12,19 +13,21 @@
     }
 </script>
 
-<button class="achievement-card-container {type}" on:click={onClick}>
+<button 
+    class="achievement-card-container {type}" 
+    on:click={onClick} 
+    in:scale={{ duration: 300, start: 0.8 }}
+>
     <div class="achievement-header">
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Achievements</p>
         <RemixIcon name="arrow-right-s-line" />
     </div>
     <div class="achievement-body">
-        <!-- TODO: ALEXIS make dynamic -->
-        <div class="achievement-image-container" > 
+        <div class="achievement-image-container"> 
             <Icon name="polar-bear" size="small"/>
         </div>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{achievementDescription}</p>
     </div>
-    
 </button>
 
 <style>

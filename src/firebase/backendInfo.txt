@@ -11,6 +11,10 @@ Interfaces:
 • AssignedExercise
 • Program
 • UserStats
+• TooPainfulLog
+• RangeOfMotion
+• Strength
+• UserMetrics
 
 * ------------------------- exerciseType.ts ------------------------- *
 Interfaces:
@@ -19,6 +23,14 @@ Interfaces:
 • (DistanceExercise)
 • (WeightExercise)
 • (TimeExercise)
+
+* ------------------------- checkInType.ts ------------------------- *
+Interfaces:
+• CheckIn
+• CheckInStats
+• MoodRating
+• getMoodDescription
+• getPainDescription
 
 
 // -------------------------------- // USER-RELATED S E R V I C E S // -------------------------------- //
@@ -52,6 +64,17 @@ Functions:
 - completedExercise()
 - skipExercise()
 
+* ------------------------- userexerciseService.ts ------------------------- *
+Handles pain and mood checkins
+
+Functions:
+- addCheckIn() --> Creates new check-in record for user/validation/saving logic
+- hasCompletedTodayCheckIn() --> Checks if user already submitted checkin for the day, returns boolean
+- getCheckInStats() --> calculates average and returns data wiht all checkins in the period
+- getLatestCheckIn() --> retreieves most recent check-in
+- getAllCheckIns() --> returns data sorted by timestamp, newest first
+- getCheckInsInRange() --> allows custom date filtering amongst checkins in database
+
 * ------------------------- milestoneService.ts ------------------------- *
 Handles goals and achievements for the user
 
@@ -68,6 +91,22 @@ Achievement Functions:
 - checkAchievements()
 - getUserAchievements()
 
+* ------------------------- metricsService.ts ------------------------- *
+Handles Range of Motion and Strength for the user
+
+Functions:
+- getUserMetrics()
+- updateRangeOfMotion()
+- updateStrength()
+- deleteRangeOfMotion()
+- deleteStrength()
+
+* ------------------------- tooPainfulService.ts ------------------------- *
+Handle "Too Painful to complete" Logs
+
+Functions:
+- logTooPainful()
+- getTooPainfulLogs()
 
 * ------------------------- statService.ts ------------------------- *
 Handles statistics tracking, streak management, and progress resets

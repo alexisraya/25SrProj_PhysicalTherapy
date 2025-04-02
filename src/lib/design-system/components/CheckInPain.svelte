@@ -2,6 +2,7 @@
     import { typography } from '$lib/design-system';
     import PainCheckInItem from "$lib/design-system/components/PainCheckInItem.svelte";
     import { fade, fly } from 'svelte/transition';
+    import { setPainLevel } from '$stores/checkInStore';
     
     let numbers = Array.from({ length: 10 }, (_, i) => i + 1);
     let selectedRating: number | null = null;
@@ -9,6 +10,8 @@
 
     function handleSelect(event: CustomEvent<number>) {
         selectedRating = event.detail;
+        setPainLevel(selectedRating);
+
         if (selectedRating == 1) {
             selectedRatingText = "No Pain";
         } else if (selectedRating > 1 && selectedRating <=3) {

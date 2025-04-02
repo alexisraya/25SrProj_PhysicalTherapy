@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
     import ToneSwitch from './ToneSwitch.svelte';
@@ -24,32 +24,34 @@
     </div>
 
     <!-- Subscribe to isOpen using $ -->
-    <div class={$isOpen ? 'menu show-menu' : 'menu'}>
-        <button class="close-button" on:click={closeMenu}>
-            <RemixIcon name="close-fill" />
-        </button>
-        <div class='menu-items'>
-            <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
-                <RemixIcon name="dashboard-line" />
-                <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+    <div class="menu-container" class:show={$isOpen}>
+        <div class="menu">
+            <button class="close-button" on:click={closeMenu}>
+                <RemixIcon name="close-fill" />
+            </button>
+            <div class='menu-items'>
+                <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
+                    <RemixIcon name="dashboard-line" />
+                    <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
+                    <RemixIcon name="line-chart-line" />
+                    <a href="/your-progress" on:click={closeMenu}>Progress</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
+                    <RemixIcon name="list-check-2" />
+                    <a href="/your-program" on:click={closeMenu}>Program</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
+                    <RemixIcon name="user-3-line" />
+                    <a href="/profile" on:click={closeMenu}>Profile</a>
+                </div>
             </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
-                <RemixIcon name="line-chart-line" />
-                <a href="/your-progress" on:click={closeMenu}>Progress</a>
-            </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
-                <RemixIcon name="list-check-2" />
-                <a href="/your-program" on:click={closeMenu}>Program</a>
-            </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
-                <RemixIcon name="user-3-line" />
-                <a href="/profile" on:click={closeMenu}>Profile</a>
-            </div>
-        </div>
 
-        <div class="toggles-container">
-            <ThemeToggle />
-            <ToneSwitch />
+            <div class="toggles-container">
+                <ThemeToggle />
+                <ToneSwitch />
+            </div>
         </div>
     </div>
 </nav>
@@ -63,30 +65,44 @@
         top: 0;
         right: 0;
         z-index: 100;
-        width: 277px;
     }
-  
+
     .nav-container {
         display: flex;
         justify-content: flex-end;
         align-items: center;
     }
-  
-    .menu {
-        display: none;
-        flex-direction: column;
-        justify-content: space-between;
-        background-color: var(--background-secondary);
+
+    /* New container for animation */
+    .menu-container {
         position: fixed;
         top: 0;
         right: 0;
+        width: 277px;
+        height: 100vh;
+        overflow: hidden;
+        transform: translateX(100%); /* Start off-screen */
+        transition: transform 0.3s ease-out;
+    }
+
+    /* Show when menu is open */
+    .menu-container.show {
+        transform: translateX(0); /* Slide in */
+        opacity: 1; /* Fade in */
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: var(--background-secondary);
         padding: 74px 16px 24px 16px;
         height: 100vh;
         width: 277px;
         box-sizing: border-box;
         overflow-y: auto;
     }
-  
+
     .menu a {
         display: block;
         text-decoration: none;
@@ -120,7 +136,7 @@
         align-items: flex-end;
         row-gap: 16px;
     }
-  
+
     .hamburger {
         background: none;
         border: none;
@@ -142,9 +158,5 @@
         right: 0;
         margin: 16px;
         cursor: pointer;
-    }
-
-    .show-menu {
-      display: flex;
     }
 </style>
