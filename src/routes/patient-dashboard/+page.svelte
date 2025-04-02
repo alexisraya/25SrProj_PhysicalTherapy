@@ -31,8 +31,8 @@
 <div class="header-container">
     <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
     <div class="cta-container">
-        <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular};">Hi {userData.firstName}!</h2>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 8px;">{$text(programCTAText)}</p>
+        <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular}; margin-bottom: 4px;">Hi {userData.firstName}!</h2>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;">{$text(programCTAText)}</p>
         <a href='/your-program'>
             <img src={PlayButton} />
         </a>
@@ -43,7 +43,7 @@
     <div class="break"/>
     <div class="metrics-container">
         <div class="metrics-header">
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly Metrics</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.medium};">Weekly metrics</p>
             <PainMoodDropdown />
         </div>
         
@@ -75,7 +75,7 @@
     }
     .background-wave {
         position: absolute;
-        top: -75%;
+        top: -65%;
         left: 50%;
         transform: translateX(-50%);
         z-index: -1;
@@ -164,6 +164,11 @@
         text-align: center;
         max-width: 182px;
         margin-top: 32px;
+    }
+
+    .no-metrics-container p {
+        line-height: 150%;
+        color: var(--color-grey-400);
     }
 
     @media (min-width: 505px) {

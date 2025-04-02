@@ -24,6 +24,14 @@ Interfaces:
 • (WeightExercise)
 • (TimeExercise)
 
+* ------------------------- checkInType.ts ------------------------- *
+Interfaces:
+• CheckIn
+• CheckInStats
+• MoodRating
+• getMoodDescription
+• getPainDescription
+
 
 // -------------------------------- // USER-RELATED S E R V I C E S // -------------------------------- //
 USER-RELATED FUNCTIONS THAT HAVE DIFFERENT PURPOSES THROUGHOUT THE APP
@@ -55,6 +63,17 @@ Manages the user to exercise interactions
 Functions:
 - completedExercise()
 - skipExercise()
+
+* ------------------------- userexerciseService.ts ------------------------- *
+Handles pain and mood checkins
+
+Functions:
+- addCheckIn() --> Creates new check-in record for user/validation/saving logic
+- hasCompletedTodayCheckIn() --> Checks if user already submitted checkin for the day, returns boolean
+- getCheckInStats() --> calculates average and returns data wiht all checkins in the period
+- getLatestCheckIn() --> retreieves most recent check-in
+- getAllCheckIns() --> returns data sorted by timestamp, newest first
+- getCheckInsInRange() --> allows custom date filtering amongst checkins in database
 
 * ------------------------- milestoneService.ts ------------------------- *
 Handles goals and achievements for the user
