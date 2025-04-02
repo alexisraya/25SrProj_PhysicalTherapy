@@ -2,8 +2,10 @@
     import { typography } from "$lib/design-system";
     import Streak from "$lib/design-system/components/Streak.svelte";
     import ExerciseCard from "$lib/design-system/components/ExerciseCard.svelte";
-    import ProgramCompletePlayButton from "$lib/assets/iconography/ProgramCompletePlayButton.svg";
+    import ProgramCompletePlayButtonLight from "$lib/assets/iconography/ProgramCompletePlayButtonLight.svg";
+    import ProgramCompletePlayButtonDark from "$lib/assets/iconography/ProgramCompletePlayButtonDark.svg";
     import SummaryBlob from "$lib/assets/background-images/SummaryBlob.svg";
+    import { onMount } from "svelte";
 
     export let data;
 
@@ -16,6 +18,37 @@
     
     // Determine if we're in a loading state
     $: loading = !error && !program && !stats && !weeklyProgress;
+
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    onMount(() => {
+        // Initial check from localStorage
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        };
+    });
 </script>
 
 <div class="summary-page-wrapper">
@@ -24,7 +57,11 @@
             <img class="blob" src={SummaryBlob} alt="background blob" />
         </div>
         <div class="heading">
-            <img src={ProgramCompletePlayButton} />
+            {#if currentTheme == 'light'}
+                <img src={ProgramCompletePlayButtonLight} alt="program complete icon"/>
+            {:else}
+                <img src={ProgramCompletePlayButtonDark} alt="program complete icon"/>
+            {/if}
             <h3 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h3}; font-weight: {typography.fontWeights.regular}; text-align: center;">You're done!</h3>
         </div>
         {#if program}
@@ -114,7 +151,7 @@
     }
     
     .horizontal-box {
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         width: 100%;
         height: 2px;
         margin-top: 8px;

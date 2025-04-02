@@ -1,9 +1,8 @@
 <script>
-    import CompleteIcon from '$lib/assets/iconography/CompleteIcon.svg';
-    import CompleteTooPainfulIcon from '$lib/assets/iconography/CompleteTooPainfulIcon.svg';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     export let isTooPainful = false;
-    let imgsrc = isTooPainful ? CompleteTooPainfulIcon : CompleteIcon;
+    let circleColor = isTooPainful ? "var(--too-painful-circle)" : "var(--complete-circle)";
 </script>
 
-<img src={imgsrc} alt="checkmark"/>
+<RemixIcon name="checkbox-circle-fill" color={circleColor}/>

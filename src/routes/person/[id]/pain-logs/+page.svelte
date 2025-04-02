@@ -5,7 +5,6 @@
     import { getTooPainfulLogs } from "$firebase/services/tooPainfulLogService";
     import { getUser } from "$firebase/services/userService";
     import type { TooPainfulLog, User } from "$firebase/types/userType";
-    import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
 
     let patientId: string;
     let patient: User | null = null;

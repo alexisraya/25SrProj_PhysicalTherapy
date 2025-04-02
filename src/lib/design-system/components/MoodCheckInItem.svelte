@@ -15,8 +15,8 @@
     const option = titleOptions[rating-1];
 </script>
 
-<button class="check-in-item-container {isSelected ? 'selected' : ''}" style="background-color: {isSelected ? itemColor : 'transparent'}; border: 1px solid {isSelected ? itemColor : 'var(--color-blue-100)'};" on:click={() => dispatch('select', rating)}>
-        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium}; color: {isSelected ? 'var(--color-grey-0)' : 'var(--color-blue-1100)'};">{option}</p>
+<button class="check-in-item-container {isSelected ? 'selected' : ''}" style="background-color: {isSelected ? itemColor : 'transparent'}; border: 1px solid {isSelected ? itemColor : 'var(--pain-mood-selected)'};" on:click={() => dispatch('select', rating)}>
+        <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium}; color: {isSelected ? 'var(--background)' : 'var(--text-primary)'};">{option}</p>
 </button>
 
 <style>

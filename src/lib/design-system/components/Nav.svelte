@@ -1,13 +1,9 @@
 <script lang="ts">
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
-    import NavIcon from "$lib/assets/iconography/NavIcon.svg";
-    import CloseIcon from "$lib/assets/iconography/CloseIcon.svg";
-    import HomeIcon from "$lib/assets/iconography/HomeIcon.svg";
-    import ProgressIcon from "$lib/assets/iconography/ProgressIcon.svg";
-    import ProgramIcon from "$lib/assets/iconography/ProgramIcon.svg";
-    import ProfileIcon from "$lib/assets/iconography/ProfileIcon.svg";
     import ToneSwitch from './ToneSwitch.svelte';
+    import ThemeToggle from './ThemeToggle.svelte';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     let isOpen = writable(false);
 
@@ -23,7 +19,7 @@
 <nav>
     <div class="nav-container">
         <button on:click={toggleMenu} class="hamburger">
-            <img class="hamburger-icon" alt="nav icon" src={NavIcon} />
+            <RemixIcon name="menu-3-line" />
         </button>
     </div>
 
@@ -31,28 +27,29 @@
     <div class="menu-container" class:show={$isOpen}>
         <div class="menu">
             <button class="close-button" on:click={closeMenu}>
-                <img class="close-icon" src={CloseIcon} alt="close button icon" />
+                <RemixIcon name="close-fill" />
             </button>
             <div class='menu-items'>
                 <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
-                    <img class="nav-icon" src={HomeIcon} alt="home icon"/>
+                    <RemixIcon name="dashboard-line" />
                     <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
                 </div>
                 <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
-                    <img class="nav-icon" src={ProgressIcon} alt="progress icon"/>
+                    <RemixIcon name="line-chart-line" />
                     <a href="/your-progress" on:click={closeMenu}>Progress</a>
                 </div>
                 <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
-                    <img class="nav-icon" src={ProgramIcon} alt="program icon"/>
+                    <RemixIcon name="list-check-2" />
                     <a href="/your-program" on:click={closeMenu}>Program</a>
                 </div>
                 <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
-                    <img class="nav-icon" src={ProfileIcon} alt="profile icon"/>
+                    <RemixIcon name="user-3-line" />
                     <a href="/profile" on:click={closeMenu}>Profile</a>
                 </div>
             </div>
 
-            <div>
+            <div class="toggles-container">
+                <ThemeToggle />
                 <ToneSwitch />
             </div>
         </div>
@@ -63,7 +60,7 @@
     nav {
         background-color: transparent;
         padding: 10px 20px;
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
         position: fixed;
         top: 0;
         right: 0;
@@ -98,7 +95,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         padding: 74px 16px 24px 16px;
         height: 100vh;
         width: 277px;
@@ -109,7 +106,7 @@
     .menu a {
         display: block;
         text-decoration: none;
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
     }
 
     .menu-items {
@@ -130,7 +127,14 @@
     }
 
     .menu-item.active {
-        background-color: #fff;
+        background-color: var(--background);
+    }
+
+    .toggles-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        row-gap: 16px;
     }
 
     .hamburger {

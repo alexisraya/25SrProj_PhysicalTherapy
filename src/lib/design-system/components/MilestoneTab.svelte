@@ -7,7 +7,7 @@
     import Streak from "$lib/design-system/components/Streak.svelte";
     import Goal from '$lib/design-system/components/Goal.svelte';
     import { typography } from '$lib/design-system/typography';
-    import RightArrow from '$lib/assets/iconography/RightArrow.svg';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     let goals;
     onMount(() => {
@@ -29,13 +29,14 @@
 <div class="milestone-body">
     <div class="milestone-body--top">
         <Achievement type="milestones" achievementDescription="You’ve lifted the weight of a polar bear!"/>
-        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} /> //TODO: Alexis Make dynamic
+        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} />
+        <!-- TODO: Alexis Make dynamic -->
     </div>
     <div class="milestone-body--bottom">
         <div class="goals-section">
             <a class="goals-section--header" href="/your-progress/goals">
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">Goals</p>
-                <img src={RightArrow} alt="rigth arrow" />
+                <RemixIcon name="arrow-right-s-line" />
             </a>
             <div class="goals-container">
                 {#each goals as goalItem}
@@ -48,7 +49,7 @@
 
 <style>
     a {
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
         text-decoration: none;
     }
     .milestone-header {
@@ -63,7 +64,7 @@
         }
     }
     .milestone-body {
-        background-color: white;
+        background-color: var(--background);
         min-height: 500px;
         padding: 16px 14px 32px 14px;
     }
@@ -77,6 +78,7 @@
     .goals-section--header{
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
     .goals-container {
         display: grid;

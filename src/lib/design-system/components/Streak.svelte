@@ -1,6 +1,6 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
-    import StreakComplete from "$lib/assets/iconography/StreakCompleted.svg";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
 
     export let streakType: string; // "home", "milestones", or "program"
     export let streakTotalDays: number;
@@ -18,7 +18,7 @@
         {/if}
         <div class="streak-count">
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">{overallStreak}</p>
-            <img class="streak-icon" src={StreakComplete} alt="lightning"/>
+            <RemixIcon name="flashlight-fill" color="var(--streak-complete)"/>
         </div>
     </div>
     <div class="streaks-container">
@@ -72,8 +72,8 @@
         width: 100%;
     }
     .program {
-        background-color: var(--color-purple-100);
-        border: 1px solid var(--color-purple-600);
+        background-color: var(--streak-background);
+        border: 1px solid var(--streak-border);
         border-radius: 4px;
         padding: 16px 12px;
     }
@@ -88,15 +88,15 @@
         border-radius: 4px;
         display: flex;
         height: 12px;
-        background-color: var(--color-purple-200);
+        background-color: var(--streak-empty);
         width: 100%;
     }
     .tall {
         height: 101px;
-        background-color: var(--color-purple-300);
+        background-color: var(--streak-tall-empty);
     }
     .completed {
-        background-color: var(--color-purple-600);
+        background-color: var(--streak-filled);
     }
     .program-days-container {
         display: flex;

@@ -82,7 +82,7 @@
         row-gap: 8px;
     }
     .stat-section {
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
         width: 100%;
     }
     .recovery-metrics {

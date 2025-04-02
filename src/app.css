@@ -1,5 +1,8 @@
+@import 'remixicon/fonts/remixicon.css';
+
 :root {
     /* Blue Palette */
+    --color-blue-opacity: #79C9E833;
     --color-blue-50: #F1F6F8;
     --color-blue-100: #E4F4FA;
     --color-blue-150: #D9EDF5;
@@ -55,6 +58,7 @@
     --color-yellow-800: #7F7834;
     --color-yellow-900: #545022;
     --color-yellow-1000: #333015;
+    --color-yellow-opacity: #FDEF6733;
 
     /* Orange Palette */
     --color-orange-100: #FFE4D9;
@@ -78,16 +82,90 @@
     --color-grey-400: #6F7679;
     --color-grey-opactity-dark: #FFFFFF50;
   
-    /* Other Colors */
-    --color-primary-text: var(--color-blue-1100);
-    --color-secondary-text: var(--color-blue-300);
-  
-    /* Button-specific */
+    /* Base Light Mode Theme */
+    --text-primary: var(--color-blue-1100);
+    --text-secondary: var(--color-grey-400);
+    --background: var(--color-grey-0);
+    --background-secondary: var(--color-blue-50);
+
+    /* Component Specific Light Mode Theme*/
+    --streak-empty: var(--color-purple-200);
+    --streak-filled: var(--color-purple-600);
+    --streak-background: var(--color-purple-100);
+    --streak-border: var(--color-purple-600);
+    --streak-tall-empty: var(--color-purple-300);
+    --streak-complete: var(--color-yellow-600);
+
     --button-primary-bg: var(--color-blue-1100);
     --button-primary-disabled-bg: var(--color-blue-50);
-    --button-secondary-border: var(--color-blue-110);
+    --button-primary-disabled-text: var(--color-grey-300);
+    --button-secondary-border: var(--color-blue-1100);
     --button-secondary-disabled-border: var(--color-blue-50);
+
+    --mark-complete-button: var(--color-grey-400);
+
+    --too-painful-circle: var(--color-yellow-600);
+    --complete-circle: var(--color-green-600);
+
+    --loading-skeleton-primary: var(--color-blue-50);
+    --loading-skeleton-secondary: var(--color-grey-100);
+
+    --pain-mood-selected: var(--color-blue-100);
+
+    --upcoming-milestone: var(--color-blue-150);
+
+    --locked-goal-border: var(--color-blue-100);
+    --unlocked-goal-background: var(--color-blue-550);
+
+    --exercise-info-divider: var(--color-purple-100);
+
+    --locked-achievement-image-border: var(--color-yellow-200);
+    --achievement-card-background: var(--color-yellow-100);
+    --achievement-card-border: var(--color-yellow-600);
   }
+
+  [data-theme="dark"] {
+    /* Dark mode overrides */
+    --text-primary: var(--color-grey-0);
+    --text-secondary: var(--color-grey-300);
+    --background: var(--color-blue-1100);
+    --background-secondary: var(--color-blue-1000);
+    
+    /* Component-specific variables for dark mode */
+    --streak-empty: var(--color-purple-opacity);
+    --streak-filled: var(--color-purple-550);
+    --streak-background: var(--color-purple-opacity);
+    --streak-border: var(--color-purple-550);
+    --streak-tall-empty: var(--color-purple-opacity);
+    --streak-complete: var(--color-yellow-550);
+
+    --button-primary-bg: var(--color-grey-0);
+    --button-primary-disabled-bg: var(--color-blue-1000);
+    --button-primary-disabled-text: var(--color-blue-800);
+    --button-secondary-border: var(--color-grey-0);
+    --button-secondary-disabled-border: var(--color-blue-800);
+
+    --mark-complete-button: var(--color-grey-200);
+
+    --too-painful-circle: var(--color-yellow-550);
+    --complete-circle: var(--color-green-550);
+
+    --loading-skeleton-primary: var(--color-grey-400);
+    --loading-skeleton-secondary: var(--color-blue-900);
+
+    --pain-mood-selected: var(--color-blue-900);
+
+    --upcoming-milestone: var(--color-blue-900);
+
+    --locked-goal-border: var(--color-blue-opacity);
+    --unlocked-goal-background: var(--color-blue-525);
+
+    --exercise-info-divider: var(--color-purple-600);
+
+    --locked-achievement-image-border: var(--color-yellow-opacity);
+    --achievement-card-background: var(--color-yellow-opacity);
+    --achievement-card-border: var(--color-yellow-550);
+  }  
   
 
 @font-face {
@@ -120,10 +198,15 @@
 
 body {
     font-family: 'Albert Sans', sans-serif;
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
+    background-color: var(--background);
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
     margin: 0;
+}
+
+a {
+    text-decoration: none;
 }

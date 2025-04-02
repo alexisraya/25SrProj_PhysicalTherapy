@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from 'svelte';
     import { typography } from '$lib/design-system/typography';
-    import DownArrow from '$lib/assets/iconography/DownArrow.svg';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
     
     let options=[
         { value: 'pain', label: 'Pain' },
@@ -55,7 +55,7 @@
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">{selectedLabel}</p>
         </span>
         <div class="dropdown-arrow" class:open={isOpen}>
-            <img src={DownArrow} alt="down arrow" />
+            <RemixIcon name="arrow-down-s-line" size="20px"/>
         </div>
     </div>
     
@@ -95,7 +95,7 @@
         column-gap: 8px;
         padding: 4px 4px 4px 8px;
         border-radius: 4px;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         cursor: pointer;
         user-select: none;
     }
@@ -109,8 +109,8 @@
     }
     
     .dropdown-arrow {
-        height: 24px;
-        width: 24px;
+        height: 20px;
+        width: 20px;
         transition: transform 0.2s ease;
     }
     
@@ -125,7 +125,7 @@
         width: 71px;
         max-height: 200px;
         overflow-y: auto;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         border-radius: 4px;
         z-index: 1000;
     }
@@ -136,6 +136,6 @@
     }
     
     .dropdown-option.selected {
-        background-color: var(--color-blue-100); /* Your theme color */
+        background-color: var(--pain-mood-selected);
     }
 </style>

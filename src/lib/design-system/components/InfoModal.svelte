@@ -1,6 +1,7 @@
 <script lang="ts">
     import Icon from "$lib/design-system/components/Icon.svelte";
-    import CloseIcon from "$lib/assets/iconography/CloseIcon.svg";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
+    import { onMount } from "svelte";
     import { typography } from "../typography";
 
     export let isGoal = false;
@@ -11,17 +12,56 @@
     const closeModal = () => {
         return;
     }
+
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    onMount(() => {
+        // Initial check from localStorage
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        };
+    });
 </script>
 <div class="modal-container">
     <button class="close-button" on:click={closeModal}>
-        <img class="close-icon" src={CloseIcon} alt="close button icon" />
+        <RemixIcon name="close-line" />
     </button>
     <div class="modal-icon-container {isGoal ? 'goal' : 'achievement'}">
         {#if isLocked}
             {#if isGoal}
-                <Icon name="lock-light" size="small"/>
+                {#if currentTheme == 'light'}
+                    <Icon name="lock-light" size="small"/>
+                {:else}
+                    <Icon name="lock-dark" size="small"/>
+                {/if}
             {:else}
-                <Icon name="lock-yellow-light" size="small"/>
+                {#if currentTheme == 'light'}
+                    <Icon name="lock-yellow-light" size="small"/>
+                {:else}
+                    <Icon name="lock-yellow-dark" size="small"/>
+                {/if}
             {/if}
         {:else}
             <Icon name={iconName} size="small"/>
@@ -41,9 +81,9 @@
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};">Long description of goal goes here</p>
         {/if}
         {#if isGoal}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--color-grey-400);">Week #</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--text-secondary);">Week #</p>
         {:else}
-            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--color-grey-400);">Metric</p>
+            <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--text-secondary);">Metric</p>
         {/if}
     </div>
 </div>
@@ -64,7 +104,7 @@
         text-align: center;
         padding: 32px 0;
         border-radius: 16px;
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
     }
     .modal-icon-container {
         height: 92px;
@@ -74,11 +114,11 @@
         justify-content: center;
     }
     .goal {
-        background-color: var(--color-blue-525);
+        background-color: var(--color-blue-525); /* Light/dark mode exception */
         border-radius: 100px;
     }
     .achievement {
-        background-color: var(--color-yellow-550);
+        background-color: var(--color-yellow-550); /* Light/dark mode exception */
         border-radius: 4px;
     }
     .modal-information {

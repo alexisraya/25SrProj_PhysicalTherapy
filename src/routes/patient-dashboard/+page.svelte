@@ -1,11 +1,14 @@
 <script lang="ts">
     import { typography } from '$lib/design-system';
-    import PlayButton from '$lib/assets/iconography/PlayButton.svg';
-    import homeBackgroundSmall from '$lib/assets/background-images/home-background-small.svg';
+    import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
+    import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
+    import homeBackgroundSmallLight from '$lib/assets/background-images/HomeBackgroundSmallLight.svg';
+    import homeBackgroundSmallDark from '$lib/assets/background-images/HomeBackgroundSmallDark.svg';
     import Streak from '$lib/design-system/components/Streak.svelte';
-    import NoMetricsIcon from '$lib/assets/iconography/NoMetricsIcon.svg';
     import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
     import { getTone } from '$lib/helpers/toneContext';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+    import { onMount } from 'svelte';
 
     export let data;
 
@@ -25,16 +28,55 @@
 
     const programCompleteTextOptions = [`complete_1`, `complete_2`, `complete_3`];
     const programCompleteText = programCompleteTextOptions[Math.floor(Math.random() * programCompleteTextOptions.length)];
+
+    let currentTheme: 'light' | 'dark' = 'light';
+
+    function updateThemeFromStorage() {
+        // Check localStorage directly
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        
+        if (savedTheme) {
+            currentTheme = savedTheme;
+        } else {
+            // Fallback to system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            currentTheme = prefersDark ? 'dark' : 'light';
+        }
+    }
+
+    onMount(() => {
+        // Initial check from localStorage
+        updateThemeFromStorage();
+
+        // Listen for custom theme change events
+        const handleThemeChange = () => {
+            updateThemeFromStorage();
+        };
+        
+        window.addEventListener('themeChanged', handleThemeChange);
+
+        return () => {
+            window.removeEventListener('themeChanged', updateThemeFromStorage);
+        };
+    });
 </script>
 
 {#if program && stats && weeklyProgress}
 <div class="header-container">
-    <img class="background-wave" src={homeBackgroundSmall} alt="background wave"/>
+    {#if currentTheme == 'light'}
+        <img class="background-wave" src={homeBackgroundSmallLight} alt="background wave"/>
+    {:else}
+        <img class="background-wave" src={homeBackgroundSmallDark} alt="background wave"/>
+    {/if}
     <div class="cta-container">
         <h2 style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes.h2}; font-weight: {typography.fontWeights.regular}; margin-bottom: 4px;">Hi {userData.firstName}!</h2>
         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;">{$text(programCTAText)}</p>
         <a href='/your-program'>
-            <img src={PlayButton} />
+            {#if currentTheme == 'light'}
+                <img src={PlayButtonLight} alt="play button"/>
+            {:else}
+                <img src={PlayButtonDark} alt="play button"/>
+            {/if}
         </a>
     </div>
 </div>
@@ -49,7 +91,7 @@
         
         <!-- <Chart /> -->
          <div class="no-metrics-container">
-            <img src={NoMetricsIcon} alt="indeterminate icon" />
+            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)"/>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.medium};">No metrics yet</p>
             <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">Complete your check in to see up-to-date data here</p>
          </div>
@@ -71,7 +113,7 @@
         position: relative;
         width: 100vw;
         height: 8px;
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
     }
     .background-wave {
         position: absolute;
@@ -101,44 +143,6 @@
         align-items: center;
         row-gap: 8px;
     }
-    .program-streak-container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        row-gap: 12px;
-    }
-    .program-streak-container--title {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-    }
-    .program-title--streak {
-        display: flex;
-        column-gap: 4px;
-    }
-    .program-streak-container--streaks {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        column-gap: 2px;
-    }
-    .streak-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        row-gap: 8px;
-    }
-    .streak-item--rect {
-        height: 12px;
-        width: 100%;
-        background-color: var(--color-purple-200);
-        border-radius: 4px;
-    }
-    .day-one {
-        background-color: var(--color-purple-600);
-    }
 
     .metrics-container {
         display: flex;
@@ -156,6 +160,7 @@
     }
 
     .no-metrics-container {
+        color: var(--text-secondary);
         align-self: center;
         display: flex;
         flex-direction: column;

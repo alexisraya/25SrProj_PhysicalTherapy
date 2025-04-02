@@ -1,12 +1,10 @@
 <script lang="ts">
     import Button from "$lib/design-system/components/Button.svelte";
-    import Heart from "$lib/assets/iconography/Heart.svg";
-    import Megaphone from "$lib/assets/iconography/Megaphone.svg";
     import { getTone } from "$lib/helpers/toneContext";
 
     const { tone, setTone } = getTone();
     $: buttonLabel = $tone == 'kind' ? "Switch to Tough Tone" : "Switch to Kind Tone";
-    $: toneIcon = $tone == 'kind' ? Megaphone : Heart;
+    $: toneIcon = $tone == 'kind' ? "megaphone-line" : "service-line";
 
     const toggleTone = () => {
         setTone($tone === 'kind' ? 'tough' : 'kind');

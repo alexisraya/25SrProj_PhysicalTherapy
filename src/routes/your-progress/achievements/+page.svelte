@@ -91,7 +91,7 @@
         row-gap: 8px;
     }
     .horizontal-box {
-        background-color: var(--color-blue-50);
+        background-color: var(--background-secondary);
         width: 100%;
         height: 2px;
         margin-bottom: 8px;

@@ -40,6 +40,7 @@
 </div>
   
 <style>
+    /* TODO: ALEXIS revisit once characters are in */
     p {
         margin: 0;
     }

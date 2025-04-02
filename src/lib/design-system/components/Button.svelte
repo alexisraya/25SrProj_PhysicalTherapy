@@ -1,5 +1,6 @@
 <script lang="ts">
     import { typography } from '$lib/design-system';
+    import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
     export let isDisabled = false;
     export let buttonType = "primary"; // "primary" or "secondary"
@@ -12,7 +13,7 @@
 
 <button class="{isDisabled ? `${buttonType}-disabled` : `${buttonType}`}" disabled={isDisabled} on:click={onClickFunc}>
     {#if buttonIcon}
-        <img src={buttonIcon} alt="button icon" />
+        <RemixIcon name={buttonIcon} />
     {/if}
     <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.bold};">
         {cta}
@@ -38,14 +39,15 @@
     .primary {
         background-color: var(--button-primary-bg);
         border: 1px solid var(--button-primary-bg);
-        color: var(--color-grey-0);
+        color: var(--background);
     }
 
     /* Primary Hover */
+    /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
     .primary:hover {
         background-color: var(--color-blue-900);
         border: 1px solid var(--button-primary-bg);
-        color: var(--color-grey-0);
+        color: var(--text-primary);
     }
 
     /* Primary Active */
@@ -54,10 +56,11 @@
     }
 
     /* Disabled Primary Button Styles */
+    /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
     .primary-disabled {
         background-color: var(--button-primary-disabled-bg);
         border: 1px solid var(--button-primary-disabled-bg);
-        color: var(--color-grey-300);
+        color: var(--button-primary-disabled-text);
         cursor: default;
     }
 
@@ -65,7 +68,7 @@
     .secondary {
         background-color: transparent;
         color: var(--button-secondary-border);
-        border: 1px solid var(--color-blue-1100);
+        border: 1px solid var(--button-secondary-border);
     }
 
     /* Secondary Hover */
