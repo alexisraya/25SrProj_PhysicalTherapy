@@ -3,6 +3,7 @@
 A web application built with SvelteKit and designed in Figma, created as part of a senior project. Deployed and hosted on Vercel.
 
 ## 📋 Table of Contents
+
 - [Project Setup](#project-setup)
 - [Development](#development)
 - [Building](#building)
@@ -46,12 +47,14 @@ npm run dev -- --open
 ### Contributing to the Project
 
 1. **Clone the Repository**
+
    ```bash
    git clone [repository-url]
    cd [project-name]
    ```
 
 2. **Create a New Branch**
+
    ```bash
    # Create a branch using a descriptive name
    git checkout -b your-feature-name
@@ -60,11 +63,13 @@ npm run dev -- --open
    ```
 
 3. **Make Your Changes**
+
    - Write clean, documented code
    - Follow existing code style and patterns
    - Test your changes locally
 
 4. **Start the Development Server**
+
    ```bash
    npm run dev
 
@@ -73,17 +78,20 @@ npm run dev -- --open
    ```
 
 5. **Commit Your Changes**
+
    ```bash
    git add .
    git commit -m "descriptive commit message"
    ```
 
    Commit message guidelines:
+
    - Be clear and descriptive
    - Start with a verb (add, fix, update, etc.)
    - Reference issue numbers if applicable
 
 6. **Push to GitHub**
+
    ```bash
    git push origin your-branch-name
    ```
@@ -96,7 +104,59 @@ npm run dev -- --open
    - Add screenshots if UI changes are involved
    - Request review from project maintainers
 
+## 🔍 Code Quality Tools
+
+To maintain code consistency across our team of contributors, this project uses ESLint, Prettier, and pre-commit hooks.
+
+### Setup
+
+When you clone the repository and run `npm install`, the pre-commit hooks will be automatically set up through Husky.
+
+### Available Commands
+
+- `npm run lint` - Check your code for linting issues
+- `npm run lint:fix` - Automatically fix linting issues
+- `npm run format` - Format all code with Prettier
+- `npm run format:check` - Check if code is properly formatted
+- `npm run lint:check` - Run both linting and format checks
+- `npm run lint:fix-all` - Fix all linting and formatting issues
+
+### Pre-commit Validation
+
+A pre-commit hook is configured to automatically:
+
+- Lint your JavaScript, TypeScript, and Svelte files
+- Format your code with Prettier
+- Prevent committing code that doesn't meet our standards
+
+This ensures that all code in the repository maintains consistent style and quality.
+
+### Editor Integration
+
+For the best development experience, we recommend installing ESLint and Prettier extensions for your code editor:
+
+- VS Code:
+  - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+  - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+A `.vscode/settings.json` file is included in the repository with pre-configured settings to:
+
+- Automatically format files on save
+- Set Prettier as the default formatter
+- Enable ESLint auto-fix on save
+- Configure language-specific formatting options
+
+These settings ensure consistent editor behavior for all contributors without requiring manual setup.
+
+### Configuration Files
+
+- `eslint.config.js` - ESLint configuration (flat config format)
+- `.prettierrc` - Prettier configuration
+- `.prettierignore` - Files to exclude from Prettier formatting
+- `lint-staged.config.js` - Configuration for pre-commit checks
+
 ### Pull Request Guidelines
+
 - Link related issues (if applicable)
 - Include screenshots for UI changes
 - Describe what was changed
@@ -110,10 +170,12 @@ npm run dev -- --open
 This project is deployed on Vercel. Each push to the main branch triggers an automatic deployment.
 
 ### Production Environment
+
 - Production URL: https://mend.vercel.app/
 - Production Branch: main
 
 ### Preview Environments
+
 - Every pull request gets a unique preview deployment
 - Preview URLs are automatically posted in PR comments
 - Great for testing changes before merging to main
@@ -125,6 +187,7 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Getting Started with QA Testing
 
 1. **Setup Requirements**
+
    - Request collaborator access from the development team
    - Familiarize yourself with the GitHub Issues tab
 
@@ -135,6 +198,7 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
    - User experience evaluation
 
 ### Testing Environments
+
 - Production: https://mend.vercel.app/
 - Preview: Check PR comments for preview URLs
 - Local: http://localhost:5173 (when running `npm run dev`)
@@ -142,24 +206,28 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Testing Checklist
 
 #### Design Verification
+
 - Compare implementation against Figma designs
 - Check spacing, colors, and typography
 - Verify responsive behavior
 - Test dark/light mode (if applicable)
 
 #### Functionality Testing
+
 - Test all interactive elements
 - Complete end-to-end user flows
 - Verify edge cases and error states
 - Test with various input types
 
 #### Responsive Testing
+
 - Test on different screen sizes
 - Check both orientations (landscape/portrait)
 - Verify content alignment
 - Ensure readability across devices
 
 #### User Experience
+
 - Identify unclear interactions
 - Verify feedback mechanisms
 - Test loading states
@@ -185,12 +253,14 @@ This project is deployed on Vercel. Each push to the main branch triggers an aut
 ### Best Practices
 
 1. **Before Reporting**
+
    - Check if the issue has already been reported
    - Test on different browsers/devices
    - Specify which environment (production/preview/local) the issue was found in
    - Gather all necessary screenshots/recordings
 
 2. **Writing the Report**
+
    - Use clear, descriptive titles
    - Provide step-by-step reproduction steps
    - Include visual evidence

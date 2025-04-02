@@ -7,10 +7,15 @@
   export let modelPath = ''; // Path to the 3D model
   let container;
   let mixer; // Animation mixer
-// limit zoom in and out, x axis, y axis. intial camera view
+  // limit zoom in and out, x axis, y axis. intial camera view
   onMount(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      50,
+      container.clientWidth / container.clientHeight,
+      1,
+      1000
+    );
     camera.position.set(0, 0, 100);
 
     const renderer = new THREE.WebGLRenderer({ alpha: false });
