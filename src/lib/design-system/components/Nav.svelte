@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { writable } from 'svelte/store';
     import { page } from '$app/stores';
     import NavIcon from "$lib/assets/iconography/NavIcon.svg";
@@ -28,31 +28,33 @@
     </div>
 
     <!-- Subscribe to isOpen using $ -->
-    <div class={$isOpen ? 'menu show-menu' : 'menu'}>
-        <button class="close-button" on:click={closeMenu}>
-            <img class="close-icon" src={CloseIcon} alt="close button icon" />
-        </button>
-        <div class='menu-items'>
-            <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
-                <img class="nav-icon" src={HomeIcon} alt="home icon"/>
-                <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+    <div class="menu-container" class:show={$isOpen}>
+        <div class="menu">
+            <button class="close-button" on:click={closeMenu}>
+                <img class="close-icon" src={CloseIcon} alt="close button icon" />
+            </button>
+            <div class='menu-items'>
+                <div class="menu-item" class:active={$page.url.pathname === "/patient-dashboard"}>
+                    <img class="nav-icon" src={HomeIcon} alt="home icon"/>
+                    <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
+                    <img class="nav-icon" src={ProgressIcon} alt="progress icon"/>
+                    <a href="/your-progress" on:click={closeMenu}>Progress</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
+                    <img class="nav-icon" src={ProgramIcon} alt="program icon"/>
+                    <a href="/your-program" on:click={closeMenu}>Program</a>
+                </div>
+                <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
+                    <img class="nav-icon" src={ProfileIcon} alt="profile icon"/>
+                    <a href="/profile" on:click={closeMenu}>Profile</a>
+                </div>
             </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/your-progress"}>
-                <img class="nav-icon" src={ProgressIcon} alt="progress icon"/>
-                <a href="/your-progress" on:click={closeMenu}>Progress</a>
-            </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/your-program"}>
-                <img class="nav-icon" src={ProgramIcon} alt="program icon"/>
-                <a href="/your-program" on:click={closeMenu}>Program</a>
-            </div>
-            <div class="menu-item" class:active={$page.url.pathname === "/profile"}>
-                <img class="nav-icon" src={ProfileIcon} alt="profile icon"/>
-                <a href="/profile" on:click={closeMenu}>Profile</a>
-            </div>
-        </div>
 
-        <div>
-            <ToneSwitch />
+            <div>
+                <ToneSwitch />
+            </div>
         </div>
     </div>
 </nav>
@@ -62,34 +64,48 @@
         background-color: transparent;
         padding: 10px 20px;
         color: var(--color-blue-1100);
-        position: fixed; /* Changed from absolute to fixed */
+        position: fixed;
         top: 0;
         right: 0;
         z-index: 100;
-        width: 277px;
     }
-  
+
     .nav-container {
         display: flex;
         justify-content: flex-end;
         align-items: center;
     }
-  
+
+    /* New container for animation */
+    .menu-container {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 277px;
+        height: 100vh;
+        overflow: hidden;
+        transform: translateX(100%); /* Start off-screen */
+        transition: transform 0.3s ease-out;
+    }
+
+    /* Show when menu is open */
+    .menu-container.show {
+        transform: translateX(0); /* Slide in */
+        opacity: 1; /* Fade in */
+    }
+
     .menu {
-        display: none;
+        display: flex;
         flex-direction: column;
         justify-content: space-between;
         background-color: var(--color-blue-50);
-        position: fixed; /* Changed from relative to fixed */
-        top: 0; /* Changed from -34px to 0 */
-        right: 0; /* Changed from -20px to 0 */
         padding: 74px 16px 24px 16px;
         height: 100vh;
-        width: 277px; /* Explicitly set width */
-        box-sizing: border-box; /* Added to ensure padding is included in width/height */
-        overflow-y: auto; /* Added to handle content that might overflow */
+        width: 277px;
+        box-sizing: border-box;
+        overflow-y: auto;
     }
-  
+
     .menu a {
         display: block;
         text-decoration: none;
@@ -97,7 +113,7 @@
     }
 
     .menu-items {
-        display: flex; /* Added display: flex */
+        display: flex;
         flex-direction: column;
         row-gap: 22px;
     }
@@ -114,9 +130,9 @@
     }
 
     .menu-item.active {
-        background-color: #fff; /* Highlight active menu item */
+        background-color: #fff;
     }
-  
+
     .hamburger {
         background: none;
         border: none;
@@ -138,9 +154,5 @@
         right: 0;
         margin: 16px;
         cursor: pointer;
-    }
-
-    .show-menu {
-      display: flex;
     }
 </style>
