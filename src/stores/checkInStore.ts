@@ -1,12 +1,12 @@
-import { writable, derived, get } from "svelte/store";
-import type { CheckIn, CheckInStats } from "../firebase/types/checkInType";
-import { 
-  addCheckIn, 
-  hasCompletedTodayCheckIn, 
-  getCheckInStats, 
-  getLatestCheckIn 
-} from "../firebase/services/checkInService";
-import { authStore } from "./authStore";
+import { writable, derived, get } from 'svelte/store';
+import type { CheckIn, CheckInStats } from '../firebase/types/checkInType';
+import {
+  addCheckIn,
+  hasCompletedTodayCheckIn,
+  getCheckInStats,
+  getLatestCheckIn
+} from '../firebase/services/checkInService';
+import { authStore } from './authStore';
 
 export const currentUser = derived(authStore, ($authStore) => $authStore.userId);
 
@@ -17,32 +17,32 @@ function createCheckInStore() {
     todayCompleted: false,
     currentCheckIn: {
       painLevel: null as number | null,
-      moodLevel: null as number | null,
+      moodLevel: null as number | null
     },
     latestCheckIn: null as CheckIn | null,
-    stats: null as CheckInStats | null,
+    stats: null as CheckInStats | null
   });
 
   function setPainLevel(level: number) {
-    console.log("Updating Pain Level:", level);
-    update(state => ({
-        ...state,
-        currentCheckIn: { 
-            ...state.currentCheckIn, 
-            painLevel: level 
-        }
+    console.log('Updating Pain Level:', level);
+    update((state) => ({
+      ...state,
+      currentCheckIn: {
+        ...state.currentCheckIn,
+        painLevel: level
+      }
     }));
   }
 
   function setMoodLevel(level: number) {
-      console.log("Updating Mood Level:", level);
-      update(state => ({
-          ...state,
-          currentCheckIn: { 
-              ...state.currentCheckIn, 
-              moodLevel: level 
-          }
-      }));
+    console.log('Updating Mood Level:', level);
+    update((state) => ({
+      ...state,
+      currentCheckIn: {
+        ...state.currentCheckIn,
+        moodLevel: level
+      }
+    }));
   }
 
   async function checkTodayStatus() {
@@ -58,7 +58,7 @@ function createCheckInStore() {
       update((state) => ({
         ...state,
         loading: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
       }));
     }
   }
@@ -66,7 +66,7 @@ function createCheckInStore() {
   async function submitCheckIn() {
     const userId = get(authStore).userId;
     if (!userId) {
-      update((state) => ({ ...state, error: "User not authenticated" }));
+      update((state) => ({ ...state, error: 'User not authenticated' }));
       return false;
     }
 
@@ -77,7 +77,7 @@ function createCheckInStore() {
       const { painLevel, moodLevel } = storeState.currentCheckIn;
 
       if (painLevel === null || moodLevel === null) {
-        throw new Error("Pain level and mood level are required");
+        throw new Error('Pain level and mood level are required');
       }
 
       await addCheckIn(userId, painLevel, moodLevel);
@@ -88,8 +88,8 @@ function createCheckInStore() {
         todayCompleted: true,
         currentCheckIn: {
           painLevel: null,
-          moodLevel: null,
-        },
+          moodLevel: null
+        }
       }));
 
       const latest = await getLatestCheckIn(userId);
@@ -100,13 +100,13 @@ function createCheckInStore() {
       update((state) => ({
         ...state,
         loading: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
       }));
       return false;
     }
   }
 
-  async function loadStats(period: "week" | "month" | "3months" | "6months") {
+  async function loadStats(period: 'week' | 'month' | '3months' | '6months') {
     const userId = get(authStore).userId;
     if (!userId) return;
 
@@ -119,7 +119,7 @@ function createCheckInStore() {
       update((state) => ({
         ...state,
         loading: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
       }));
     }
   }
@@ -129,9 +129,9 @@ function createCheckInStore() {
       ...state,
       currentCheckIn: {
         painLevel: null,
-        moodLevel: null,
+        moodLevel: null
       },
-      error: null,
+      error: null
     }));
   }
 
@@ -165,6 +165,6 @@ export const userCheckInStatus = derived(
   ([$currentUser, $checkInStore]) => ({
     loggedIn: !!$currentUser,
     canCheckIn: !$checkInStore.todayCompleted,
-    isLoading: $checkInStore.loading,
+    isLoading: $checkInStore.loading
   })
 );

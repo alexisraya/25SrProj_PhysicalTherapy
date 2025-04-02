@@ -1,7 +1,7 @@
 name: Bug Report
 description: Create a report to help us improve
-title: "[BUG] "
-labels: ["bug", "needs-triage"]
+title: '[BUG] '
+labels: ['bug', 'needs-triage']
 body:
   - type: markdown
     attributes:
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Page/Feature Location
       description: Which page or feature were you testing?
-      placeholder: "Example: Login page, User Profile, Homepage"
+      placeholder: 'Example: Login page, User Profile, Homepage'
     validations:
       required: true
 
@@ -97,7 +97,7 @@ body:
     attributes:
       label: Screen Size
       description: What was your screen size/resolution? (If known)
-      placeholder: "Example: 1920x1080, iPhone 13, etc."
+      placeholder: 'Example: 1920x1080, iPhone 13, etc.'
 
   - type: textarea
     id: screenshots
@@ -113,7 +113,7 @@ body:
     attributes:
       label: Additional Context
       description: Add any other context about the problem here
-      placeholder: "Example: This only happens when..."
+      placeholder: 'Example: This only happens when...'
 
   - type: dropdown
     id: severity

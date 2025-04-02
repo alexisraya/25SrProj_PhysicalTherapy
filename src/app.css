@@ -1,212 +1,216 @@
 @import 'remixicon/fonts/remixicon.css';
 
 :root {
-    /* Blue Palette */
-    --color-blue-opacity: #79C9E833;
-    --color-blue-50: #F1F6F8;
-    --color-blue-100: #E4F4FA;
-    --color-blue-150: #D9EDF5;
-    --color-blue-200: #D2EDF7;
-    --color-blue-300: #BCE4F4;
-    --color-blue-400: #A6DBF0;
-    --color-blue-500: #8FD2EC;
-    --color-blue-525: #79C9E8; /*Base Level*/
-    --color-blue-550: #70B8D5;
-    --color-blue-600: #65A8C1;
-    --color-blue-700: #51869B;
-    --color-blue-800: #3D6574;
-    --color-blue-900: #28434D;
-    --color-blue-1000: #18282E;
-    --color-blue-1100: #0F1B1F;
-    
-    /* Green Palette */
-    --color-green-100: #DBF6E6;
-    --color-green-200: #C3F0D5;
-    --color-green-300: #A6E9C1;
-    --color-green-400: #88E1AC;
-    --color-green-500: #6ADA97;
-    --color-green-550: #4CD282; /*Base level*/
-    --color-green-600: #3FAF6C;
-    --color-green-700: #338C57;
-    --color-green-800: #266941;
-    --color-green-900: #19462B;
-    --color-green-1000: #0f2A1A;
+  /* Blue Palette */
+  --color-blue-opacity: #79c9e833;
+  --color-blue-50: #f1f6f8;
+  --color-blue-100: #e4f4fa;
+  --color-blue-150: #d9edf5;
+  --color-blue-200: #d2edf7;
+  --color-blue-300: #bce4f4;
+  --color-blue-400: #a6dbf0;
+  --color-blue-500: #8fd2ec;
+  --color-blue-525: #79c9e8; /*Base Level*/
+  --color-blue-550: #70b8d5;
+  --color-blue-600: #65a8c1;
+  --color-blue-700: #51869b;
+  --color-blue-800: #3d6574;
+  --color-blue-900: #28434d;
+  --color-blue-1000: #18282e;
+  --color-blue-1100: #0f1b1f;
 
-    /* Purple Palette */
-    --color-purple-100: #F2EBFB;
-    --color-purple-200: #E9DDF9;
-    --color-purple-300: #DECCF5;
-    --color-purple-400: #D4BCF2;
-    --color-purple-500: #C9ABEF;
-    --color-purple-550: #BE9AEC; /*Base level*/
-    --color-purple-600: #9E80C5;
-    --color-purple-700: #7F679D;
-    --color-purple-800: #5F4D76;
-    --color-purple-900: #3F334F;
-    --color-purple-1000: #261F2F;
-    --color-purple-opacity: #BB9CF920;
+  /* Green Palette */
+  --color-green-100: #dbf6e6;
+  --color-green-200: #c3f0d5;
+  --color-green-300: #a6e9c1;
+  --color-green-400: #88e1ac;
+  --color-green-500: #6ada97;
+  --color-green-550: #4cd282; /*Base level*/
+  --color-green-600: #3faf6c;
+  --color-green-700: #338c57;
+  --color-green-800: #266941;
+  --color-green-900: #19462b;
+  --color-green-1000: #0f2a1a;
 
-    /* Yellow Palette */
-    --color-yellow-100: #FFFCE1;
-    --color-yellow-200: #FEFACC;
-    --color-yellow-300: #FEF7B3;
-    --color-yellow-400: #FEF49A;
-    --color-yellow-500: #FDF280;
-    --color-yellow-550: #FDEF67; /*Base level*/
-    --color-yellow-600: #D3C756;
-    --color-yellow-700: #A99F45;
-    --color-yellow-800: #7F7834;
-    --color-yellow-900: #545022;
-    --color-yellow-1000: #333015;
-    --color-yellow-opacity: #FDEF6733;
+  /* Purple Palette */
+  --color-purple-100: #f2ebfb;
+  --color-purple-200: #e9ddf9;
+  --color-purple-300: #deccf5;
+  --color-purple-400: #d4bcf2;
+  --color-purple-500: #c9abef;
+  --color-purple-550: #be9aec; /*Base level*/
+  --color-purple-600: #9e80c5;
+  --color-purple-700: #7f679d;
+  --color-purple-800: #5f4d76;
+  --color-purple-900: #3f334f;
+  --color-purple-1000: #261f2f;
+  --color-purple-opacity: #bb9cf920;
 
-    /* Orange Palette */
-    --color-orange-100: #FFE4D9;
-    --color-orange-200: #FFD3BF;
-    --color-orange-300: #FFBC9F;
-    --color-orange-400: #FFA680;
-    --color-orange-500: #FF9060;
-    --color-orange-550: #FF7A40; /*Base level*/
-    --color-orange-600: #D46635;
-    --color-orange-700: #AA512B;
-    --color-orange-800: #803D20;
-    --color-orange-900: #552915;
-    --color-orange-1000: #33180D;
+  /* Yellow Palette */
+  --color-yellow-100: #fffce1;
+  --color-yellow-200: #fefacc;
+  --color-yellow-300: #fef7b3;
+  --color-yellow-400: #fef49a;
+  --color-yellow-500: #fdf280;
+  --color-yellow-550: #fdef67; /*Base level*/
+  --color-yellow-600: #d3c756;
+  --color-yellow-700: #a99f45;
+  --color-yellow-800: #7f7834;
+  --color-yellow-900: #545022;
+  --color-yellow-1000: #333015;
+  --color-yellow-opacity: #fdef6733;
 
-    /* Grey Palette */
-    --color-grey-opactity: #FFFFFF20;
-    --color-grey-0: #FFFFFF;
-    --color-grey-100: #FFFDFD;
-    --color-grey-200: #E0D9D6;
-    --color-grey-300: #9BA1A3;
-    --color-grey-400: #6F7679;
-    --color-grey-opactity-dark: #FFFFFF50;
-  
-    /* Base Light Mode Theme */
-    --text-primary: var(--color-blue-1100);
-    --text-secondary: var(--color-grey-400);
-    --background: var(--color-grey-0);
-    --background-secondary: var(--color-blue-50);
+  /* Orange Palette */
+  --color-orange-100: #ffe4d9;
+  --color-orange-200: #ffd3bf;
+  --color-orange-300: #ffbc9f;
+  --color-orange-400: #ffa680;
+  --color-orange-500: #ff9060;
+  --color-orange-550: #ff7a40; /*Base level*/
+  --color-orange-600: #d46635;
+  --color-orange-700: #aa512b;
+  --color-orange-800: #803d20;
+  --color-orange-900: #552915;
+  --color-orange-1000: #33180d;
 
-    /* Component Specific Light Mode Theme*/
-    --streak-empty: var(--color-purple-200);
-    --streak-filled: var(--color-purple-600);
-    --streak-background: var(--color-purple-100);
-    --streak-border: var(--color-purple-600);
-    --streak-tall-empty: var(--color-purple-300);
-    --streak-complete: var(--color-yellow-600);
+  /* Grey Palette */
+  --color-grey-opactity: #ffffff20;
+  --color-grey-0: #ffffff;
+  --color-grey-100: #fffdfd;
+  --color-grey-200: #e0d9d6;
+  --color-grey-300: #9ba1a3;
+  --color-grey-400: #6f7679;
+  --color-grey-opactity-dark: #ffffff50;
 
-    --button-primary-bg: var(--color-blue-1100);
-    --button-primary-disabled-bg: var(--color-blue-50);
-    --button-primary-disabled-text: var(--color-grey-300);
-    --button-secondary-border: var(--color-blue-1100);
-    --button-secondary-disabled-border: var(--color-blue-50);
+  /* Base Light Mode Theme */
+  --text-primary: var(--color-blue-1100);
+  --text-secondary: var(--color-grey-400);
+  --background: var(--color-grey-0);
+  --background-secondary: var(--color-blue-50);
 
-    --mark-complete-button: var(--color-grey-400);
+  /* Component Specific Light Mode Theme*/
+  --streak-empty: var(--color-purple-200);
+  --streak-filled: var(--color-purple-600);
+  --streak-background: var(--color-purple-100);
+  --streak-border: var(--color-purple-600);
+  --streak-tall-empty: var(--color-purple-300);
+  --streak-complete: var(--color-yellow-600);
 
-    --too-painful-circle: var(--color-yellow-600);
-    --complete-circle: var(--color-green-600);
+  --button-primary-bg: var(--color-blue-1100);
+  --button-primary-disabled-bg: var(--color-blue-50);
+  --button-primary-disabled-text: var(--color-grey-300);
+  --button-secondary-border: var(--color-blue-1100);
+  --button-secondary-disabled-border: var(--color-blue-50);
 
-    --loading-skeleton-primary: var(--color-blue-50);
-    --loading-skeleton-secondary: var(--color-grey-100);
+  --mark-complete-button: var(--color-grey-400);
 
-    --pain-mood-selected: var(--color-blue-100);
+  --too-painful-circle: var(--color-yellow-600);
+  --complete-circle: var(--color-green-600);
 
-    --upcoming-milestone: var(--color-blue-150);
+  --loading-skeleton-primary: var(--color-blue-50);
+  --loading-skeleton-secondary: var(--color-grey-100);
 
-    --locked-goal-border: var(--color-blue-100);
-    --unlocked-goal-background: var(--color-blue-550);
+  --pain-mood-selected: var(--color-blue-100);
 
-    --exercise-info-divider: var(--color-purple-100);
+  --upcoming-milestone: var(--color-blue-150);
 
-    --locked-achievement-image-border: var(--color-yellow-200);
-    --achievement-card-background: var(--color-yellow-100);
-    --achievement-card-border: var(--color-yellow-600);
-  }
+  --locked-goal-border: var(--color-blue-100);
+  --unlocked-goal-background: var(--color-blue-550);
 
-  [data-theme="dark"] {
-    /* Dark mode overrides */
-    --text-primary: var(--color-grey-0);
-    --text-secondary: var(--color-grey-300);
-    --background: var(--color-blue-1100);
-    --background-secondary: var(--color-blue-1000);
-    
-    /* Component-specific variables for dark mode */
-    --streak-empty: var(--color-purple-opacity);
-    --streak-filled: var(--color-purple-550);
-    --streak-background: var(--color-purple-opacity);
-    --streak-border: var(--color-purple-550);
-    --streak-tall-empty: var(--color-purple-opacity);
-    --streak-complete: var(--color-yellow-550);
+  --exercise-info-divider: var(--color-purple-100);
 
-    --button-primary-bg: var(--color-grey-0);
-    --button-primary-disabled-bg: var(--color-blue-1000);
-    --button-primary-disabled-text: var(--color-blue-800);
-    --button-secondary-border: var(--color-grey-0);
-    --button-secondary-disabled-border: var(--color-blue-800);
+  --locked-achievement-image-border: var(--color-yellow-200);
+  --achievement-card-background: var(--color-yellow-100);
+  --achievement-card-border: var(--color-yellow-600);
+}
 
-    --mark-complete-button: var(--color-grey-200);
+[data-theme='dark'] {
+  /* Dark mode overrides */
+  --text-primary: var(--color-grey-0);
+  --text-secondary: var(--color-grey-300);
+  --background: var(--color-blue-1100);
+  --background-secondary: var(--color-blue-1000);
 
-    --too-painful-circle: var(--color-yellow-550);
-    --complete-circle: var(--color-green-550);
+  /* Component-specific variables for dark mode */
+  --streak-empty: var(--color-purple-opacity);
+  --streak-filled: var(--color-purple-550);
+  --streak-background: var(--color-purple-opacity);
+  --streak-border: var(--color-purple-550);
+  --streak-tall-empty: var(--color-purple-opacity);
+  --streak-complete: var(--color-yellow-550);
 
-    --loading-skeleton-primary: var(--color-grey-400);
-    --loading-skeleton-secondary: var(--color-blue-900);
+  --button-primary-bg: var(--color-grey-0);
+  --button-primary-disabled-bg: var(--color-blue-1000);
+  --button-primary-disabled-text: var(--color-blue-800);
+  --button-secondary-border: var(--color-grey-0);
+  --button-secondary-disabled-border: var(--color-blue-800);
 
-    --pain-mood-selected: var(--color-blue-900);
+  --mark-complete-button: var(--color-grey-200);
 
-    --upcoming-milestone: var(--color-blue-900);
+  --too-painful-circle: var(--color-yellow-550);
+  --complete-circle: var(--color-green-550);
 
-    --locked-goal-border: var(--color-blue-opacity);
-    --unlocked-goal-background: var(--color-blue-525);
+  --loading-skeleton-primary: var(--color-grey-400);
+  --loading-skeleton-secondary: var(--color-blue-900);
 
-    --exercise-info-divider: var(--color-purple-600);
+  --pain-mood-selected: var(--color-blue-900);
 
-    --locked-achievement-image-border: var(--color-yellow-opacity);
-    --achievement-card-background: var(--color-yellow-opacity);
-    --achievement-card-border: var(--color-yellow-550);
-  }  
-  
+  --upcoming-milestone: var(--color-blue-900);
 
-@font-face {
-    font-family: 'Albert Sans';
-    src: url('/AlbertSans-VariableFont_wght.woff2') format('woff2');
-    /* font-weight: 400; */
-    font-style: normal;
+  --locked-goal-border: var(--color-blue-opacity);
+  --unlocked-goal-background: var(--color-blue-525);
+
+  --exercise-info-divider: var(--color-purple-600);
+
+  --locked-achievement-image-border: var(--color-yellow-opacity);
+  --achievement-card-background: var(--color-yellow-opacity);
+  --achievement-card-border: var(--color-yellow-550);
 }
 
 @font-face {
-    font-family: 'Albert Sans';
-    src: url('/AlbertSans-Italic-VariableFont_wght.woff2') format('woff2');
-    /* font-weight: 400; */
-    font-style: italic;
+  font-family: 'Albert Sans';
+  src: url('/AlbertSans-VariableFont_wght.woff2') format('woff2');
+  /* font-weight: 400; */
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'DM Serif Display';
-    src: url('/DMSerifDisplay-Regular.woff2') format('woff2');
-    /* font-weight: 400; */
-    font-style: normal;
+  font-family: 'Albert Sans';
+  src: url('/AlbertSans-Italic-VariableFont_wght.woff2') format('woff2');
+  /* font-weight: 400; */
+  font-style: italic;
 }
 
 @font-face {
-    font-family: 'DM Serif Display';
-    src: url('/DMSerifDisplay-Italic.woff2') format('woff2');
-    font-weight: 400;
-    font-style: italic;
+  font-family: 'DM Serif Display';
+  src: url('/DMSerifDisplay-Regular.woff2') format('woff2');
+  /* font-weight: 400; */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DM Serif Display';
+  src: url('/DMSerifDisplay-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
 }
 
 body {
-    font-family: 'Albert Sans', sans-serif;
-    color: var(--text-primary);
-    background-color: var(--background);
+  font-family: 'Albert Sans', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--background);
 }
 
-h1, h2, h3, h4, h5, h6 {
-    color: var(--text-primary);
-    margin: 0;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+  margin: 0;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
