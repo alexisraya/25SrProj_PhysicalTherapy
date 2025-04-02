@@ -377,7 +377,7 @@
                 disabled={isSaving}
             >
                 <RemixIcon name={isEditing ? "check-line" : "pencil-fill"} size="12px"/>
-                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};">
+                <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; color: var(--text-primary);">
                     {isSaving ? 'Saving...' : buttonLabel}
                 </p>
             </button>
