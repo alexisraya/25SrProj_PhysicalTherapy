@@ -46,14 +46,15 @@
         justify-content: space-between;
         align-items: center;
         border-radius: 23px;
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
         position: relative;
         z-index: 1;
     }
     
     .tab-button {
+      color: var(--text-primary);
       padding: 3px 20px;
-      background-color: var(--color-grey-0);
+      background-color: var(--background);
       border: none;
       cursor: pointer;
       font-weight: 500;
@@ -62,11 +63,11 @@
     }
     
     .tab-button.active {
-      background-color: var(--color-blue-50);
+      background-color: var(--background-secondary);
     }
     
     .tab-button:hover:not(.active) {
-      background-color: #f1f5f9;
+      background-color: var(--background-secondary);
     }
     
     .tab-content {

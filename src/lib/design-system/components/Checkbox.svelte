@@ -8,7 +8,7 @@
         isSelected = !isSelected;
     }
 </script>
-
+<!-- TODO: ALEXIS may need to do custom styling check w Dane -->
 <label class="checkbox-container">
     <!-- Hidden default checkbox -->
     <input type="checkbox" bind:checked={isSelected} class="hidden-checkbox" />

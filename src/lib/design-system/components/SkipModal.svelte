@@ -1,7 +1,7 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
     import Button from "$lib/design-system/components/Button.svelte";
-    import CloseIcon from "$lib/assets/iconography/CloseIcon.svg"
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
 
     export let handleTooPainful;
     export let handleAddToEnd;
@@ -29,7 +29,7 @@
         <div class="modal-container">
             <div class="modal-text">
                 <button class="close-button" on:click={closeModal}>
-                    <img src={CloseIcon} alt="close" />
+                    <RemixIcon name="close-fill" />
                 </button>
                 <p style="font-family: {typography.fontFamily.body}; font-size: 1.125rem; font-weight: {typography.fontWeights.medium};">Skip this Exercise</p>
                 <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.medium};">Let us know how you’d like to handle this skipped exercise</p>
@@ -61,7 +61,7 @@
     }
 
     .modal-container {
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
         border-radius: 16px;
         display: flex;
         flex-direction: column;

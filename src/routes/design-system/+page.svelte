@@ -112,14 +112,14 @@
         border-radius: 8px;
         padding: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background-color: var(--color-grey-0);
+        background-color: var(--background);
     }
 
     .color-family h3 {
         margin-bottom: 1rem;
         text-transform: capitalize;
         font-size: 1.2rem;
-        color: var(--color-blue-1100);
+        color: var(--text-primary);
     }
 
     .shades {

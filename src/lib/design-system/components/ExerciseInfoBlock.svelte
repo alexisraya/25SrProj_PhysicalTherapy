@@ -1,8 +1,6 @@
 <script lang="ts">
     import { typography } from "$lib/design-system/typography";
-    import Editicon from '$lib/assets/iconography/EditIcon.svg';
-    import DoneIcon from '$lib/assets/iconography/DoneIcon.svg';
-    import { niceNum } from "chart.js/helpers";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
     
     // Props for the exercise information
     export let exerciseName: string | null = null;
@@ -66,9 +64,9 @@
 <div class="exercise_info">
     <button class="edit_btn" on:click={toggleEdit}>
         {#if isEditing}
-            <img src={DoneIcon} alt="edit btn"/>
+            <RemixIcon name="check-fill" color="var(--color-blue-1100" size="15px" />
         {:else}
-            <img src={Editicon} alt="edit btn"/>
+            <RemixIcon name="pencil-fill" color="var(--color-blue-1100" size="15px" />
         {/if}
     </button>
     <h5 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.h5}; font-weight: {typography.fontWeights.bold};">{exerciseName}</h5>
@@ -167,9 +165,9 @@ h5, p {
 .exercise_info {
     position: relative;
     bottom: 15px;
-    background: var(--color-grey-opactity-dark);
+    background: var(--color-grey-opactity-dark); /* light/dark mode exception */
     border-radius: 30px;
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
     padding: 12px 40px;
     display: flex;
     flex-direction: column;
@@ -188,11 +186,11 @@ h5, p {
 }
 
 .line{
-    border: 0.5px solid var(--color-purple-100);
+    border: 0.5px solid var(--exercise-info-divider);
     height: 28px;
 }
 .edit_btn {
-    background-color: var(--color-grey-0);
+    background-color: var(--color-grey-0); /* light/dark mode exception */
     border: none;
     border-radius: 100px;
     display: flex;
@@ -206,14 +204,14 @@ h5, p {
     cursor: pointer;
 }
 .edit-input {
-    background: var(--color-grey-0);
-    border: 1px solid var(--color-purple-100);
+    background: var(--color-grey-opactity-dark); /* light/dark mode exception */
+    border: 0;
     border-radius: 4px;
     padding: 2px 4px;
     width: 14px;
     max-width: 26px;
     text-align: center;
-    color: var(--color-blue-1100);
+    color: var(--text-primary);
 }
 .edit-field {
     display: flex;

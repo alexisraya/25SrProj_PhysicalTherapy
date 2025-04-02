@@ -2,7 +2,6 @@
     import type { Page } from "@sveltejs/kit";
     import { typography } from '$lib/design-system';
     import ExerciseModel from '$lib/design-system/components/ExerciseModel.svelte';
-    import LeftArrow from '$lib/assets/iconography/LeftArrow.svg';
     import Button from '$lib/design-system/components/Button.svelte';
     import HoldToComplete from '$lib/design-system/components/HoldToComplete.svelte';
     import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
@@ -20,13 +19,9 @@
     import { getExercise } from '$firebase/services/exerciseService';
     import { derived, get } from 'svelte/store';
     import Interstital from "$lib/design-system/components/Interstital.svelte";
-    import DownArrow from "$lib/assets/iconography/DownArrow.svg";
-    import InstructionsIcon from "$lib/assets/iconography/InstructionsIcon.svg";
-    import InformationIcon from "$lib/assets/iconography/InformationIcon.svg";
-    import ModificationsIcon from "$lib/assets/iconography/ModificationsIcon.svg";
-    import SelectModelIcon from "$lib/assets/iconography/SelectModelIcon.svg";
     import { browser } from "$app/environment";
     import SkipModal from "$lib/design-system/components/SkipModal.svelte";
+    import RemixIcon from "$lib/design-system/components/RemixIcon.svelte";
 
     let currentExercise: AssignedExercise | null = null;
     let program: Program | null = null;
@@ -290,7 +285,7 @@
         <div class="exercise_container--top">
             <div class="exercise_nav">
             <a href="/your-program" class="back-button--link">
-                <img class="back_button" src={LeftArrow} alt="left arrow"/>
+                <RemixIcon name="arrow-left-s-line" />
             </a>
             
             <ProgressBar totalExercises={program.exercises.length} completedExercises={completedExercises} />
@@ -309,10 +304,13 @@
                 >
                     <summary>
                         <div class="exercise_description--title">
-                            <img src={InstructionsIcon} alt="Instructions Icon" />
+                            <RemixIcon name="book-read-line" />
                             <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Instructions</h6>
                         </div>
-                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                        <span class="arrow-icon">
+                            <RemixIcon name="arrow-down-s-line"/>
+                        </span>
+                        
                     </summary>
                     <div class="content-wrapper">
                         <ol>
@@ -330,10 +328,12 @@
                 >
                     <summary>
                         <div class="exercise_description--title">
-                            <img src={InformationIcon} alt="Information Icon" />
+                            <RemixIcon name="information-line" />
                             <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Information</h6>
                         </div>
-                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                        <span class="arrow-icon">
+                            <RemixIcon name="arrow-down-s-line"/>
+                        </span>
                     </summary>
                     <div class="content-wrapper">
                         <p style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography.lineHeight.expanded}">
@@ -347,10 +347,12 @@
                 >
                     <summary>
                         <div class="exercise_description--title">
-                            <img src={ModificationsIcon} alt="Modifications Icon" />
+                            <RemixIcon name="sound-module-line" />
                             <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Modifications</h6>
                         </div>
-                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                        <span class="arrow-icon">
+                            <RemixIcon name="arrow-down-s-line"/>
+                        </span>
                     </summary>
                     <div class="content-wrapper">
                         <!-- TODO: ALEXIS CHANGE TO PULL FROM BE ONCE UPDATED -->
@@ -365,10 +367,12 @@
                 >
                     <summary>
                         <div class="exercise_description--title">
-                            <img src={SelectModelIcon} alt="Select Model Icon" />
+                            <RemixIcon name="team-line" />
                             <h6 style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold}; line-height: {typography.lineHeight.expanded}">Select model</h6>
                         </div>
-                        <img src={DownArrow} alt="toggle arrow" class="arrow-icon"/>
+                        <span class="arrow-icon">
+                            <RemixIcon name="arrow-down-s-line"/>
+                        </span>
                     </summary>
                     <div class="content-wrapper character-content">
                         <CharacterSelect />
@@ -452,7 +456,7 @@
     }
     .exercise_container--top {
         box-sizing: border-box;
-        background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /*TODO: ALEXIS*/
+        background: linear-gradient(to bottom, var(--color-purple-550), #6C5786); /* light mode dark mode exception */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -487,10 +491,10 @@
         list-style-position: inside;
     }
     .content-wrapper p {
-        color: var(--color-grey-400);
+        color: var(--text-secondary);
     }
     .content-wrapper li {
-        color: var(--color-grey-400);
+        color: var(--text-secondary);
         text-align: left;
     }
     .character-content {
@@ -507,7 +511,7 @@
         column-gap: 12px;
     }
     .buttons {
-        background: linear-gradient(to top, var(--color-grey-0) 60%, transparent);
+        background: linear-gradient(to top, var(--background) 60%, transparent);
         position: sticky;
         bottom: 0;
         display: flex;
