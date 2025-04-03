@@ -3,7 +3,6 @@ import { doc, setDoc, getDoc, updateDoc, collection, getDocs, query, where, dele
 import type { User } from "../types/userType";
 import { initializeUserStats } from "./statService";
 import { initializeUserAchievements } from "./milestoneService";
-import { userStats } from "$stores/userStore";
 
 /* ------------------------- BASE FUNCTIONS ------------------------- */
 export async function getUser(userId: string): Promise<User | null> {

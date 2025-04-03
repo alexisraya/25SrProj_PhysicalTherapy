@@ -45,7 +45,11 @@ export const authHandlers = {
     login: async (email: string, password: string) => {
         try {
             authStore.update(state => ({ ...state, isLoading: true, error: null }));
+            console.log("Login started, waiting for authentication...");
+            
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log("Login successful, checking user role...");
+            
             await checkUserRole(userCredential.user.uid);
         } catch (error) {
             console.error("Login error:", error);
