@@ -21,11 +21,13 @@
 
 <div class="achievement-card-container">
     <div class="achievement-body">
-        <div class="achievement-image-container {isLocked ? 'locked' : ''}" >
+        <div class="achievement-image-container {isLocked ? 'locked' : 'unlocked'}" >
             {#if isLocked}
                 <Icon name="lock-yellow-light" size="small"/>
             {:else}
+            <div class="floating-icon">
                 <Icon name="polar-bear" size="small"/>
+            </div>
             {/if}
         </div>
         {#if isLocked}
@@ -76,4 +78,15 @@
         color: var(--color-grey-300);
         text-align: center;
     }
+
+    .unlocked:hover .floating-icon{
+        animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
+    }
+
+    @keyframes floatUpDown {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(4px); } /* Moves slightly up */
+    100% { transform: translateY(0px); } /* Moves back down */
+}
+
 </style>

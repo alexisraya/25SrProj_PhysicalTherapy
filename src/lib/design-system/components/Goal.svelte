@@ -63,7 +63,6 @@
 
   .unlocked {
     background-color: var(--color-blue-550);
-    transition: ease-in-out 0.3s;
   }
 
   .locked {

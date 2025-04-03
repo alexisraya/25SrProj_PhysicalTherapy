@@ -16,7 +16,7 @@
     <button class="close-button" on:click={closeModal}>
         <img class="close-icon" src={CloseIcon} alt="close button icon" />
     </button>
-    <div class="modal-icon-container {isLocked ? (isGoal ? 'goal-locked' : 'achievement-locked') : (isGoal ? 'goal' : 'achievement')}">
+    <div class="modal-icon-container {isLocked ? (isGoal ? 'goal-locked' : 'achievement-locked') : (isGoal ? 'goal-unlocked' : 'achievement-unlocked')}">
         {#if isLocked}
             {#if isGoal}
                 <Icon name="lock-light" size="small"/>
@@ -24,7 +24,9 @@
                 <Icon name="lock-yellow-light" size="small"/>
             {/if}
         {:else}
+        <div class="floating-icon">
             <Icon name={iconName} size="small"/>
+        </div>
         {/if}
     </div>    
     <div class="modal-information">
@@ -73,17 +75,19 @@
         align-items: center;
         justify-content: center;
     }
-    .goal {
+    .goal-unlocked {
         background-color: var(--color-blue-550);
         border-radius: 100px;
     }
+
+
 
     .goal-locked {
         border: solid 2px var(--color-blue-100);
         border-radius: 100px;
     }
 
-    .achievement {
+    .achievement-unlocked {
         background-color: var(--color-yellow-550);
         border-radius: 4px;
     }
@@ -111,4 +115,19 @@
         margin: 16px;
         cursor: pointer;
     }
+
+    .goal-unlocked:hover .floating-icon {
+        animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
+    }
+
+
+    .achievement-unlocked:hover .floating-icon {
+        animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
+    }
+
+    @keyframes floatUpDown {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(4px); } /* Moves slightly up */
+    100% { transform: translateY(0px); } /* Moves back down */
+}
 </style>
