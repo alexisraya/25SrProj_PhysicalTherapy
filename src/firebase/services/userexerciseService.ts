@@ -69,7 +69,7 @@ export async function completeExercise(
       stats.totalReps += sets * reps;
       stats.totalWeight += sets * reps * weight;
     } else if (exercise.exerciseType === 'time') {
-      stats.totalTime += reps * seconds;
+      stats.totalTime += sets * reps * seconds;
       stats.totalSets += sets;
       stats.totalReps += reps;
     }
