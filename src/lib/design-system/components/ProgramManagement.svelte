@@ -133,7 +133,7 @@
     } else if (exercise.exerciseType === 'weight') {
       return `${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight}lbs`;
     } else {
-      return `${exercise.reps} times, ${exercise.seconds} seconds each`;
+      return `${exercise.sets} sets of ${exercise.reps} reps, ${exercise.seconds} seconds each`;
     }
   }
 </script>
@@ -209,6 +209,10 @@
           </div>
         {:else}
           <div class="value-group">
+            <label>
+              Sets:
+              <input type="number" bind:value={exerciseValues.sets} min="1" />
+            </label>
             <label>
               Times to perform:
               <input type="number" bind:value={exerciseValues.reps} min="1" />
