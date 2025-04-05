@@ -3,6 +3,8 @@
   import { typography } from '$lib/design-system';
   import Button from '$lib/design-system/components/Button.svelte';
   import { authHandlers } from '../../stores/authStore';
+  import LoginBlob from '$lib/assets/background-images/LoginBlob.svg';
+  import MendLogo from '$lib/assets/iconography/MendLogo.svg';
 
   let register = false;
   let firstName = '';
@@ -142,7 +144,10 @@
 </script>
 
 <div class="container">
-  <div class="banner"></div>
+  <div class="banner">
+    <img src={LoginBlob} alt="blob" class="blob" />
+    <img src={MendLogo} alt="logo" class="logo" />
+  </div>
   <div class="header">
     <h3
       style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -288,7 +293,31 @@
   }
 
   .banner {
-    min-height: 180px;
+    min-height: 200px;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    z-index: 0;
+  }
+
+  .blob {
+    position: absolute;
+    top: -418px;
+    left: -50px;
+    width: auto;
+    z-index: 0;
+  }
+
+  .logo {
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    z-index: 1;
   }
 
   .header {
@@ -298,6 +327,7 @@
     justify-content: center;
     row-gap: 12px;
     margin-bottom: 8px;
+    margin-top: -16px;
   }
 
   .container {
