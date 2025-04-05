@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { typography } from '$lib/design-system';
   import Button from '$lib/design-system/components/Button.svelte';
-  import { authHandlers } from '../../stores/authStore';
+  import { authHandlers, authStore } from '../../stores/authStore';
   import LoginBlob from '$lib/assets/background-images/LoginBlob.svg';
   import MendLogo from '$lib/assets/iconography/MendLogo.svg';
   import { onMount } from 'svelte';
@@ -40,6 +40,11 @@
   }
 
   onMount(() => {
+    const unsubscribe = authStore.subscribe(async (store) => {
+      if (store.currentUser) {
+        goto('/patient-dashboard');
+      }
+    });
     // Check for saved theme preference
     const savedTheme = localStorage.getItem('theme') as Theme | null;
 
@@ -53,6 +58,9 @@
 
     // Apply the theme
     applyTheme(theme);
+    return () => {
+      unsubscribe();
+    };
   });
 
   // Email validation function
