@@ -5,6 +5,7 @@
   import { authHandlers } from '../../stores/authStore';
   import LoginBlob from '$lib/assets/background-images/LoginBlob.svg';
   import MendLogo from '$lib/assets/iconography/MendLogo.svg';
+  import { onMount } from 'svelte';
 
   let register = false;
   let firstName = '';
@@ -25,6 +26,34 @@
 
   // Authentication error state
   let authError = false;
+
+  type Theme = 'light' | 'dark';
+  let theme: Theme = 'light';
+
+  function applyTheme(newTheme: Theme): void {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    theme = newTheme;
+
+    // Dispatch a custom event that other components can listen for
+    window.dispatchEvent(new Event('themeChanged'));
+  }
+
+  onMount(() => {
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme') as Theme | null;
+
+    // Check for system preference if no saved preference
+    if (!savedTheme) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      theme = prefersDark ? 'dark' : 'light';
+    } else {
+      theme = savedTheme;
+    }
+
+    // Apply the theme
+    applyTheme(theme);
+  });
 
   // Email validation function
   function validateEmail(email: string): boolean {
@@ -131,6 +160,7 @@
         const result = await authHandlers.login(email, password);
         if (result.success) {
           console.log('Login successful.');
+          goto('/patient-dashboard');
         } else {
           console.error('Login failed:', result.error);
           authError = true;
@@ -290,6 +320,16 @@
 <style>
   p {
     margin: 0;
+    color: var(--text-primary);
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    row-gap: 16px;
+    margin-bottom: 52px;
   }
 
   .banner {
@@ -330,16 +370,6 @@
     margin-top: -16px;
   }
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: center;
-    justify-content: center;
-    row-gap: 16px;
-    margin-bottom: 52px;
-  }
-
   /* Authentication error styling */
   .auth-error-container {
     width: 100%;
@@ -375,7 +405,8 @@
     height: 40px;
     padding: 8px;
     width: 100%;
-    border: 1px solid #ccc;
+    background-color: var(--background);
+    border: 1px solid var(--text-secondary);
     border-radius: 4px;
     transition: all 0.2s ease;
   }
