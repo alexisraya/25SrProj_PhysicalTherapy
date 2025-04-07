@@ -122,6 +122,8 @@
   --locked-achievement-image-border: var(--color-yellow-200);
   --achievement-card-background: var(--color-yellow-100);
   --achievement-card-border: var(--color-yellow-600);
+
+  --exercise-section-divider: var(--color-grey-200);
 }
 
 [data-theme='dark'] {
@@ -165,6 +167,8 @@
   --locked-achievement-image-border: var(--color-yellow-opacity);
   --achievement-card-background: var(--color-yellow-opacity);
   --achievement-card-border: var(--color-yellow-550);
+
+  --exercise-section-divider: var(--color-blue-900);
 }
 
 @font-face {
