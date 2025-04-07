@@ -124,6 +124,8 @@
   --achievement-card-border: var(--color-yellow-600);
 
   --exercise-section-divider: var(--color-grey-200);
+  --hold-to-complete-bg: var(--color-blue-100);
+  --hold-to-complete-stroke: var(--color-blue-1000);
 }
 
 [data-theme='dark'] {
@@ -169,6 +171,8 @@
   --achievement-card-border: var(--color-yellow-550);
 
   --exercise-section-divider: var(--color-blue-900);
+  --hold-to-complete-bg: var(--color-blue-900);
+  --hold-to-complete-stroke: var(--color-grey-0);
 }
 
 @font-face {
