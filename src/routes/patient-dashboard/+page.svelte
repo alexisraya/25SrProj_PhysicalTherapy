@@ -208,11 +208,16 @@
     color: var(--color-grey-400);
   }
 
-  @media (min-width: 505px) {
+  /* @media (min-width: 505px) {
     .background-wave {
       content: url('/background-images/home-background-large.svg');
       width: 2258px;
       top: -125%;
+    }
+  } */
+  @media (min-width: 800px) {
+    .break {
+      display: none;
     }
   }
 </style>

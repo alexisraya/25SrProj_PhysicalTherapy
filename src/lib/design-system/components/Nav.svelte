@@ -23,9 +23,12 @@
     </button>
   </div>
 
-  <!-- Subscribe to isOpen using $ -->
+  <!-- Side column for desktop and menu for mobile -->
   <div class="menu-container" class:show={$isOpen}>
     <div class="menu">
+      <div class="logo-space">
+        <!-- Space for logo on desktop -->
+      </div>
       <button class="close-button" on:click={closeMenu}>
         <RemixIcon name="close-fill" />
       </button>
@@ -57,6 +60,7 @@
 </nav>
 
 <style>
+  /* Mobile styles (unchanged) */
   nav {
     background-color: transparent;
     padding: 10px 20px;
@@ -73,7 +77,6 @@
     align-items: center;
   }
 
-  /* New container for animation */
   .menu-container {
     position: fixed;
     top: 0;
@@ -81,14 +84,13 @@
     width: 277px;
     height: 100vh;
     overflow: hidden;
-    transform: translateX(100%); /* Start off-screen */
+    transform: translateX(100%);
     transition: transform 0.3s ease-out;
   }
 
-  /* Show when menu is open */
   .menu-container.show {
-    transform: translateX(0); /* Slide in */
-    opacity: 1; /* Fade in */
+    transform: translateX(0);
+    opacity: 1;
   }
 
   .menu {
@@ -101,6 +103,10 @@
     width: 277px;
     box-sizing: border-box;
     overflow-y: auto;
+  }
+
+  .logo-space {
+    display: none;
   }
 
   .menu a {
@@ -158,5 +164,53 @@
     right: 0;
     margin: 16px;
     cursor: pointer;
+  }
+
+  /* Desktop styles (> 800px) */
+  @media (min-width: 800px) {
+    nav {
+      position: relative;
+      left: 0;
+      right: auto;
+      top: 0;
+      padding: 0;
+    }
+
+    .nav-container {
+      display: none;
+    }
+
+    .menu-container {
+      position: static;
+      width: 324px;
+      transform: translateX(0);
+      opacity: 1;
+      border-right: 8px solid var(--background-secondary);
+    }
+
+    .menu {
+      width: 324px;
+      padding: 24px 16px;
+      background-color: var(--background);
+    }
+
+    .menu-item.active {
+      background-color: var(--background-secondary);
+    }
+
+    .logo-space {
+      display: block;
+      height: 100px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .close-button {
+      display: none;
+    }
+
+    .toggles-container {
+      align-items: flex-start;
+    }
   }
 </style>
