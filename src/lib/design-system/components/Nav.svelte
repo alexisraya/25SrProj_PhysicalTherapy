@@ -182,7 +182,7 @@
 
     .menu-container {
       position: static;
-      width: 324px;
+      width: 316px;
       transform: translateX(0);
       opacity: 1;
       border-right: 8px solid var(--background-secondary);
