@@ -85,8 +85,10 @@
   /* Base Light Mode Theme */
   --text-primary: var(--color-blue-1100);
   --text-secondary: var(--color-grey-400);
+  --text-error: #c34926;
   --background: var(--color-grey-0);
   --background-secondary: var(--color-blue-50);
+  --background-error: #c3492616;
 
   /* Component Specific Light Mode Theme*/
   --streak-empty: var(--color-purple-200);
@@ -128,8 +130,10 @@
   /* Dark mode overrides */
   --text-primary: var(--color-grey-0);
   --text-secondary: var(--color-grey-300);
+  --text-error: #d44f35;
   --background: var(--color-blue-1100);
   --background-secondary: var(--color-blue-1000);
+  --background-error: #d44f3516;
 
   /* Component-specific variables for dark mode */
   --streak-empty: var(--color-purple-opacity);
