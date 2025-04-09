@@ -4,6 +4,8 @@
   import ToneSwitch from './ToneSwitch.svelte';
   import ThemeToggle from './ThemeToggle.svelte';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import Logo from '$lib/assets/iconography/LogoBackground.svg';
+  import { onMount } from 'svelte';
 
   let isOpen = writable(false);
 
@@ -26,28 +28,30 @@
   <!-- Side column for desktop and menu for mobile -->
   <div class="menu-container" class:show={$isOpen}>
     <div class="menu">
-      <div class="logo-space">
-        <!-- Space for logo on desktop -->
-      </div>
-      <button class="close-button" on:click={closeMenu}>
-        <RemixIcon name="close-fill" />
-      </button>
-      <div class="menu-items">
-        <div class="menu-item" class:active={$page.url.pathname === '/patient-dashboard'}>
-          <RemixIcon name="dashboard-line" />
-          <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+      <div>
+        <div class="logo-space">
+          <img src={Logo} alt="Logo" />
         </div>
-        <div class="menu-item" class:active={$page.url.pathname === '/your-progress'}>
-          <RemixIcon name="line-chart-line" />
-          <a href="/your-progress" on:click={closeMenu}>Progress</a>
-        </div>
-        <div class="menu-item" class:active={$page.url.pathname === '/your-program'}>
-          <RemixIcon name="list-check-2" />
-          <a href="/your-program" on:click={closeMenu}>Program</a>
-        </div>
-        <div class="menu-item" class:active={$page.url.pathname === '/profile'}>
-          <RemixIcon name="user-3-line" />
-          <a href="/profile" on:click={closeMenu}>Profile</a>
+        <button class="close-button" on:click={closeMenu}>
+          <RemixIcon name="close-fill" />
+        </button>
+        <div class="menu-items">
+          <div class="menu-item" class:active={$page.url.pathname === '/patient-dashboard'}>
+            <RemixIcon name="dashboard-line" />
+            <a href="/patient-dashboard" on:click={closeMenu}>Home</a>
+          </div>
+          <div class="menu-item" class:active={$page.url.pathname === '/your-progress'}>
+            <RemixIcon name="line-chart-line" />
+            <a href="/your-progress" on:click={closeMenu}>Progress</a>
+          </div>
+          <div class="menu-item" class:active={$page.url.pathname === '/your-program'}>
+            <RemixIcon name="list-check-2" />
+            <a href="/your-program" on:click={closeMenu}>Program</a>
+          </div>
+          <!-- <div class="menu-item" class:active={$page.url.pathname === '/profile'}>
+            <RemixIcon name="user-3-line" />
+            <a href="/profile" on:click={closeMenu}>Profile</a>
+          </div> -->
         </div>
       </div>
 
@@ -169,7 +173,7 @@
   /* Desktop styles (> 800px) */
   @media (min-width: 800px) {
     nav {
-      position: relative;
+      position: sticky;
       left: 0;
       right: auto;
       top: 0;
@@ -189,7 +193,7 @@
     }
 
     .menu {
-      width: 324px;
+      width: 316px;
       padding: 24px 16px;
       background-color: var(--background);
     }
@@ -200,9 +204,11 @@
 
     .logo-space {
       display: block;
-      height: 100px;
+      /* height: 100px; */
       width: 100%;
-      margin-bottom: 24px;
+      max-width: 200px;
+      margin: 0 auto 16px;
+      overflow: hidden;
     }
 
     .close-button {

@@ -64,12 +64,18 @@
 </script>
 
 {#if program && stats && weeklyProgress}
-  <div class="header-container">
+  <div class="wave-container">
     {#if currentTheme == 'light'}
-      <img class="background-wave" src={homeBackgroundSmallLight} alt="background wave" />
+      <img
+        class="background-wave wave-light"
+        src={homeBackgroundSmallLight}
+        alt="background wave"
+      />
     {:else}
-      <img class="background-wave" src={homeBackgroundSmallDark} alt="background wave" />
+      <img class="background-wave wave-dark" src={homeBackgroundSmallDark} alt="background wave" />
     {/if}
+  </div>
+  <div class="header-container">
     <div class="cta-container">
       <div class="cta-container-text">
         <h2
@@ -153,8 +159,8 @@
     background-color: var(--background-secondary);
   }
   .background-wave {
-    position: absolute;
-    top: -65%;
+    position: fixed;
+    top: -17%;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
@@ -164,6 +170,7 @@
     position: relative;
     width: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -208,13 +215,17 @@
     line-height: 150%;
     color: var(--color-grey-400);
   }
-  /* @media (min-width: 505px) {
-    .background-wave {
-      content: url('/background-images/home-background-large.svg');
-      width: 2258px;
-      top: -125%;
-    }
-  } */
+  .wave-container {
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
   @media (min-width: 800px) {
     .break {
       display: none;
@@ -244,6 +255,24 @@
     }
     .metrics-container {
       margin-top: 32px;
+    }
+    .wave-light {
+      content: url('/src/lib/assets/background-images/HomeBackgroundLargeLight.svg');
+    }
+    .wave-dark {
+      content: url('/src/lib/assets/background-images/HomeBackgroundLargeDark.svg');
+    }
+    .background-wave {
+      width: 1500px;
+      top: -450px;
+      left: 100%;
+    }
+  }
+  @media (min-width: 1000px) {
+    .background-wave {
+      width: 1500px;
+      top: -450px;
+      left: 75%;
     }
   }
 </style>
