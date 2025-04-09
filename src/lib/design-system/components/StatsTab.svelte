@@ -80,14 +80,17 @@
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    margin-top: 48px;
   }
   .stat-section {
     background-color: var(--background);
     width: 100%;
+    /* border-bottom: solid 8px var(--background-secondary); */
   }
   .recovery-metrics {
     padding-top: 50px;
     min-height: 210px;
+    border-bottom: solid 8px var(--background-secondary);
   }
   .stats {
     display: grid;
@@ -96,8 +99,44 @@
     row-gap: 48px;
     column-gap: 24px;
     padding: 16px 0 16px 24px;
+    border-bottom: solid 8px var(--background-secondary);
   }
   .check-in-metrics {
     min-height: 250px;
+    border-bottom: solid 8px var(--background-secondary);
+  }
+  @media (min-width: 800px) {
+    .recovery-metrics {
+      grid-area: recovery;
+      border-bottom: 8px solid var(--background-secondary);
+      min-height: 400px;
+      max-width: 600px;
+    }
+    .check-in-metrics {
+      grid-area: check-in;
+      min-height: 400px;
+      max-width: 600px;
+      border-bottom: 0px solid var(--background-secondary);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: start;
+      row-gap: 48px;
+      padding: 0 0 16px 48px;
+      grid-area: stats;
+      border-left: 8px solid var(--background-secondary);
+      border-bottom: 0px solid var(--background-secondary);
+    }
+    .stats-container {
+      max-width: 840px;
+      margin: 150px auto 32px;
+      display: grid;
+      grid-template-columns: fit-content fit-content;
+      column-gap: 24px;
+      grid-template-areas:
+        'recovery stats'
+        'check-in stats';
+    }
   }
 </style>

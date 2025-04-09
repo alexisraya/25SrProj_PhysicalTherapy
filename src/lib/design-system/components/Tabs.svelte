@@ -35,8 +35,8 @@
   }
   .tabs-container {
     width: 100%;
-    margin: 16px 0;
     display: flex;
+    margin: 16px 0;
     flex-direction: column;
     align-items: center;
   }
@@ -75,5 +75,6 @@
   .tab-content {
     padding-top: 20px;
     width: 100%;
+    background-color: var(--background);
   }
 </style>

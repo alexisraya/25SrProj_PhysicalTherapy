@@ -67,6 +67,7 @@
   }
   .milestone-header {
     display: flex;
+    background-color: var(--background-secondary);
     column-gap: 16px;
     align-items: flex-start;
     padding: 0 24px;
