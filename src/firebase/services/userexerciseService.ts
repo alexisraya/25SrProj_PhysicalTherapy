@@ -60,16 +60,21 @@ export async function completeExercise(
     const seconds = adjustedValues?.seconds ?? exercise.seconds ?? 0;
     const weight = adjustedValues?.weight ?? exercise.weight ?? 0;
 
-    if (exercise.exerciseType === 'distance') {
-      stats.totalSets += sets;
-      stats.totalDistance += sets * steps;
-    } else if (exercise.exerciseType === 'weight') {
-      stats.totalSets += sets;
-      stats.totalReps += sets * reps;
-      stats.totalWeight += sets * reps * weight;
-    } else if (exercise.exerciseType === 'time') {
-      stats.totalTime += reps * seconds;
-    }
+        if (exercise.exerciseType === 'distance') {
+            stats.totalSets += sets;
+            stats.totalReps += steps;
+            stats.totalDistance += sets * steps;
+        } 
+        else if (exercise.exerciseType === 'weight') {
+            stats.totalSets += sets;
+            stats.totalReps += sets * reps;
+            stats.totalWeight += sets * reps * weight;
+        } 
+        else if (exercise.exerciseType === 'time') {
+            stats.totalSets += sets;
+            stats.totalReps += reps;
+            stats.totalTime += sets * reps * seconds;
+        }
 
     const allCompleted = updatedExercises.every((ex) => ex.completed || ex.skipped);
 
