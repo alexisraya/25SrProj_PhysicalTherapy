@@ -1,134 +1,131 @@
 <script lang="ts">
-    // This is for Therapist management
-    import type { Program, AssignedExercise } from "$firebase/types/userType";
-    import type { Exercise } from "$firebase/types/exerciseType";
-    import {
-        isDistanceExercise,
-        isWeightExercise,
-    } from "$firebase/types/exerciseType";
+  // This is for Therapist management
+  import type { Program, AssignedExercise } from '$firebase/types/userType';
+  import type { Exercise } from '$firebase/types/exerciseType';
+  import { isDistanceExercise, isWeightExercise } from '$firebase/types/exerciseType';
 
-    export let currentProgram: Program | null;
-    export let availableExercises: Exercise[] = [];
-    export let onUpdateProgram: (program: Program) => void;
-    export let isLoading = false;
+  export let currentProgram: Program | null;
+  export let availableExercises: Exercise[] = [];
+  export let onUpdateProgram: (program: Program) => void;
+  export let isLoading = false;
 
-    let selectedExercise: Exercise | null = null;
-    let estimatedTime = currentProgram?.estimatedTime || 30;
-    let exercises = currentProgram?.exercises || [];
+  let selectedExercise: Exercise | null = null;
+  let estimatedTime = currentProgram?.estimatedTime || 30;
+  let exercises = currentProgram?.exercises || [];
 
-    let exerciseValues = {
-        sets: 3,
-        reps: 10,
-        steps: 10,
-        seconds: 10,
-        weight: 0,
+  let exerciseValues = {
+    sets: 3,
+    reps: 10,
+    steps: 10,
+    seconds: 10,
+    weight: 0
+  };
+
+  $: if (currentProgram) {
+    exercises = currentProgram.exercises;
+    estimatedTime = currentProgram.estimatedTime;
+  }
+
+  function handleAddExercise() {
+    if (!selectedExercise) return;
+
+    const baseExercise = {
+      exerciseId: selectedExercise.exerciseId,
+      exerciseName: selectedExercise.exerciseName,
+      exerciseType: selectedExercise.exerciseType,
+      equipment: selectedExercise.equipment,
+      order: exercises.length,
+      completed: false,
+      skipped: false
     };
 
-    $: if (currentProgram) {
-        exercises = currentProgram.exercises;
-        estimatedTime = currentProgram.estimatedTime;
+    let exerciseToAdd: AssignedExercise;
+
+    if (isDistanceExercise(selectedExercise)) {
+      exerciseToAdd = {
+        ...baseExercise,
+        sets: exerciseValues.sets,
+        steps: exerciseValues.steps
+      };
+    } else if (isWeightExercise(selectedExercise)) {
+      exerciseToAdd = {
+        ...baseExercise,
+        sets: exerciseValues.sets,
+        reps: exerciseValues.reps,
+        weight: exerciseValues.weight
+      };
+    } else {
+      exerciseToAdd = {
+        ...baseExercise,
+        sets: exerciseValues.sets,
+        reps: exerciseValues.reps,
+        seconds: exerciseValues.seconds
+      };
     }
 
-    function handleAddExercise() {
-        if (!selectedExercise) return;
+    const updatedExercises = [...exercises, exerciseToAdd];
+    exercises = updatedExercises;
+    onUpdateProgram({
+      exercises: updatedExercises,
+      estimatedTime,
+      assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
+      completed: false
+    });
 
-        const baseExercise = {
-            exerciseId: selectedExercise.exerciseId,
-            exerciseName: selectedExercise.exerciseName,
-            exerciseType: selectedExercise.exerciseType,
-            equipment: selectedExercise.equipment,
-            order: exercises.length,
-            completed: false,
-            skipped: false,
-        };
+    // Reset selection
+    selectedExercise = null;
+  }
 
-        let exerciseToAdd: AssignedExercise;
+  function handleRemoveExercise(index: number) {
+    const updatedExercises = exercises
+      .filter((_, i) => i !== index)
+      .map((ex, i) => ({ ...ex, order: i }));
 
-        if (isDistanceExercise(selectedExercise)) {
-            exerciseToAdd = {
-                ...baseExercise,
-                sets: exerciseValues.sets,
-                steps: exerciseValues.steps,
-            };
-        } else if (isWeightExercise(selectedExercise)) {
-            exerciseToAdd = {
-                ...baseExercise,
-                sets: exerciseValues.sets,
-                reps: exerciseValues.reps,
-                weight: exerciseValues.weight,
-            };
-        } else {
-            exerciseToAdd = {
-                ...baseExercise,
-                sets: exerciseValues.sets,
-                reps: exerciseValues.reps,
-                seconds: exerciseValues.seconds,
-            };
-        }
+    exercises = updatedExercises;
+    onUpdateProgram({
+      exercises: updatedExercises,
+      estimatedTime,
+      assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
+      completed: false
+    });
+  }
 
-        const updatedExercises = [...exercises, exerciseToAdd];
-        exercises = updatedExercises;
-        onUpdateProgram({
-            exercises: updatedExercises,
-            estimatedTime,
-            assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
-            completed: false,
-        });
+  function moveExercise(index: number, direction: 'up' | 'down') {
+    let updatedExercises = [...exercises];
 
-        // Reset selection
-        selectedExercise = null;
+    if (direction === 'up' && index > 0) {
+      [updatedExercises[index - 1], updatedExercises[index]] = [
+        updatedExercises[index],
+        updatedExercises[index - 1]
+      ];
+    } else if (direction === 'down' && index < exercises.length - 1) {
+      [updatedExercises[index], updatedExercises[index + 1]] = [
+        updatedExercises[index + 1],
+        updatedExercises[index]
+      ];
     }
 
-    function handleRemoveExercise(index: number) {
-        const updatedExercises = exercises
-            .filter((_, i) => i !== index)
-            .map((ex, i) => ({ ...ex, order: i }));
+    updatedExercises = updatedExercises.map((ex, i) => ({
+      ...ex,
+      order: i
+    }));
+    exercises = updatedExercises;
+    onUpdateProgram({
+      exercises: updatedExercises,
+      estimatedTime,
+      assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
+      completed: false
+    });
+  }
 
-        exercises = updatedExercises;
-        onUpdateProgram({
-            exercises: updatedExercises,
-            estimatedTime,
-            assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
-            completed: false,
-        });
-    }
-
-    function moveExercise(index: number, direction: "up" | "down") {
-        let updatedExercises = [...exercises];
-
-        if (direction === "up" && index > 0) {
-            [updatedExercises[index - 1], updatedExercises[index]] = [
-                updatedExercises[index],
-                updatedExercises[index - 1],
-            ];
-        } else if (direction === "down" && index < exercises.length - 1) {
-            [updatedExercises[index], updatedExercises[index + 1]] = [
-                updatedExercises[index + 1],
-                updatedExercises[index],
-            ];
-        }
-
-        updatedExercises = updatedExercises.map((ex, i) => ({
-            ...ex,
-            order: i,
-        }));
-        exercises = updatedExercises;
-        onUpdateProgram({
-            exercises: updatedExercises,
-            estimatedTime,
-            assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
-            completed: false,
-        });
-    }
-
-    function handleTimeChange() {
-        onUpdateProgram({
-            exercises: exercises || [],
-            estimatedTime,
-            assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
-            completed: false,
-        });
-    }
+  function handleTimeChange() {
+    onUpdateProgram({
+      exercises: exercises || [],
+      estimatedTime,
+      assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
+      completed: false
+    });
+  }
 
     function getExerciseDetails(exercise: AssignedExercise): string {
         if (exercise.exerciseType === "distance") {
@@ -261,184 +258,178 @@
                     </div>
                 {/if}
 
-                <button
-                    class="add-btn"
-                    on:click={handleAddExercise}
-                    disabled={isLoading}
-                >
-                    Add Exercise
-                </button>
-            </div>
-        {/if}
-    </div>
-    {#if exercises.length > 0}
-        <div class="exercise-list">
-            <h3>Current Exercises</h3>
-            {#each exercises as exercise, i}
-                <div class="exercise-item">
-                    <div class="exercise-info">
-                        <h4>{exercise.exerciseName}</h4>
-                        <p>{getExerciseDetails(exercise)}</p>
-                        {#if exercise.equipment}
-                            <small>Equipment: {exercise.equipment}</small>
-                        {/if}
-                    </div>
-                    <div class="exercise-controls">
-                        <button
-                            class="order-btn"
-                            disabled={i === 0 || isLoading}
-                            on:click={() => moveExercise(i, "up")}
-                        >
-                            ↑
-                        </button>
-                        <button
-                            class="order-btn"
-                            disabled={i === exercises.length - 1 || isLoading}
-                            on:click={() => moveExercise(i, "down")}
-                        >
-                            ↓
-                        </button>
-                        <button
-                            class="remove-btn"
-                            on:click={() => handleRemoveExercise(i)}
-                            disabled={isLoading}
-                        >
-                            Remove
-                        </button>
-                    </div>
-                </div>
-            {/each}
-        </div>
-    {:else}
-        <p class="no-exercises">
-            No exercises assigned yet. Add some exercises above.
-        </p>
+        <button class="add-btn" on:click={handleAddExercise} disabled={isLoading}>
+          Add Exercise
+        </button>
+      </div>
     {/if}
+  </div>
+  {#if exercises.length > 0}
+    <div class="exercise-list">
+      <h3>Current Exercises</h3>
+      {#each exercises as exercise, i}
+        <div class="exercise-item">
+          <div class="exercise-info">
+            <h4>{exercise.exerciseName}</h4>
+            <p>{getExerciseDetails(exercise)}</p>
+            {#if exercise.equipment}
+              <small>Equipment: {exercise.equipment}</small>
+            {/if}
+          </div>
+          <div class="exercise-controls">
+            <button
+              class="order-btn"
+              disabled={i === 0 || isLoading}
+              on:click={() => moveExercise(i, 'up')}
+            >
+              ↑
+            </button>
+            <button
+              class="order-btn"
+              disabled={i === exercises.length - 1 || isLoading}
+              on:click={() => moveExercise(i, 'down')}
+            >
+              ↓
+            </button>
+            <button
+              class="remove-btn"
+              on:click={() => handleRemoveExercise(i)}
+              disabled={isLoading}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {:else}
+    <p class="no-exercises">No exercises assigned yet. Add some exercises above.</p>
+  {/if}
 </div>
 
 <style>
-    .program-section {
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-        padding: 1rem;
-    }
+  .program-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
 
-    .time-input {
-        margin-bottom: 1rem;
-    }
+  .time-input {
+    margin-bottom: 1rem;
+  }
 
-    .exercise-select {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.25rem;
-    }
+  .exercise-select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+  }
 
-    .value-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
+  .value-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
 
-    .value-group label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
+  .value-group label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 
-    .value-group input {
-        padding: 0.5rem;
-        border: 1px solid #d1d5db;
-        border-radius: 0.25rem;
-    }
+  .value-group input {
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+  }
 
-    .exercise-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.25rem;
-        margin-bottom: 0.5rem;
-    }
+  .exercise-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
 
-    .exercise-info h4 {
-        margin: 0;
-        margin-bottom: 0.25rem;
-    }
+  .exercise-info h4 {
+    margin: 0;
+    margin-bottom: 0.25rem;
+  }
 
-    .exercise-info p {
-        margin: 0;
-        color: #6b7280;
-    }
+  .exercise-info p {
+    margin: 0;
+    color: #6b7280;
+  }
 
-    .exercise-info small {
-        color: #9ca3af;
-    }
+  .exercise-info small {
+    color: #9ca3af;
+  }
 
-    .exercise-controls {
-        display: flex;
-        gap: 0.5rem;
-    }
+  .exercise-controls {
+    display: flex;
+    gap: 0.5rem;
+  }
 
-    .order-btn {
-        padding: 0.25rem 0.5rem;
-        background-color: #e5e7eb;
-        border: none;
-        border-radius: 0.25rem;
-        cursor: pointer;
-    }
+  .order-btn {
+    padding: 0.25rem 0.5rem;
+    background-color: #e5e7eb;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
 
-    .order-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+  .order-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-    .remove-btn {
-        padding: 0.25rem 0.5rem;
-        background-color: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 0.25rem;
-        cursor: pointer;
-    }
+  .remove-btn {
+    padding: 0.25rem 0.5rem;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
 
-    .add-btn {
-        padding: 0.5rem 1rem;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 0.25rem;
-        cursor: pointer;
-        width: 100%;
-    }
+  .add-btn {
+    padding: 0.5rem 1rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    width: 100%;
+  }
 
-    .add-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+  .add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-    .no-exercises {
-        text-align: center;
-        color: #6b7280;
-        margin-top: 1rem;
-    }
+  .no-exercises {
+    text-align: center;
+    color: #6b7280;
+    margin-top: 1rem;
+  }
 
-    .update-time-btn {
-        margin-top: 0.5rem;
-        padding: 0.25rem 0.5rem;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
-        cursor: pointer;
-    }
+  .update-time-btn {
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
 
-    .update-time-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+  .update-time-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>

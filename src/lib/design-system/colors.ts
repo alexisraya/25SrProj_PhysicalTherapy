@@ -14,7 +14,7 @@ export const Colors = {
     800: '#3D6574',
     900: '#28434D',
     1000: '#18282E',
-    1100: '#0F1B1F',
+    1100: '#0F1B1F'
   },
   green: {
     100: '#DBF6E6',
@@ -27,7 +27,7 @@ export const Colors = {
     700: '#338C57',
     800: '#266941',
     900: '#19462B',
-    1000: '#0f2A1A',
+    1000: '#0f2A1A'
   },
   purple: {
     100: '#F2EBFB',
@@ -40,7 +40,7 @@ export const Colors = {
     700: '#7F679D',
     800: '#5F4D76',
     900: '#3F334F',
-    1000: '#261F2F',
+    1000: '#261F2F'
   },
   yellow: {
     100: '#FFFCE1',
@@ -53,7 +53,7 @@ export const Colors = {
     700: '#A99F45',
     800: '#7F7834',
     900: '#545022',
-    1000: '#333015',
+    1000: '#333015'
   },
   orange: {
     100: '#FFE4D9',
@@ -66,7 +66,7 @@ export const Colors = {
     700: '#AA512B',
     800: '#803D20',
     900: '#552915',
-    1000: '#33180D',
+    1000: '#33180D'
   },
   grey: {
     0: '#FFFFFF',
@@ -80,13 +80,13 @@ export const Colors = {
 };
 
 export const lightColors = {
-  background: "#FFFFFF",
-  text: Colors.blue[1100],
+  background: '#FFFFFF',
+  text: Colors.blue[1100]
 };
 
 export const darkColors = {
   background: Colors.blue[1100],
-  text: "#F3F2ED",
+  text: '#F3F2ED'
 };
 
 export type ColorScheme = typeof lightColors;
