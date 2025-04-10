@@ -74,7 +74,7 @@ export async function resetDailyProgress(userId: string) {
         
         if (programSnap.exists()) {
             const programData = programSnap.data();
-            const today = new Date().toISOString().split("T")[0];
+            const _today = new Date().toISOString().split("T")[0];
             
             // Reset exercises for the new day
             const updatedExercises = programData.exercises.map((exercise: AssignedExercise) => {
