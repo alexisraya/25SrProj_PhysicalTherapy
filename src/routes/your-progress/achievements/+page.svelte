@@ -39,7 +39,8 @@
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .small}; font-weight: {typography.fontWeights.regular};"
       >
-        Achievements are based on your exercises done in the app. Stay on track to unlock them all!
+        Achievements are based on your exercises done in the app.<br class="large-screen-show" /> Stay
+        on track to unlock them all!
       </p>
     </div>
     <div class="achievement-type-container">
@@ -123,13 +124,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 25px;
+    row-gap: 16px;
     text-align: center;
+    max-width: 576px;
+    margin: auto;
   }
   .achievement-type-container {
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    max-width: 576px;
+    margin: auto;
   }
   .horizontal-box {
     background-color: var(--background-secondary);
@@ -144,5 +149,21 @@
     justify-content: center;
     column-gap: 25.5px;
     row-gap: 16px;
+  }
+  .large-screen-show {
+    display: none;
+  }
+  @media (min-width: 800px) {
+    .achievement-container {
+      display: grid;
+      grid-template-columns: repeat(5, 92.5px);
+      align-items: flex-start;
+      justify-content: center;
+      column-gap: 25.5px;
+      row-gap: 16px;
+    }
+    .large-screen-show {
+      display: block;
+    }
   }
 </style>

@@ -28,8 +28,9 @@
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
         .small}; font-weight: {typography.fontWeights.regular};"
     >
-      These goals are <b>set by your physical therapist</b> and are based on the timeline of your recovery.
-      They are subject to change.
+      These goals are <b style="font-weight: {typography.fontWeights.bold};"
+        >set by your physical therapist</b
+      > and are based on the timeline of your recovery. They are subject to change.
     </p>
   </div>
   {#if $goalStore.isLoading}
@@ -91,13 +92,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 25px;
+    row-gap: 16px;
     text-align: center;
+    max-width: 524px;
+    margin: auto;
   }
   .goals-month-container {
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    max-width: 552px;
+    margin: auto;
   }
   .horizontal-box {
     background-color: var(--background-secondary);
@@ -112,5 +117,16 @@
     justify-content: center;
     column-gap: 25.5px;
     row-gap: 16px;
+  }
+
+  @media (min-width: 800px) {
+    .goals-container {
+      display: grid;
+      grid-template-columns: repeat(5, 92.5px);
+      align-items: flex-start;
+      justify-content: center;
+      column-gap: 25.5px;
+      row-gap: 16px;
+    }
   }
 </style>
