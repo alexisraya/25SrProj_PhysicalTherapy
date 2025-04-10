@@ -64,25 +64,36 @@
 </script>
 
 {#if program && stats && weeklyProgress}
-  <div class="header-container">
+  <div class="wave-container">
     {#if currentTheme == 'light'}
-      <img class="background-wave" src={homeBackgroundSmallLight} alt="background wave" />
+      <img
+        class="background-wave wave-light"
+        src={homeBackgroundSmallLight}
+        alt="background wave"
+      />
     {:else}
-      <img class="background-wave" src={homeBackgroundSmallDark} alt="background wave" />
+      <img class="background-wave wave-dark" src={homeBackgroundSmallDark} alt="background wave" />
     {/if}
+  </div>
+  <div class="header-container">
     <div class="cta-container">
-      <h2
-        style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-          .h2}; font-weight: {typography.fontWeights.regular}; margin-bottom: 4px;"
-      >
-        Hi {userData.firstName}!
-      </h2>
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;"
-      >
-        {$text(programCTAText)}
-      </p>
+      <div class="cta-container-text">
+        <h2
+          style="font-family: {typography.fontFamily.heading}; font-size: {window.innerWidth >= 800
+            ? typography.fontSizes.h1
+            : typography.fontSizes.h2}; font-weight: {typography.fontWeights
+            .regular}; margin-bottom: 4px;"
+          on:resize={() => window.innerWidth}
+        >
+          Hi {userData.firstName}!
+        </h2>
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;"
+        >
+          {$text(programCTAText)}
+        </p>
+      </div>
       <a href="/your-program">
         {#if currentTheme == 'light'}
           <img src={PlayButtonLight} alt="play button" />
@@ -148,8 +159,8 @@
     background-color: var(--background-secondary);
   }
   .background-wave {
-    position: absolute;
-    top: -65%;
+    position: fixed;
+    top: -17%;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
@@ -159,6 +170,7 @@
     position: relative;
     width: 100%;
     overflow-x: hidden;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -175,7 +187,6 @@
     align-items: center;
     row-gap: 8px;
   }
-
   .metrics-container {
     display: flex;
     flex-direction: column;
@@ -183,14 +194,12 @@
     align-items: flex-start;
     width: 100%;
   }
-
   .metrics-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
   }
-
   .no-metrics-container {
     color: var(--text-secondary);
     align-self: center;
@@ -202,17 +211,68 @@
     max-width: 182px;
     margin-top: 32px;
   }
-
   .no-metrics-container p {
     line-height: 150%;
     color: var(--color-grey-400);
   }
-
-  @media (min-width: 505px) {
+  .wave-container {
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  @media (min-width: 800px) {
+    .break {
+      display: none;
+    }
+    .body-container {
+      margin: 16px auto 0 auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      align-items: center;
+      row-gap: 8px;
+      max-width: 806px;
+    }
+    .cta-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: calc(100% - 32px);
+      max-width: 806px;
+      margin: auto;
+      padding-top: 92px;
+    }
+    .cta-container-text {
+      text-align: left;
+    }
+    .metrics-container {
+      margin-top: 32px;
+    }
+    .wave-light {
+      content: url('/src/lib/assets/background-images/HomeBackgroundLargeLight.svg');
+    }
+    .wave-dark {
+      content: url('/src/lib/assets/background-images/HomeBackgroundLargeDark.svg');
+    }
     .background-wave {
-      content: url('/background-images/home-background-large.svg');
-      width: 2258px;
-      top: -125%;
+      width: 1500px;
+      top: -450px;
+      left: 100%;
+    }
+  }
+  @media (min-width: 1000px) {
+    .background-wave {
+      width: 1500px;
+      top: -450px;
+      left: 75%;
     }
   }
 </style>
