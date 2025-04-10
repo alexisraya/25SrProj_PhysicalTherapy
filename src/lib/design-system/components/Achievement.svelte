@@ -18,7 +18,7 @@
   on:click={onClick}
   in:scale={{ duration: 300, start: 0.8 }}
 >
-  <div class="achievement-header">
+  <div class="achievement-header small-screen">
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
         .regular}; font-weight: {typography.fontWeights.medium};"
@@ -27,16 +27,38 @@
     </p>
     <RemixIcon name="arrow-right-s-line" />
   </div>
-  <div class="achievement-body">
-    <div class="achievement-image-container">
-      <Icon name="polar-bear" size="small" />
-    </div>
+  <div class="achievement-header large-screen">
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-        .xsmall}; font-weight: {typography.fontWeights.regular};"
+        .large}; font-weight: {typography.fontWeights.medium};"
     >
-      {achievementDescription}
+      Achievements
     </p>
+    <RemixIcon name="arrow-right-s-line" />
+  </div>
+  <div class="achievement-grid">
+    <div class="achievement-body {type}-body">
+      <div class="achievement-image-container">
+        <Icon name="polar-bear" size="small" />
+      </div>
+      <p
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .xsmall}; font-weight: {typography.fontWeights.regular};"
+      >
+        {achievementDescription}
+      </p>
+    </div>
+    <div class="achievement-body {type}-body {type}-large">
+      <div class="achievement-image-container">
+        <Icon name="polar-bear" size="small" />
+      </div>
+      <p
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .xsmall}; font-weight: {typography.fontWeights.regular};"
+      >
+        {achievementDescription}
+      </p>
+    </div>
   </div>
 </button>
 
@@ -62,6 +84,11 @@
   .milestones {
     border-color: transparent;
     background-color: transparent;
+    width: 100%;
+  }
+
+  .milestones-body {
+    max-width: 284px;
   }
 
   .achievement-header {
@@ -89,5 +116,31 @@
   .achievement-mark {
     color: var(--color-grey-300); /* light/dark mode exception */
     text-align: center;
+  }
+  .small-screen {
+    display: flex;
+  }
+  .large-screen {
+    display: none;
+  }
+  .milestones-large {
+    display: none;
+  }
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 800px) {
+    .small-screen {
+      display: none;
+    }
+    .large-screen {
+      display: flex;
+    }
+
+    .milestones-large {
+      display: flex;
+    }
   }
 </style>

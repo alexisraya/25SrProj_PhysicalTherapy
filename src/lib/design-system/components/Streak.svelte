@@ -20,8 +20,16 @@
       </p>
     {:else}
       <p
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .regular}; font-weight: {typography.fontWeights.medium};"
+      >
+        Streak
+      </p>
+      <p
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .large}; font-weight: {typography.fontWeights.medium};"
       >
         Streak
       </p>
@@ -39,7 +47,11 @@
   <div class="streaks-container">
     {#each Array(streakDaysCompleted).fill(0) as _, i}
       <div class="streak-container">
-        <div class="streak completed {streakType !== 'home' ? 'tall' : ''}"></div>
+        <div
+          class="streak completed {streakType !== 'home' ? 'tall' : ''} {streakType === 'milestones'
+            ? 'milestones-streak'
+            : ''}"
+        ></div>
         {#if streakType == 'home'}
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -52,7 +64,11 @@
     {/each}
     {#each Array(remainingDays).fill(0) as _, i}
       <div class="streak-container">
-        <div class="streak {streakType !== 'home' ? 'tall' : ''}"></div>
+        <div
+          class="streak {streakType !== 'home' ? 'tall' : ''} {streakType === 'milestones'
+            ? 'milestones-streak'
+            : ''}"
+        ></div>
         {#if streakType == 'home'}
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -67,14 +83,30 @@
   {#if streakType != 'home'}
     <div class="program-days-container">
       <h3
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular};"
       >
         {streakDaysCompleted}/{streakTotalDays}
       </h3>
+      <h2
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
+          .h2}; font-weight: {typography.fontWeights.regular};  line-height: 110%;"
+      >
+        {streakDaysCompleted}/{streakTotalDays}
+      </h2>
       <p
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .regular}; font-weight: {typography.fontWeights.regular};"
+      >
+        programs
+      </p>
+      <p
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .large}; font-weight: {typography.fontWeights.regular};"
       >
         programs
       </p>
@@ -147,5 +179,22 @@
     align-items: center;
     justify-content: flex-end;
     column-gap: 4px;
+  }
+  .milestones-small-font {
+    display: flex;
+  }
+  .milestones-large-font {
+    display: none;
+  }
+  @media (min-width: 800px) {
+    .milestones-streak {
+      height: 24px;
+    }
+    .milestones-small-font {
+      display: none;
+    }
+    .milestones-large-font {
+      display: flex;
+    }
   }
 </style>

@@ -98,7 +98,7 @@
     justify-items: start;
     row-gap: 48px;
     column-gap: 24px;
-    padding: 16px 0 16px 24px;
+    padding: 32px 0 32px 24px;
     border-bottom: solid 8px var(--background-secondary);
   }
   .check-in-metrics {

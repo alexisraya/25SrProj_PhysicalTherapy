@@ -36,7 +36,7 @@
   .tabs-container {
     width: 100%;
     display: flex;
-    margin: 16px 0;
+    margin: 16px 0 0;
     flex-direction: column;
     align-items: center;
   }

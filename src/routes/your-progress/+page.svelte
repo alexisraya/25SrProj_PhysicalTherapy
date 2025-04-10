@@ -100,7 +100,7 @@
   .blob {
     position: absolute;
     z-index: 0;
-    top: calc(175px - 25vw);
+    top: calc(175px - 20vw);
     width: 100%;
     left: 0px;
     overflow: hidden;
@@ -141,6 +141,28 @@
       position: absolute;
       z-index: 0;
       top: calc(175px - 20vw);
+      width: 100%;
+      left: 0px;
+      overflow: hidden;
+    }
+    .page-container h1 {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+    }
+    .small-screen-font {
+      display: none;
+    }
+    .large-screen-font {
+      display: block;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .blob {
+      position: absolute;
+      z-index: 0;
+      top: calc(175px - 21vw);
       width: 100%;
       left: 0px;
       overflow: hidden;
