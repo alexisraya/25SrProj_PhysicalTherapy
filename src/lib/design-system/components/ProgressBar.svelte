@@ -23,7 +23,7 @@
     /* display: flex; */
     column-gap: 8px;
     justify-content: center;
-    margin-left: 16px;
+    /* margin-left: 16px; */
   }
   .progress_bar--item {
     border-radius: 8px;
