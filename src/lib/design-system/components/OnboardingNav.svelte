@@ -5,8 +5,14 @@
   export let currentStep: number;
 </script>
 
-<div class="onboarding-nav-container">
-  <ProgressBar totalExercises={6} completedExercises={currentStep} />
+<div class="onboarding-nav-container {currentStep == 0 ? 'first' : ''}">
+  {#if currentStep > 0}
+    <ProgressBar
+      totalExercises={6}
+      completedExercises={currentStep}
+      remainingExercises={6 - currentStep}
+    />
+  {/if}
   <p
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
       .small}; font-weight: {typography.fontWeights.bold}; margin: 0;"
@@ -22,5 +28,9 @@
     align-items: flex-end;
     justify-content: center;
     row-gap: 16px;
+    width: 100%;
+  }
+  .first {
+    padding-top: 25px;
   }
 </style>

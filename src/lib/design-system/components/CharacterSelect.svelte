@@ -54,6 +54,7 @@
     border: 0;
   }
   .select-character-section {
+    box-sizing: border-box;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -61,20 +62,23 @@
     column-gap: 16px;
   }
   .character {
+    box-sizing: border-box;
     border-radius: 10px;
     position: relative;
     display: inline-block;
-    width: 99px; /* Adjust as needed */
+    width: 98px; /* Adjust as needed */
     cursor: pointer;
     padding: 4px;
   }
   .character img {
+    box-sizing: border-box;
     display: block;
     width: 100%;
     height: auto;
     border-radius: 8px;
   }
   .character--overlay {
+    box-sizing: border-box;
     position: absolute;
     top: 0;
     left: 0;

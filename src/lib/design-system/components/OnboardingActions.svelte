@@ -12,14 +12,24 @@
   $: isStepComplete = $stepCompletionStatus[currentStepIndex];
 </script>
 
-{#if isFirstStep}
-  <Button cta="Begin" onClickFunc={onNext} />
-{:else}
-  <DoubleButton
-    ctaOne="Back"
-    ctaOneOnClickFunc={onPrevious}
-    ctaTwo={isLastStep ? 'Start check in' : 'Next'}
-    ctaTwoOnClickFunc={onNext}
-    isCTATwoDisabled={isStepComplete}
-  />
-{/if}
+<div class="actions-container">
+  {#if isFirstStep}
+    <Button cta="Begin" onClickFunc={onNext} />
+  {:else}
+    <DoubleButton
+      ctaOne="Back"
+      ctaOneOnClickFunc={onPrevious}
+      ctaTwo={isLastStep ? 'Start check in' : 'Next'}
+      ctaTwoOnClickFunc={onNext}
+      isCTATwoDisabled={!isStepComplete}
+    />
+  {/if}
+</div>
+
+<style>
+  .actions-container {
+    display: flex;
+    width: 100%;
+    max-width: 448px;
+  }
+</style>

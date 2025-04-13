@@ -10,22 +10,22 @@
   import Achievements from '$lib/design-system/components/steps/Achievements.svelte';
   import Goals from '$lib/design-system/components/steps/Goals.svelte';
   import CheckIn from '$lib/design-system/components/steps/CheckIn.svelte';
+  import Tone from '$lib/design-system/components/steps/Tone.svelte';
+  import Model from '$lib/design-system/components/steps/Model.svelte';
 
   const stepComponents: ComponentType[] = [
     Mend,
     Streaks,
     Achievements,
     Goals,
-    // Tone,
-    // Model,
+    Tone,
+    Model,
     CheckIn
   ];
 </script>
 
 <div class="onboarding-container">
-  {#if $currentStep !== 0}
-    <OnboardingNav currentStep={$currentStep} />
-  {/if}
+  <OnboardingNav currentStep={$currentStep} />
   <div class="step-content">
     <svelte:component this={stepComponents[$currentStep]} />
     <div class="step-copy">
@@ -64,11 +64,26 @@
 </div>
 
 <style>
+  /* add media query and align-self: flex start */
   .onboarding-container {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    margin: 20px 24px 24px 24px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 24px;
+    padding: 20px 0 34px 0;
     background-color: var(--background);
+    width: 100%;
+    height: 100%;
+    max-height: 785px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .step-content {
+    width: 100%;
+    max-width: 448px;
+    overflow-x: visible;
   }
   .step-copy {
     display: flex;

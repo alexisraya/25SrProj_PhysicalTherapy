@@ -25,5 +25,6 @@
     align-items: center;
     justify-content: center;
     column-gap: 16px;
+    width: 100%;
   }
 </style>

@@ -2,7 +2,7 @@
   export let totalExercises: number;
   export let completedExercises: number;
 
-  const remainingExercises = totalExercises - completedExercises;
+  export let remainingExercises = totalExercises - completedExercises;
 </script>
 
 <div

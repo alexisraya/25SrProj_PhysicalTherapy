@@ -8,20 +8,12 @@ export interface OnboardingStep {
   requiresChoice?: boolean;
 }
 
-export const currentStep = writable<number>(0);
-
-export const stepCompletionStatus = writable<boolean[]>(
-  Array(7)
-    .fill(false)
-    .map((_, index) => !steps[index]?.requiresChoice)
-);
-
+// Define steps first
 export const steps: OnboardingStep[] = [
   {
     id: 'mend',
     title: 'Mend',
-    description:
-      'Physical therapy can be difficult. But we’re here to keep you motivated. Let’s begin to see how.'
+    description: `Physical therapy can be difficult. But we're here to keep you motivated. Let's begin to see how.`
   },
   {
     id: 'streaks',
@@ -42,8 +34,7 @@ export const steps: OnboardingStep[] = [
   {
     id: 'tone',
     title: 'Please select tone',
-    description:
-      'The type of motivation you need can change. That’s why you can choose the way Mend motivates you.',
+    description: `The type of motivation you need can change. That's why you can choose the way Mend motivates you.`,
     caption: 'You can change this at any time.',
     requiresChoice: true
   },
@@ -57,11 +48,19 @@ export const steps: OnboardingStep[] = [
   {
     id: 'checkin',
     title: 'Check in',
-    description:
-      'Now let’s get started by checking in on your pain and mood today. This will set a baseline for your progress.',
+    description: `Now let's get started by checking in on your pain and mood today. This will set a baseline for your progress.`,
     caption: 'You can check in at any time on the home page'
   }
 ];
+
+// Create stores after steps is defined
+export const currentStep = writable<number>(0);
+
+export const stepCompletionStatus = writable<boolean[]>(
+  Array(steps.length)
+    .fill(false)
+    .map((_, index) => !steps[index]?.requiresChoice)
+);
 
 // Navigation functions
 export function goToNext(): void {
