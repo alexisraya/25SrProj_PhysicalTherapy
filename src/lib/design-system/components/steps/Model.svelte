@@ -1,8 +1,25 @@
 <script lang="ts">
   import { setStepComplete } from '$stores/onboarding';
   import ModelBlob from '$lib/assets/background-images/steps/ModelBlob.svg';
+  import ModelBlobDark from '$lib/assets/background-images/steps/ModelBlobDark.svg';
   import Character from '$lib/assets/iconography/Character.png';
   import { typography } from '$lib/design-system/typography';
+  import { onMount } from 'svelte';
+
+  let currentTheme: 'light' | 'dark' = 'light';
+
+  function updateThemeFromStorage() {
+    // Check localStorage directly
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
+    if (savedTheme) {
+      currentTheme = savedTheme;
+    } else {
+      // Fallback to system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      currentTheme = prefersDark ? 'dark' : 'light';
+    }
+  }
 
   const STEP_INDEX = 5; // This is the 5th step (0-indexed)
   let selectedModel: number | null = null;
@@ -20,10 +37,26 @@
   function selectCharacter(id) {
     selectedModel = id;
   }
+
+  onMount(() => {
+    // Initial check from localStorage
+    updateThemeFromStorage();
+
+    // Listen for custom theme change events
+    const handleThemeChange = () => {
+      updateThemeFromStorage();
+    };
+
+    window.addEventListener('themeChanged', handleThemeChange);
+
+    return () => {
+      window.removeEventListener('themeChanged', updateThemeFromStorage);
+    };
+  });
 </script>
 
 <div class="model-step-container">
-  <img src={ModelBlob} alt="blob" class="model-blob" />
+  <img src={currentTheme == 'light' ? ModelBlob : ModelBlobDark} alt="blob" class="model-blob" />
   <div class="model-select-container">
     <div class="select-character-section">
       {#each characters as character}

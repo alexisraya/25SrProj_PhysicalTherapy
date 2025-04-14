@@ -1,11 +1,15 @@
 <script lang="ts">
   import { setStepComplete } from '$stores/onboarding';
   import { typography } from '$lib/design-system/typography';
-  import KindToneBlob from '$lib/assets/background-images/steps/KindToneBlobLight.svg';
-  import ToughToneBlob from '$lib/assets/background-images/steps/ToughToneBlobLight.svg';
-  import NoToneBlob from '$lib/assets/background-images/steps/NoToneBlobLight.svg';
+  import KindToneBlobLight from '$lib/assets/background-images/steps/KindToneBlobLight.svg';
+  import KindToneBlobDark from '$lib/assets/background-images/steps/KindToneBlobDark.svg';
+  import ToughToneBlobLight from '$lib/assets/background-images/steps/ToughToneBlobLight.svg';
+  import ToughToneBlobDark from '$lib/assets/background-images/steps/ToughToneBlobDark.svg';
+  import NoToneBlobLight from '$lib/assets/background-images/steps/NoToneBlobLight.svg';
+  import NoToneBlobDark from '$lib/assets/background-images/steps/NoToneBlobDark.svg';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
   import { getTone } from '$lib/helpers/toneContext';
+  import { onMount } from 'svelte';
 
   const { setTone } = getTone();
 
@@ -31,12 +35,47 @@
     selectedTone = 'kind';
     setTone('kind');
   }
+
+  let currentTheme: 'light' | 'dark' = 'light';
+
+  function updateThemeFromStorage() {
+    // Check localStorage directly
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
+    if (savedTheme) {
+      currentTheme = savedTheme;
+    } else {
+      // Fallback to system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      currentTheme = prefersDark ? 'dark' : 'light';
+    }
+  }
+
+  onMount(() => {
+    // Initial check from localStorage
+    updateThemeFromStorage();
+
+    // Listen for custom theme change events
+    const handleThemeChange = () => {
+      updateThemeFromStorage();
+    };
+
+    window.addEventListener('themeChanged', handleThemeChange);
+
+    return () => {
+      window.removeEventListener('themeChanged', updateThemeFromStorage);
+    };
+  });
 </script>
 
 <div>
   <div class="tone-blob">
     {#if selectedTone == 'kind'}
-      <img class="tone-blob--image" src={KindToneBlob} alt="blob" />
+      {#if currentTheme == 'light'}
+        <img class="tone-blob--image" src={KindToneBlobLight} alt="blob" />
+      {:else}
+        <img class="tone-blob--image" src={KindToneBlobDark} alt="blob" />
+      {/if}
       <p
         class="tone-blob--text"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -45,7 +84,11 @@
         {kindToneExample}
       </p>
     {:else if selectedTone == 'tough'}
-      <img class="tone-blob--image" src={ToughToneBlob} alt="blob" />
+      {#if currentTheme == 'light'}
+        <img class="tone-blob--image" src={ToughToneBlobLight} alt="blob" />
+      {:else}
+        <img class="tone-blob--image" src={ToughToneBlobDark} alt="blob" />
+      {/if}
       <p
         class="tone-blob--text"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -54,7 +97,11 @@
         {toughToneExample}
       </p>
     {:else}
-      <img class="tone-blob--image" src={NoToneBlob} alt="blob" />
+      {#if currentTheme == 'light'}
+        <img class="tone-blob--image" src={NoToneBlobLight} alt="blob" />
+      {:else}
+        <img class="tone-blob--image" src={NoToneBlobDark} alt="blob" />
+      {/if}
       <p
         class="tone-blob--text"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -65,8 +112,11 @@
     {/if}
   </div>
   <div class="tone-choice-container">
-    <button on:click={onKindClicked}>
-      <RemixIcon name="service-line" />
+    <button on:click={onKindClicked} class={selectedTone == 'kind' ? 'selected' : ''}>
+      <RemixIcon
+        name="service-line"
+        color={selectedTone == 'kind' ? 'var(--background)' : 'var(--text-primary)'}
+      />
       <p
         class="tone-text"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -75,8 +125,11 @@
         Kind
       </p>
     </button>
-    <button on:click={onToughClicked}>
-      <RemixIcon name="megaphone-line" />
+    <button on:click={onToughClicked} class={selectedTone == 'tough' ? 'selected' : ''}>
+      <RemixIcon
+        name="megaphone-line"
+        color={selectedTone == 'tough' ? 'var(--background)' : 'var(--text-primary)'}
+      />
       <p
         class="tone-text"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -124,9 +177,11 @@
     justify-content: center;
     padding: 12px 24px;
     column-gap: 8px;
-    background-color: var(--button-primary-bg);
-    border: 1px solid var(--button-primary-bg);
-    color: var(--background);
+    height: 48px;
+    background-color: var(--button-primary-disabled-bg);
+    border: 1px solid var(--button-primary-disabled-bg);
+    border-radius: 8px;
+    color: var(--text-primary);
   }
 
   .tone-choice-container button:hover {
@@ -138,5 +193,10 @@
   /* Primary Active */
   .tone-choice-container button:active {
     transform: scale(97.5%);
+  }
+
+  .selected {
+    background-color: var(--text-primary) !important;
+    color: var(--background) !important;
   }
 </style>

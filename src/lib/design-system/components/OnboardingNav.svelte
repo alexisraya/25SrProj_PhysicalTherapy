@@ -11,6 +11,7 @@
       totalExercises={6}
       completedExercises={currentStep}
       remainingExercises={6 - currentStep}
+      isOnboarding={true}
     />
   {/if}
   <a
