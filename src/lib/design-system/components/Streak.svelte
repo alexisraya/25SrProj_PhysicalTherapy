@@ -148,4 +148,14 @@
     justify-content: flex-end;
     column-gap: 4px;
   }
+
+  @media (min-width: 800px) {
+    .home {
+      width: 100%;
+    }
+
+    .home .streak {
+      height: 32px;
+    }
+  }
 </style>

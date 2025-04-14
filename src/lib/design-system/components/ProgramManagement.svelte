@@ -127,98 +127,136 @@
     });
   }
 
-  function getExerciseDetails(exercise: AssignedExercise): string {
-    if (exercise.exerciseType === 'distance') {
-      return `${exercise.sets} sets of ${exercise.steps} steps`;
-    } else if (exercise.exerciseType === 'weight') {
-      return `${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight}lbs`;
-    } else {
-      return `${exercise.reps} times, ${exercise.seconds} seconds each`;
+    function getExerciseDetails(exercise: AssignedExercise): string {
+        if (exercise.exerciseType === "distance") {
+            return `${exercise.sets} sets of ${exercise.steps} steps`;
+        } else if (exercise.exerciseType === "weight") {
+            return `${exercise.sets} sets of ${exercise.reps} reps at ${exercise.weight}lbs`;
+        } else {
+            return `${exercise.sets} sets of ${exercise.reps} reps, ${exercise.seconds} seconds each`;
+        }
     }
-  }
 </script>
 
 <div class="program-section">
-  <h2>Exercise Program</h2>
-  <div class="time-input">
-    <label>
-      Program Time (minutes):
-      <input
-        type="number"
-        value={estimatedTime}
-        on:input={(e) => {
-          const newValue = parseInt(e.currentTarget.value);
-          if (!isNaN(newValue)) {
-            estimatedTime = newValue;
-            console.log('Time updated to:', estimatedTime);
-          }
-        }}
-        min="1"
-        max="120"
-      />
-    </label>
-    <button
-      on:click={() => {
-        onUpdateProgram({
-          exercises,
-          estimatedTime,
-          assignedAt: currentProgram?.assignedAt || new Date().toISOString(),
-          completed: currentProgram?.completed || false
-        });
-      }}
-      class="update-time-btn"
-      disabled={isLoading}
-    >
-      Update Time
-    </button>
-  </div>
-  <div class="exercise-selection">
-    <select bind:value={selectedExercise} class="exercise-select">
-      <option value={null}>Select an exercise to add</option>
-      {#each availableExercises as exercise}
-        <option value={exercise}>{exercise.exerciseName}</option>
-      {/each}
-    </select>
-    {#if selectedExercise}
-      <div class="exercise-values">
-        {#if isDistanceExercise(selectedExercise)}
-          <div class="value-group">
-            <label>
-              Sets:
-              <input type="number" bind:value={exerciseValues.sets} min="1" />
-            </label>
-            <label>
-              Steps per set:
-              <input type="number" bind:value={exerciseValues.steps} min="1" />
-            </label>
-          </div>
-        {:else if isWeightExercise(selectedExercise)}
-          <div class="value-group">
-            <label>
-              Sets:
-              <input type="number" bind:value={exerciseValues.sets} min="1" />
-            </label>
-            <label>
-              Reps per set:
-              <input type="number" bind:value={exerciseValues.reps} min="1" />
-            </label>
-            <label>
-              Weight (lbs):
-              <input type="number" bind:value={exerciseValues.weight} min="0" step="5" />
-            </label>
-          </div>
-        {:else}
-          <div class="value-group">
-            <label>
-              Times to perform:
-              <input type="number" bind:value={exerciseValues.reps} min="1" />
-            </label>
-            <label>
-              Seconds to hold:
-              <input type="number" bind:value={exerciseValues.seconds} min="1" />
-            </label>
-          </div>
-        {/if}
+    <h2>Exercise Program</h2>
+    <div class="time-input">
+        <label>
+            Program Time (minutes):
+            <input
+                type="number"
+                value={estimatedTime}
+                on:input={(e) => {
+                    const newValue = parseInt(e.currentTarget.value);
+                    if (!isNaN(newValue)) {
+                        estimatedTime = newValue;
+                        console.log("Time updated to:", estimatedTime);
+                    }
+                }}
+                min="1"
+                max="120"
+            />
+        </label>
+        <button
+            on:click={() => {
+                onUpdateProgram({
+                    exercises,
+                    estimatedTime,
+                    assignedAt:
+                        currentProgram?.assignedAt || new Date().toISOString(),
+                    completed: currentProgram?.completed || false,
+                });
+            }}
+            class="update-time-btn"
+            disabled={isLoading}
+        >
+            Update Time
+        </button>
+    </div>
+    <div class="exercise-selection">
+        <select bind:value={selectedExercise} class="exercise-select">
+            <option value={null}>Select an exercise to add</option>
+            {#each availableExercises as exercise}
+                <option value={exercise}>{exercise.exerciseName}</option>
+            {/each}
+        </select>
+        {#if selectedExercise}
+            <div class="exercise-values">
+                {#if isDistanceExercise(selectedExercise)}
+                    <div class="value-group">
+                        <label>
+                            Sets:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.sets}
+                                min="1"
+                            />
+                        </label>
+                        <label>
+                            Steps per set:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.steps}
+                                min="1"
+                            />
+                        </label>
+                    </div>
+                {:else if isWeightExercise(selectedExercise)}
+                    <div class="value-group">
+                        <label>
+                            Sets:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.sets}
+                                min="1"
+                            />
+                        </label>
+                        <label>
+                            Reps per set:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.reps}
+                                min="1"
+                            />
+                        </label>
+                        <label>
+                            Weight (lbs):
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.weight}
+                                min="0"
+                                step="5"
+                            />
+                        </label>
+                    </div>
+                {:else}
+                    <div class="value-group">
+                        <label>
+                            Sets:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.sets}
+                                min="1"
+                            />
+                        </label>
+                        <label>
+                            Reps:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.reps}
+                                min="1"
+                            />
+                        </label>
+                        <label>
+                            Seconds to hold:
+                            <input
+                                type="number"
+                                bind:value={exerciseValues.seconds}
+                                min="1"
+                            />
+                        </label>
+                    </div>
+                {/if}
 
         <button class="add-btn" on:click={handleAddExercise} disabled={isLoading}>
           Add Exercise

@@ -83,15 +83,31 @@
   }
 </script>
 
-<div class="main-container">
-  {#if shouldShowNav($page.url.pathname)}
-    <Nav />
-  {/if}
-  <slot />
-</div>
+{#if shouldShowNav($page.url.pathname)}
+  <div class="main-container-nav">
+    <div>
+      <Nav />
+    </div>
+    <div class="main-content">
+      <slot />
+    </div>
+  </div>
+{:else}
+  <div class="main-content">
+    <slot />
+  </div>
+{/if}
 
 <style>
-  .main-container {
-    padding: 0;
+  @media (min-width: 800px) {
+    .main-container-nav {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 324px 1fr;
+    }
+    .main-content {
+      width: 100%;
+      padding: 0;
+    }
   }
 </style>
