@@ -47,17 +47,21 @@ export const isTherapist = derived(authStore, ($state) => $state.isTherapist);
 export const authError = derived(authStore, ($state) => $state.error);
 
 export const authHandlers = {
-  login: async (email: string, password: string) => {
-    try {
-      authStore.update((state) => ({ ...state, isLoading: true, error: null }));
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await checkUserRole(userCredential.user.uid);
-    } catch (error) {
-      console.error('Login error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
-    }
-  },
+    login: async (email: string, password: string) => {
+        try {
+            authStore.update(state => ({ ...state, isLoading: true, error: null }));
+            console.log("Login started, waiting for authentication...");
+            
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log("Login successful, checking user role...");
+            
+            await checkUserRole(userCredential.user.uid);
+        } catch (error) {
+            console.error("Login error:", error);
+            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+            authStore.update(state => ({ ...state, error: errorMessage, isLoading: false }));
+        }
+    },
 
   signup: async (email: string, password: string, firstName: string, lastName: string) => {
     try {
