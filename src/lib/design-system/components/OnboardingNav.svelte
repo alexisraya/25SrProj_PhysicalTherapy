@@ -13,15 +13,19 @@
       remainingExercises={6 - currentStep}
     />
   {/if}
-  <p
+  <a
+    href="/patient-dashboard"
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
       .small}; font-weight: {typography.fontWeights.bold}; margin: 0;"
   >
     Skip
-  </p>
+  </a>
 </div>
 
 <style>
+  a:visited {
+    color: var(--text-primary);
+  }
   .onboarding-nav-container {
     display: flex;
     flex-direction: column;
