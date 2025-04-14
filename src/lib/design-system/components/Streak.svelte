@@ -195,6 +195,12 @@
     }
     .milestones-large-font {
       display: flex;
+    .home {
+      width: 100%;
+    }
+    .home .streak {
+      height: 32px;
+
     }
   }
 </style>

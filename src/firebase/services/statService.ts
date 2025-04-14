@@ -2,7 +2,7 @@ import { db } from '$lib/helpers/firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import type { User, AssignedExercise, UserStats } from '../types/userType';
 import { getUser, updateUser } from './userService';
-import { getWeekStartDate, initializeUserStats } from './helpers';
+import { getWeekStartDate, getPersonalWeekStart, initializeUserStats } from './helpers';
 import { checkAchievements } from './milestoneService';
 
 export { initializeUserStats };
@@ -71,13 +71,14 @@ export async function resetDailyProgress(userId: string) {
 
     if (programSnap.exists()) {
       const programData = programSnap.data();
+      // const _today = new Date().toISOString().split('T')[0];
 
       // Reset exercises for the new day
       const updatedExercises = programData.exercises.map((exercise: AssignedExercise) => {
         return {
           ...exercise,
           completed: false,
-          completedAt: undefined,
+          completedAt: null,
           skipped: false
         };
       });
@@ -92,7 +93,7 @@ export async function resetDailyProgress(userId: string) {
   }
 }
 
-/* ---------------------- RESET WEEKLY PROGRESS (ONLY ON SUNDAYS) ---------------------- */
+/* ---------------------- RESET WEEKLY PROGRESS (BASED ON START DATE) ---------------------- */
 /**
  * Resets weekly progress every Sunday at midnight
  * - If user completed 5+ days in the week, increments their currentStreak
@@ -105,22 +106,23 @@ export async function resetWeeklyProgress(userId: string) {
     const userSnap = await getDoc(userRef);
     if (!userSnap.exists()) return;
 
-    let { stats } = userSnap.data();
-    const today = new Date().toISOString().split('T')[0];
-    const currentWeekStart = getWeekStartDate(new Date(today));
+    const userData = userSnap.data() as User;
+    let { stats } = userData;
+    const today = new Date();
 
-    if (stats.weeklyProgress.weekStartDate !== currentWeekStart) {
-      // If completed 5+ days, increment streak
+    const currentPersonalWeekStart = getPersonalWeekStart(userData.createdAt, today);
+
+    if (stats.weeklyProgress.weekStartDate !== currentPersonalWeekStart) {
       if (stats.weeklyProgress.daysCompleted >= 5) {
         stats.currentStreak += 1;
-      } else {
-        // Reset streak only if they didn't meet the weekly goal
-        stats.currentStreak = 0;
+
+        if (stats.currentStreak > stats.longestStreak) {
+          stats.longestStreak = stats.currentStreak;
+        }
       }
 
-      // Start a new week
       stats.weeklyProgress = {
-        weekStartDate: currentWeekStart,
+        weekStartDate: currentPersonalWeekStart,
         daysCompleted: 0,
         exercisesCompleted: 0
       };
@@ -135,26 +137,38 @@ export async function resetWeeklyProgress(userId: string) {
 /* ---------------------- CHECK & RESET PROGRESS ---------------------- */
 /**
  * Checks if it's a new day and performs necessary resets
- * Uses localStorage to track the last check date
- * Calls resetDailyProgress for a new day and resetWeeklyProgress on Sundays
+ * Tracks the last check date from Firestore
+ * Calls resetDailyProgress for a new day and resetWeeklyProgress
  */
 
 export async function checkAndResetProgress(userId: string) {
   try {
-    const lastCheck = localStorage.getItem(`lastProgressCheck_${userId}`);
-    const today = new Date().toDateString();
+    const programRef = doc(db, `users/${userId}/program/currentProgram`);
+    const programSnap = await getDoc(programRef);
 
-    // Only reset if it's a new day
-    if (lastCheck !== today) {
-      console.log('Performing daily progress check and reset if needed');
-      await resetDailyProgress(userId);
-      localStorage.setItem(`lastProgressCheck_${userId}`, today);
+    if (!programSnap.exists()) return;
 
-      // Check if it's Sunday (day 0) for weekly reset
-      if (new Date().getDay() === 0) {
-        console.log('Sunday detected - performing weekly reset');
-        await resetWeeklyProgress(userId);
-      }
+    const programData = programSnap.data();
+    const today = new Date().toISOString().split('T')[0];
+    const lastResetDate = programData.lastResetDate || programData.assignedAt.split('T')[0];
+
+    if (lastResetDate !== today) {
+      const updatedExercises = programData.exercises.map((exercise: AssignedExercise) => {
+        return {
+          ...exercise,
+          completed: false,
+          completedAt: null,
+          skipped: false
+        };
+      });
+
+      await updateDoc(programRef, {
+        exercises: updatedExercises,
+        completed: false,
+        lastResetDate: today
+      });
+
+      await resetWeeklyProgress(userId);
     }
   } catch (error) {
     console.error(`Error checking and resetting progress for user ${userId}:`, error);

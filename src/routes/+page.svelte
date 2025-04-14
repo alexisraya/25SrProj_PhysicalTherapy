@@ -1,4 +1,13 @@
-<h1>Mend Directory</h1>
+<script>
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    goto('/login');
+  });
+</script>
+
+<!-- <h1>Mend Directory</h1>
 <h3>Exploration</h3>
 <ul>
   <li><a href="./exploration/login-system">Login System</a></li>
@@ -9,4 +18,4 @@
   <li><a href="./exploration/firebase-test">Firebase Test</a></li>
   <li><a href="./exploration/redeploy-page">Redeploy Page</a></li>
   <li><a href="./exploration/three-js">Three Js</a></li>
-</ul>
+</ul> -->
