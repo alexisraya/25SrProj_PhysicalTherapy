@@ -15,25 +15,28 @@
 <div class="onboarding-container">
   <CheckInNav currentStep={$currentCheckInStep} />
   <div class="step-content">
-    <div class="step-copy">
-      {#if checkInSteps[$currentCheckInStep].title}
-        <h3
-          style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-            .h3}; margin: 0; text-align: center;"
-        >
-          {checkInSteps[$currentCheckInStep].title}
-        </h3>
-      {/if}
-      {#if checkInSteps[$currentCheckInStep].description}
-        <p
-          class="description"
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .regular}; font-weight: {typography.fontWeights.medium}; margin: 0; text-align: center;"
-        >
-          {checkInSteps[$currentCheckInStep].description}
-        </p>
-      {/if}
-    </div>
+    {#if $currentCheckInStep != 2}
+      <div class="step-copy">
+        {#if checkInSteps[$currentCheckInStep].title}
+          <h3
+            style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
+              .h3}; margin: 0; text-align: center;"
+          >
+            {checkInSteps[$currentCheckInStep].title}
+          </h3>
+        {/if}
+        {#if checkInSteps[$currentCheckInStep].description}
+          <p
+            class="description"
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .regular}; font-weight: {typography.fontWeights
+              .medium}; margin: 0; text-align: center;"
+          >
+            {checkInSteps[$currentCheckInStep].description}
+          </p>
+        {/if}
+      </div>
+    {/if}
     <svelte:component this={stepComponents[$currentCheckInStep]} />
   </div>
   <CheckInActions
