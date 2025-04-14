@@ -124,6 +124,8 @@
   --locked-achievement-image-border: var(--color-yellow-200);
   --achievement-card-background: var(--color-yellow-100);
   --achievement-card-border: var(--color-yellow-600);
+
+  --onboarding-progress-background: var(--color-grey-200);
 }
 
 [data-theme='dark'] {
@@ -169,6 +171,8 @@
   --locked-achievement-image-border: var(--color-yellow-opacity);
   --achievement-card-background: var(--color-yellow-opacity);
   --achievement-card-border: var(--color-yellow-550);
+
+  --onboarding-progress-background: var(--color-blue-opacity);
 }
 
 @font-face {
