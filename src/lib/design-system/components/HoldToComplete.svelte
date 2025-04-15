@@ -181,9 +181,9 @@
       on:keyup={handleKeyUp}
     >
       <svg viewBox="-50 -50 100 100" width="44" height="44">
-        <circle r="44" fill="#add8e6" />
-        <circle r="44" fill={Colors.blue[100]} />
-        <circle r="14" fill="none" stroke={Colors.blue[1000]} stroke-width="4" />
+        <circle r="44" class="fill" />
+        <circle r="44" class="fill" />
+        <circle r="14" fill="none" class="stroke" stroke-width="4" />
       </svg>
     </button>
 
@@ -273,5 +273,11 @@
     to {
       transform: translateX(4px);
     }
+  }
+  .fill {
+    fill: var(--hold-to-complete-bg);
+  }
+  .stroke {
+    stroke: var(--hold-to-complete-stroke);
   }
 </style>

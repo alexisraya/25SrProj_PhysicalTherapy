@@ -484,6 +484,7 @@
       transform 0.4s ease-out;
     opacity: 0;
     transform: translateY(-10px);
+    margin-bottom: 16px;
   }
 
   details[open] .content-wrapper {
@@ -523,16 +524,18 @@
   }
   .exercise_container-bottom {
     width: 100%;
+    margin-top: 8px;
   }
   .exercise_description {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     row-gap: 24px;
-    padding: 16px 24px;
+    padding: 16px 0;
+    max-width: 100%;
   }
   .exercise_description--section {
-    width: 100%;
+    width: calc(100% - 48px);
   }
   .content-wrapper ol {
     margin: 0;
@@ -574,5 +577,9 @@
   .skip_btn {
     padding-left: 24px;
     width: 108px;
+  }
+  details {
+    border-bottom: solid 1px var(--exercise-section-divider);
+    padding: 4px 24px 12px;
   }
 </style>
