@@ -103,6 +103,9 @@
   --button-primary-disabled-text: var(--color-grey-300);
   --button-secondary-border: var(--color-blue-1100);
   --button-secondary-disabled-border: var(--color-blue-50);
+  --button-primary-bg-hover: var(--color-blue-900);
+  --button-secondary-bg-hover: var(--color-blue-50);
+  --button-secondary-border-hover: var(--color-blue-800);
 
   --mark-complete-button: var(--color-grey-400);
 
@@ -150,6 +153,9 @@
   --button-primary-disabled-text: var(--color-blue-800);
   --button-secondary-border: var(--color-grey-0);
   --button-secondary-disabled-border: var(--color-blue-800);
+  --button-primary-bg-hover: var(--color-blue-100);
+  --button-secondary-bg-hover: var(--color-blue-1000);
+  --button-secondary-border-hover: var(--color-blue-100);
 
   --mark-complete-button: var(--color-grey-200);
 
