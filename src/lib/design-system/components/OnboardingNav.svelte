@@ -24,6 +24,9 @@
 </div>
 
 <style>
+  a {
+    color: var(--text-primary);
+  }
   a:visited {
     color: var(--text-primary);
   }
@@ -36,6 +39,6 @@
     width: 100%;
   }
   .first {
-    padding-top: 25px;
+    padding-top: 24px;
   }
 </style>
