@@ -126,6 +126,8 @@
   --achievement-card-border: var(--color-yellow-600);
 
   --onboarding-progress-background: var(--color-grey-200);
+
+  --program-edit-text: var(--color-grey-400);
 }
 
 [data-theme='dark'] {
@@ -173,6 +175,8 @@
   --achievement-card-border: var(--color-yellow-550);
 
   --onboarding-progress-background: var(--color-blue-opacity);
+
+  --program-edit-text: var(--color-grey-200);
 }
 
 @font-face {

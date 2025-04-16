@@ -2,10 +2,8 @@
   import { typography } from '$lib/design-system';
   import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
   import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
-  import EditPencil from "$lib/assets/iconography/EditPencil.svg";
-  import CheckmarkSmall from "$lib/assets/iconography/CheckmarkSmall.svg";
   import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
-  import { fade, scale, fly } from "svelte/transition";
+  import { fade, scale, fly } from 'svelte/transition';
 
   import { onMount } from 'svelte';
   import {
@@ -24,9 +22,9 @@
 
   let isEditing = false;
   let editingTransition = false; // Control for transition state
-  let buttonLabel = "Mark them complete here";
-  let buttonIcon = EditPencil;
-  let nextButtonLabel = ""; // Next text state for transition
+  let buttonLabel = 'Mark them complete here';
+  let buttonIcon = 'pencil-fill';
+  let nextButtonLabel = ''; // Next text state for transition
   let nextButtonIcon = null; // Next icon state for transition
 
   let program = writable<Program | null>(null);
@@ -275,20 +273,20 @@
   function toggleEditMode() {
     if (editingTransition) return; // Prevent multiple clicks during transition
     editingTransition = true;
-    
+
     // Set up next state values based on current state
     if (isEditing) {
       // If we're leaving edit mode and have selected exercises, save them
-      if (Object.values(selectedExercises).some(selected => selected)) {
+      if (Object.values(selectedExercises).some((selected) => selected)) {
         saveCompletedExercises();
         return; // saveCompletedExercises will call toggleEditMode again
       } else {
-        nextButtonLabel = "Mark them complete here";
-        nextButtonIcon = EditPencil;
+        nextButtonLabel = 'Mark them complete here';
+        nextButtonIcon = 'pencil-fill';
       }
     } else {
-      nextButtonLabel = "Save changes";
-      nextButtonIcon = CheckmarkSmall;
+      nextButtonLabel = 'Save changes';
+      nextButtonIcon = 'check-line';
     }
 
     // Trigger the transition after a brief delay
@@ -296,12 +294,12 @@
       buttonLabel = nextButtonLabel;
       buttonIcon = nextButtonIcon;
       isEditing = !isEditing;
-      
+
       // Reset selections if entering edit mode
       if (isEditing) {
         resetSelections();
       }
-      
+
       // End transition state after the transition duration
       setTimeout(() => {
         editingTransition = false;
@@ -309,6 +307,7 @@
     }, 200); // This should match your CSS transition time
   }
 </script>
+
 {#if $program}
   <div class="your-program-container">
     <svg
@@ -331,7 +330,7 @@
           style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
             .h3}; font-weight: {typography.fontWeights.medium};"
         >
-          Your Program
+          Your program
         </h3>
         <div class="your-program-title-container--details">
           <p
@@ -358,14 +357,15 @@
         </div>
       </div>
       <!-- Change to Start Program -->
-      <button class="play-btn" 
+      <button
+        class="play-btn"
         on:click={startProgram}
         transition:scale={{ duration: 300, delay: 0 }}
       >
-        {#if currentTheme == 'light'}
-          <RemixIcon name="play-fill" color="var(--primary)" />
+        {#if currentTheme === 'light'}
+          <img src={PlayButtonLight} alt="Play button" class="play-btn-img" />
         {:else}
-          <RemixIcon name="play-fill" color="var(--text-primary)" />
+          <img src={PlayButtonDark} alt="Play button" class="play-btn-img" />
         {/if}
       </button>
     </div>
@@ -395,27 +395,26 @@
     <div class="exercise-message-container">
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
+          .xsmall}; font-weight: {typography.fontWeights
+          .regular}; font-style: italic; color: var(--program-edit-text);"
       >
         Started your program already?
       </p>
-      <button 
-        class="exercise-edit-button" 
+      <button
+        class="exercise-edit-button"
         on:click={toggleEditMode}
         disabled={isSaving || editingTransition}
       >
-        <div class="button-content-wrapper">
+        <div class="button-content-wrapper" in:fly={{ y: 20, duration: 200 }}>
           {#key buttonIcon}
-            {#if buttonIcon === EditPencil}
-              <RemixIcon name="pencil-fill" size="12px" in:fly={{ y: 20, duration: 200 }} />
-            {:else if buttonIcon === CheckmarkSmall}
-              <RemixIcon name="check-line" size="12px" in:fly={{ y: 20, duration: 200 }} />
-            {/if}
+            <RemixIcon name={buttonIcon} size="12px" />
           {/key}
           {#key buttonLabel}
-            <p 
-              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; color: var(--text-primary);"
-              in:fly={{ y: 20, duration: 200 }} 
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights
+                .regular}; color: var(--text-primary);"
+              in:fly={{ y: 20, duration: 200 }}
             >
               {isSaving ? 'Saving...' : buttonLabel}
             </p>
@@ -425,6 +424,7 @@
     </div>
   </div>
 {/if}
+
 <style>
   .background-wave {
     position: absolute;
@@ -454,12 +454,18 @@
   }
   .your-program-title-container--details {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     column-gap: 8px;
+    row-gap: 6px;
+    padding-top: 8px;
   }
   .your-program-title-container--details p {
     width: fit-content;
-    max-width: 65px;
+    line-height: 100%;
+    padding: 0;
+    margin: 0;
+    /* max-width: 65px; */
   }
   .play-btn {
     background-color: transparent;
@@ -479,22 +485,28 @@
     max-width: 350px;
   }
   .exercise-message-container {
-    margin-top: 12px;
+    margin-top: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 7px;
+    row-gap: 0px;
   }
   .exercise-edit-button {
+    display: flex;
+    flex-direction: row;
     background-color: transparent;
     border: 1px solid var(--mark-complete-button);
     border-radius: 999px;
-    display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 8px;
-    padding: 12px 32px;
+    padding: 4px 32px;
     cursor: pointer;
+    min-width: 250px;
+  }
+  .button-content-wrapper {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
   }
 </style>
