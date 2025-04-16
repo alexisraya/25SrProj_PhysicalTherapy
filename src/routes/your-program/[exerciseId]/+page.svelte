@@ -281,28 +281,47 @@
     <Interstital interstitalType={interstitialType} />
   {:else if program && currentExercise && exerciseDetails}
     <div class="exercise_container--top">
+      <!-- Exercise nav and progress bar - will move to right side on desktop via CSS -->
       <div class="exercise_nav">
         <a href="/your-program" class="back-button--link">
           <RemixIcon name="arrow-left-s-line" />
         </a>
-
         <ProgressBar totalExercises={program.exercises.length} {completedExercises} />
       </div>
-      <!-- <ExerciseModel modelPath="/models/TestGLTF01/Test01.gltf" /> -->
-      <!-- <ExerciseModel modelPath="/models/test01.glb" /> -->
-      <!-- <ExerciseModel modelPath="/meditation_pose_female.glb" /> -->
+
       <ExerciseModel modelPath="/models/SmallTest2.glb" />
-      <ExerciseInfoBlock
-        exerciseName={currentExercise.exerciseName}
-        sets={adjustedValues.sets}
-        reps={adjustedValues.reps}
-        time={adjustedValues.seconds}
-        steps={adjustedValues.steps}
-        weight={adjustedValues.weight}
-        equipment={currentExercise.equipment}
-      />
+      <div class="exercise-info-container">
+        <ExerciseInfoBlock
+          exerciseName={currentExercise.exerciseName}
+          sets={adjustedValues.sets}
+          reps={adjustedValues.reps}
+          time={adjustedValues.seconds}
+          steps={adjustedValues.steps}
+          weight={adjustedValues.weight}
+          equipment={currentExercise.equipment}
+        />
+      </div>
     </div>
+
     <div class="exercise_container-bottom">
+      <!-- Exercise name display for desktop view -->
+      <div class="exercise_nav hide-mobile">
+        <a href="/your-program" class="back-button--link">
+          <RemixIcon name="arrow-left-s-line" />
+        </a>
+        <ProgressBar
+          totalExercises={program.exercises.length}
+          {completedExercises}
+          isOnboarding={true}
+        />
+      </div>
+      <h2
+        class="exercise_name_display"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .regular}; font-weight: {typography.fontWeights.bold};"
+      >
+        {currentExercise.exerciseName}
+      </h2>
       <div class="exercise_description">
         <details
           class="exercise_description--section {detailsInitialized ? 'initialized' : ''}"
@@ -337,6 +356,7 @@
             </ol>
           </div>
         </details>
+
         <details
           class="exercise_description--section {detailsInitialized ? 'initialized' : ''}"
           bind:open={sectionsOpen.information}
@@ -366,6 +386,7 @@
             </p>
           </div>
         </details>
+
         <details
           class="exercise_description--section {detailsInitialized ? 'initialized' : ''}"
           bind:open={sectionsOpen.modifications}
@@ -386,7 +407,6 @@
             </span>
           </summary>
           <div class="content-wrapper">
-            <!-- TODO: ALEXIS CHANGE TO PULL FROM BE ONCE UPDATED -->
             <p
               style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
                 .regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography
@@ -396,6 +416,7 @@
             </p>
           </div>
         </details>
+
         <details
           class="exercise_description--section {detailsInitialized ? 'initialized' : ''}"
           bind:open={sectionsOpen.modelSelect}
@@ -420,13 +441,15 @@
           </div>
         </details>
       </div>
-    </div>
-    <div class="buttons">
-      <div class="skip_btn">
-        <Button cta="Skip" buttonType="secondary" onClickFunc={openModal} />
+
+      <div class="buttons">
+        <div class="skip_btn">
+          <Button cta="Skip" buttonType="secondary" onClickFunc={openModal} />
+        </div>
+        <HoldToComplete nextPage="" navigateFunc={handleComplete} />
       </div>
-      <HoldToComplete nextPage="" navigateFunc={handleComplete} />
     </div>
+
     <SkipModal bind:open={modalOpen} handleTooPainful={() => handleSkip(true)} {handleAddToEnd} />
   {/if}
 </div>
@@ -463,6 +486,7 @@
 
   .back-button--link {
     display: inline-flex;
+    padding-right: 12px;
   }
 
   /* Hide all content-wrappers initially to prevent flash */
@@ -515,7 +539,6 @@
     border-radius: 0 0 44px 44px;
     padding: 20px 20px 0px 20px;
   }
-  /* Rest of your styles remain the same */
   .exercise_nav {
     display: flex;
     align-items: center;
@@ -525,6 +548,7 @@
   .exercise_container-bottom {
     width: 100%;
     margin-top: 8px;
+    box-sizing: border-box;
   }
   .exercise_description {
     display: flex;
@@ -573,6 +597,7 @@
     height: 96px;
     flex-shrink: 0;
     padding-bottom: 16px;
+    box-sizing: border-box;
   }
   .skip_btn {
     padding-left: 24px;
@@ -581,5 +606,141 @@
   details {
     border-bottom: solid 1px var(--exercise-section-divider);
     padding: 4px 24px 12px;
+  }
+
+  /* Exercise name for desktop view */
+  .exercise_name_display {
+    display: none;
+    font-family: var(--typography-fontFamily-body);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin: 24px 24px 48px;
+  }
+
+  .exercise-info-container {
+    position: relative;
+    bottom: 112px;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+
+  /* Media query for screens larger than 800px */
+  @media screen and (min-width: 800px) {
+    details {
+      border-bottom: solid 1px var(--exercise-section-divider);
+      padding: 4px 0 12px;
+    }
+
+    .hide-mobile {
+      display: flex;
+    }
+    /* Change the main layout to side-by-side */
+    .page_container {
+      flex-direction: row;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Left half - Exercise visual content */
+    .exercise_container--top {
+      width: 50%;
+      height: 100vh;
+      min-height: auto;
+      border-radius: 0;
+      padding: 20px;
+      justify-content: center;
+      position: relative; /* For positioning child elements */
+    }
+
+    /* Right half - Exercise info/controls */
+    .exercise_container-bottom {
+      width: 50%;
+      height: 100vh;
+      margin-top: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      position: relative; /* For positioning child elements */
+    }
+
+    /* Move exercise nav with progress bar to the right container */
+    .exercise_nav {
+      /* position: absolute;
+      top: 20px;
+      left: 20px; */
+      width: calc(100% - 32px);
+      max-width: 532px;
+      margin: auto;
+    }
+
+    /* On desktop, move the progress bar to right side */
+    .page_container > .exercise_container--top > .exercise_nav {
+      display: none; /* Hide from left side */
+    }
+
+    /* Add progress bar at the top of right side */
+    .exercise_container-bottom::before {
+      content: '';
+      display: block;
+      height: 100px; /* Space for the nav bar */
+    }
+
+    /* Keep exercise model and info block in left half */
+    .exercise_container--top :global(.exercise-model) {
+      margin-top: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exercise_container--top :global(.exercise-info-block) {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Show exercise name on desktop */
+    .exercise_name_display {
+      display: block;
+      width: calc(100% - 48px);
+      max-width: 532px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Make description sections take available space */
+    .exercise_description {
+      flex: 1;
+      width: 100%;
+      overflow-y: visible;
+      padding-top: 0;
+    }
+
+    .exercise_description--section {
+      width: calc(100% - 48px);
+      max-width: 532px;
+      margin-left: auto;
+      margin-right: auto;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Button container positioning */
+    .buttons {
+      position: sticky;
+      bottom: 0;
+      background: linear-gradient(to top, var(--background) 60%, transparent);
+      width: 100%;
+      padding: 16px 0;
+      box-sizing: border-box;
+    }
+
+    .exercise-info-container {
+      bottom: 0px;
+    }
   }
 </style>
