@@ -134,7 +134,7 @@
   .large-goals {
     display: none;
   }
-  @media (min-width: 800px) {
+  @media (min-width: 1000px) {
     .milestone-header {
       margin: auto;
       width: fit-content;

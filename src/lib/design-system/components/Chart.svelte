@@ -88,6 +88,15 @@
   });
 </script>
 
-<div style="width: 100%; height: 180px;">
+<div style="height: 180px;">
   <canvas bind:this={canvas}></canvas>
 </div>
+
+<style>
+  @media (min-width: 800px) and (max-width: 1200px) {
+    div {
+      width: 500px;
+      margin: auto;
+    }
+  }
+</style>

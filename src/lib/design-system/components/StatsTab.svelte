@@ -81,11 +81,11 @@
     flex-direction: column;
     row-gap: 8px;
     margin-top: 48px;
+    max-width: 100%;
   }
   .stat-section {
     background-color: var(--background);
     width: 100%;
-    /* border-bottom: solid 8px var(--background-secondary); */
   }
   .recovery-metrics {
     padding-top: 50px;
@@ -106,6 +106,12 @@
     border-bottom: solid 8px var(--background-secondary);
   }
   @media (min-width: 800px) {
+    .stats-container {
+      max-width: 100%;
+      margin: 48px auto 32px; /* Add horizontal auto margins */
+    }
+  }
+  @media (min-width: 1200px) {
     .recovery-metrics {
       grid-area: recovery;
       border-bottom: 8px solid var(--background-secondary);

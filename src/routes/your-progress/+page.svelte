@@ -100,9 +100,9 @@
   .blob {
     position: absolute;
     z-index: 0;
-    top: calc(175px - 20vw);
+    top: calc(98px - ((100vw - 375px) * 0.23));
     width: 100%;
-    left: 0px;
+    left: 0;
     overflow: hidden;
   }
   .milestone-blob {
@@ -113,6 +113,7 @@
     padding-top: 40px;
     overflow: hidden;
     position: relative;
+    width: 100%;
   }
   .page-container h3 {
     position: relative;
@@ -126,7 +127,6 @@
     padding-top: 35px;
     background-color: var(--background-secondary);
   }
-
   .large-screen-font {
     display: none;
   }
@@ -134,17 +134,26 @@
     display: block;
   }
   .tab-container {
+    width: 100%;
     background-color: var(--background);
   }
-  @media (min-width: 800px) {
+  @media (min-width: 800px) and (max-width: 1200px) {
     .blob {
-      position: absolute;
-      z-index: 0;
-      top: calc(175px - 20vw);
-      width: 100%;
-      left: 0px;
-      overflow: hidden;
+      top: calc(-1 * ((100vw - 1200px) * 0.2) + 12px);
     }
+  }
+  @media (min-width: 800px) and (max-width: 1100px) {
+    .milestone-blob {
+      top: 80px;
+    }
+  }
+  @media (min-width: 1201px) {
+    .blob {
+      /* Continue the negative trend for large screens */
+      top: calc(-1 * ((100vw - 1200px) * 0.2));
+    }
+  }
+  @media (min-width: 800px) {
     .page-container h1 {
       position: relative;
       z-index: 1;
@@ -158,7 +167,7 @@
     }
   }
 
-  @media (min-width: 1400px) {
+  /* @media (min-width: 1400px) {
     .blob {
       position: absolute;
       z-index: 0;
@@ -177,6 +186,6 @@
     }
     .large-screen-font {
       display: block;
-    }
-  }
+    } 
+  }*/
 </style>

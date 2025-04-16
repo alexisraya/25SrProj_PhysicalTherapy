@@ -131,7 +131,7 @@
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  @media (min-width: 800px) {
+  @media (min-width: 1000px) {
     .small-screen {
       display: none;
     }

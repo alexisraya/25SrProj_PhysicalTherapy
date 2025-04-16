@@ -187,20 +187,22 @@
     display: none;
   }
   @media (min-width: 800px) {
-    .milestones-streak {
-      height: 24px;
-    }
     .milestones-small-font {
       display: none;
     }
     .milestones-large-font {
       display: flex;
+    }
     .home {
       width: 100%;
     }
     .home .streak {
       height: 32px;
-
+    }
+  }
+  @media (min-width: 1000px) {
+    .milestones-streak {
+      height: 24px;
     }
   }
 </style>
