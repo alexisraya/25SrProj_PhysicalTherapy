@@ -29,20 +29,16 @@
   </div>
   <div class="achievement-body">
     <div class="achievement-image-container">
-      <Icon name="polar-bear" size="small" />
-    </div>
-    <div class="achievement-body">
-      <!-- TODO: ALEXIS make dynamic -->
-      <div class="achievement-image-container">
-        <div class="floating-icon">
-          <Icon name="polar-bear" size="small" />
-        </div>
+      <div class="floating-icon">
+        <Icon name="polar-bear" size="small" />
       </div>
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};"
-      >
-        {achievementDescription}
-      </p>
+    </div>
+    <p
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .xsmall}; font-weight: {typography.fontWeights.regular};"
+    >
+      {achievementDescription}
+    </p>
   </div>
 </button>
 
@@ -110,4 +106,3 @@
     animation: floatUpDown 2s ease-in-out infinite;
   }
 </style>
-
