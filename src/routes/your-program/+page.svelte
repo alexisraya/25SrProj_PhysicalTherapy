@@ -324,14 +324,36 @@
         d="M331.819 213C318.478 204.931 306.176 192.179 292.717 178.228C256.836 141.034 212.732 95.3173 118.798 107.096C28.3434 118.438 -3.70112 64.6624 0.372848 0L332 0V213H331.819Z"
       />
     </svg>
+    <svg
+      class="background-wave-large"
+      width="1174"
+      height="373"
+      viewBox="0 0 1174 373"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M1253.35 335.649C1248.41 338.143 1243.32 340.498 1238.08 342.707C1080.61 409.129 1000.63 351.843 899.324 279.287C789.019 200.283 653.437 103.175 365.018 127.96C94.4424 151.212 -6.09106 43.4374 0.283414 -89H1253.35V335.649Z"
+      />
+    </svg>
     <div class="your-program-title-container">
       <div class="your-program-title-container--text">
         <h3
           style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
             .h3}; font-weight: {typography.fontWeights.medium};"
+          class="small-screen"
         >
           Your program
         </h3>
+        <h1
+          style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
+            .h1}; font-weight: {typography.fontWeights.medium};"
+          class="large-screen"
+        >
+          Your program
+        </h1>
         <div class="your-program-title-container--details">
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -431,20 +453,21 @@
     top: -30px;
     right: 0;
     z-index: -1;
-    fill: var(--background-secondary);
+    fill: var(--program-bg-wave);
   }
   .your-program-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     row-gap: 9px;
+    margin: 0 24px;
   }
   .your-program-title-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 350px;
+    max-width: 552px;
     margin-top: 81px;
   }
   .your-program-title-container--text {
@@ -482,7 +505,8 @@
     flex-direction: column;
     row-gap: 12px;
     width: 100%;
-    max-width: 350px;
+    max-width: 552px;
+    margin: 0 24px;
   }
   .exercise-message-container {
     margin-top: 4px;
@@ -508,5 +532,54 @@
     display: flex;
     align-items: center;
     column-gap: 8px;
+  }
+  .small-screen {
+    display: block;
+  }
+  .large-screen {
+    display: none;
+  }
+  .background-wave-large {
+    display: none;
+  }
+  @media (min-width: 800px) {
+    .small-screen {
+      display: none;
+    }
+    .large-screen {
+      display: block;
+    }
+    .play-btn-img {
+      width: 124px;
+      height: 124px;
+    }
+    .background-wave {
+      position: absolute;
+      display: none;
+      top: -30px;
+      right: 0;
+      z-index: -1;
+      fill: var(--program-bg-wave);
+    }
+    .background-wave-large {
+      display: block;
+      position: absolute;
+      top: -100px;
+      right: -175px;
+      max-width: 100%;
+      z-index: -1;
+      fill: var(--program-bg-wave);
+    }
+  }
+  @media (min-width: 1500px) {
+    .background-wave-large {
+      display: block;
+      position: absolute;
+      top: -30px;
+      width: auto;
+      right: 0;
+      z-index: -1;
+      fill: var(--program-bg-wave);
+    }
   }
 </style>
