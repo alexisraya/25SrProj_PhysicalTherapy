@@ -145,6 +145,9 @@
     border-radius: 4px;
     padding: 16px 12px;
   }
+  .program .streak-container {
+    height: 24px;
+  }
   .streak-container {
     display: flex;
     flex-direction: column;
@@ -186,11 +189,23 @@
   .milestones-large-font {
     display: none;
   }
+  .program-small-font {
+    display: flex;
+  }
+  .program-large-font {
+    display: none;
+  }
   @media (min-width: 800px) {
     .milestones-small-font {
       display: none;
     }
     .milestones-large-font {
+      display: flex;
+    }
+    .program-small-font {
+      display: none;
+    }
+    .program-large-font {
       display: flex;
     }
     .home {

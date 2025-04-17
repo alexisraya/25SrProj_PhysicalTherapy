@@ -42,6 +42,7 @@
     /* row-gap: 32px; */
     row-gap: 0px;
     height: 100vh;
+    margin: auto;
   }
   .interstital-container h2 {
     text-align: center;
