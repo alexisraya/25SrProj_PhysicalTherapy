@@ -3,6 +3,7 @@
   import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
   import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
   import ExerciseCard from '$lib/design-system/components/ExerciseCard.svelte';
+  import { fade, scale, fly } from 'svelte/transition';
 
   import { onMount } from 'svelte';
   import {
@@ -20,8 +21,11 @@
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
   let isEditing = false;
-  // TODO: Alexis update button copy
+  let editingTransition = false; // Control for transition state
   let buttonLabel = 'Mark them complete here';
+  let buttonIcon = 'pencil-fill';
+  let nextButtonLabel = ''; // Next text state for transition
+  let nextButtonIcon = null; // Next icon state for transition
 
   let program = writable<Program | null>(null);
   let stats = writable<UserStats | null>(null);
@@ -244,10 +248,8 @@
         }
       }
 
-      // Exit edit mode
-      isEditing = false;
-      buttonLabel = 'Mark them complete here';
-      resetSelections();
+      // Transition to non-edit mode
+      toggleEditMode();
     } catch (err) {
       console.error('Error saving completed exercises:', err);
       error.set(err instanceof Error ? err.message : 'Failed to mark exercises as complete');
@@ -269,19 +271,40 @@
   }
 
   function toggleEditMode() {
+    if (editingTransition) return; // Prevent multiple clicks during transition
+    editingTransition = true;
+
+    // Set up next state values based on current state
     if (isEditing) {
       // If we're leaving edit mode and have selected exercises, save them
       if (Object.values(selectedExercises).some((selected) => selected)) {
         saveCompletedExercises();
+        return; // saveCompletedExercises will call toggleEditMode again
       } else {
-        isEditing = false;
-        buttonLabel = 'Mark them complete here';
+        nextButtonLabel = 'Mark them complete here';
+        nextButtonIcon = 'pencil-fill';
       }
     } else {
-      isEditing = true;
-      buttonLabel = 'Save changes';
-      resetSelections();
+      nextButtonLabel = 'Save changes';
+      nextButtonIcon = 'check-line';
     }
+
+    // Trigger the transition after a brief delay
+    setTimeout(() => {
+      buttonLabel = nextButtonLabel;
+      buttonIcon = nextButtonIcon;
+      isEditing = !isEditing;
+
+      // Reset selections if entering edit mode
+      if (isEditing) {
+        resetSelections();
+      }
+
+      // End transition state after the transition duration
+      setTimeout(() => {
+        editingTransition = false;
+      }, 200);
+    }, 200); // This should match your CSS transition time
   }
 </script>
 
@@ -307,7 +330,7 @@
           style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
             .h3}; font-weight: {typography.fontWeights.medium};"
         >
-          Your Program
+          Your program
         </h3>
         <div class="your-program-title-container--details">
           <p
@@ -334,11 +357,15 @@
         </div>
       </div>
       <!-- Change to Start Program -->
-      <button class="play-btn" on:click={startProgram}>
-        {#if currentTheme == 'light'}
-          <img class="play-btn-img" src={PlayButtonLight} alt="play button" />
+      <button
+        class="play-btn"
+        on:click={startProgram}
+        transition:scale={{ duration: 300, delay: 0 }}
+      >
+        {#if currentTheme === 'light'}
+          <img src={PlayButtonLight} alt="Play button" class="play-btn-img" />
         {:else}
-          <img class="play-btn-img" src={PlayButtonDark} alt="play button" />
+          <img src={PlayButtonDark} alt="Play button" class="play-btn-img" />
         {/if}
       </button>
     </div>
@@ -348,7 +375,7 @@
         {#each $program.exercises as exercise, i (exercise.exerciseId)}
           <ExerciseCard
             exerciseName={exercise.exerciseName}
-            exerciseSet={`${exercise.sets || 0} sets of ${exercise.reps || 0}`}
+            exerciseSet={getExerciseDetails(exercise)}
             exerciseEquipment={exercise.equipment}
             orderable={false}
             isComplete={exercise.completed}
@@ -368,18 +395,31 @@
     <div class="exercise-message-container">
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
+          .xsmall}; font-weight: {typography.fontWeights
+          .regular}; font-style: italic; color: var(--program-edit-text);"
       >
-        Already completed some exercises today?
+        Started your program already?
       </p>
-      <button class="exercise-edit-button" on:click={toggleEditMode} disabled={isSaving}>
-        <RemixIcon name={isEditing ? 'check-line' : 'pencil-fill'} size="12px" />
-        <p
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .xsmall}; font-weight: {typography.fontWeights.regular}; color: var(--text-primary);"
-        >
-          {isSaving ? 'Saving...' : buttonLabel}
-        </p>
+      <button
+        class="exercise-edit-button"
+        on:click={toggleEditMode}
+        disabled={isSaving || editingTransition}
+      >
+        <div class="button-content-wrapper" in:fly={{ y: 20, duration: 200 }}>
+          {#key buttonIcon}
+            <RemixIcon name={buttonIcon} size="12px" />
+          {/key}
+          {#key buttonLabel}
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights
+                .regular}; color: var(--text-primary);"
+              in:fly={{ y: 20, duration: 200 }}
+            >
+              {isSaving ? 'Saving...' : buttonLabel}
+            </p>
+          {/key}
+        </div>
       </button>
     </div>
   </div>
@@ -414,12 +454,18 @@
   }
   .your-program-title-container--details {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
     column-gap: 8px;
+    row-gap: 6px;
+    padding-top: 8px;
   }
   .your-program-title-container--details p {
     width: fit-content;
-    max-width: 65px;
+    line-height: 100%;
+    padding: 0;
+    margin: 0;
+    /* max-width: 65px; */
   }
   .play-btn {
     background-color: transparent;
@@ -439,22 +485,28 @@
     max-width: 350px;
   }
   .exercise-message-container {
-    margin-top: 12px;
+    margin-top: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 7px;
+    row-gap: 0px;
   }
   .exercise-edit-button {
+    display: flex;
+    flex-direction: row;
     background-color: transparent;
     border: 1px solid var(--mark-complete-button);
     border-radius: 999px;
-    display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 8px;
-    padding: 12px 32px;
+    padding: 4px 32px;
     cursor: pointer;
+    min-width: 250px;
+  }
+  .button-content-wrapper {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
   }
 </style>
