@@ -332,11 +332,10 @@
 
   .close-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 20px;
+    right: 6px;
     background: none;
     border: none;
-    font-size: 1.5rem;
     cursor: pointer;
     z-index: 1001;
   }
