@@ -1,12 +1,23 @@
 <script lang="ts">
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import PainLevelModal from '$lib/design-system/components/checkin/PainLevelModal.svelte';
 
   export let currentStep: number;
+
+  let modalOpen = false;
+
+  function openModal() {
+    modalOpen = true;
+  }
+
+  function closeModal() {
+    modalOpen = false;
+  }
 </script>
 
 <div class="checkin-nav-container {currentStep == 0 ? 'first' : ''}">
   {#if currentStep == 0}
-    <button>
+    <button on:click={openModal}>
       <RemixIcon name="information-line" />
     </button>
   {/if}
@@ -14,6 +25,8 @@
     <RemixIcon name="close-line" />
   </button>
 </div>
+
+<PainLevelModal isOpen={modalOpen} onClose={closeModal} />
 
 <style>
   button {

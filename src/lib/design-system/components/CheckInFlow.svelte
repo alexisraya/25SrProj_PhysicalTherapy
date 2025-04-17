@@ -12,25 +12,25 @@
   const stepComponents: ComponentType[] = [Pain, Mood, Reflection];
 </script>
 
-<div class="onboarding-container">
+<div class="checkin-container">
   <CheckInNav currentStep={$currentCheckInStep} />
   <div class="step-content">
     {#if $currentCheckInStep != 2}
       <div class="step-copy">
         {#if checkInSteps[$currentCheckInStep].title}
-          <h3
+          <h4
             style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-              .h3}; margin: 0; text-align: center;"
+              .h4}; margin: 0; text-align: center;"
           >
             {checkInSteps[$currentCheckInStep].title}
-          </h3>
+          </h4>
         {/if}
         {#if checkInSteps[$currentCheckInStep].description}
           <p
             class="description"
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights
-              .medium}; margin: 0; text-align: center;"
+              .small}; font-weight: {typography.fontWeights
+              .regular}; margin: 0; text-align: center;"
           >
             {checkInSteps[$currentCheckInStep].description}
           </p>
@@ -50,7 +50,7 @@
 
 <style>
   /* add media query and align-self: flex start */
-  .onboarding-container {
+  .checkin-container {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -63,19 +63,21 @@
     height: 100%;
     max-height: 785px;
     max-width: 808px;
-    overflow-x: hidden;
+    overflow-x: visible;
   }
   .step-content {
     width: 100%;
     max-width: 448px;
     overflow-x: visible;
+    margin-bottom: 38px;
   }
   .step-copy {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 30px 0 48px 0;
+    margin: 8px 0 16px 0;
+    padding: 0px 24px;
     row-gap: 12px;
   }
 </style>
