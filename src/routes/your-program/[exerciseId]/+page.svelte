@@ -220,7 +220,7 @@
       if (!isLastExercise) {
         interstitialType = 'completed';
         showInterstitial = true;
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
       }
 
       console.log('Before completing exercise:', currentExercise.exerciseId);
