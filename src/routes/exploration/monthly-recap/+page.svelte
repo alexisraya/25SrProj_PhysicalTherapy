@@ -99,7 +99,7 @@
             </p>
           {/if}
 
-          <h3>Physical Progress</h3>
+          <h3>User Metrics</h3>
           <p>
             Range of Motion:
             {#if recap.metrics.rangeOfMotion.value !== null}
