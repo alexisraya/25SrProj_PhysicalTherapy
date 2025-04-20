@@ -20,8 +20,16 @@
       </p>
     {:else}
       <p
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .regular}; font-weight: {typography.fontWeights.medium};"
+      >
+        Streak
+      </p>
+      <p
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .large}; font-weight: {typography.fontWeights.medium};"
       >
         Streak
       </p>
@@ -39,7 +47,12 @@
   <div class="streaks-container">
     {#each Array(streakDaysCompleted).fill(0) as _, i}
       <div class="streak-container">
-        <div class="streak completed {streakType !== 'home' ? 'tall' : ''} {i === streakDaysCompleted - 1 ? 'animate-fill' : ''}"></div>
+        <div
+          class="streak completed {streakType !== 'home' ? 'tall' : ''} {i ===
+          streakDaysCompleted - 1
+            ? 'animate-fill'
+            : ''} {streakType === 'milestones' ? 'milestones-streak' : ''}"
+        ></div>
         {#if streakType == 'home'}
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -52,7 +65,11 @@
     {/each}
     {#each Array(remainingDays).fill(0) as _, i}
       <div class="streak-container">
-        <div class="streak {streakType !== 'home' ? 'tall' : ''}"></div>
+        <div
+          class="streak {streakType !== 'home' ? 'tall' : ''} {streakType === 'milestones'
+            ? 'milestones-streak'
+            : ''}"
+        ></div>
         {#if streakType == 'home'}
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -67,14 +84,30 @@
   {#if streakType != 'home'}
     <div class="program-days-container">
       <h3
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular};"
       >
         {streakDaysCompleted}/{streakTotalDays}
       </h3>
+      <h2
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
+          .h2}; font-weight: {typography.fontWeights.regular};  line-height: 110%;"
+      >
+        {streakDaysCompleted}/{streakTotalDays}
+      </h2>
       <p
+        class="{streakType}-small-font"
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .regular}; font-weight: {typography.fontWeights.regular};"
+      >
+        programs
+      </p>
+      <p
+        class="{streakType}-large-font"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .large}; font-weight: {typography.fontWeights.regular};"
       >
         programs
       </p>
@@ -113,6 +146,9 @@
     border-radius: 4px;
     padding: 16px 12px;
   }
+  .program .streak-container {
+    height: 24px;
+  }
   .streak-container {
     display: flex;
     flex-direction: column;
@@ -148,44 +184,72 @@
     justify-content: flex-end;
     column-gap: 4px;
   }
-
+  .milestones-small-font {
+    display: flex;
+  }
+  .milestones-large-font {
+    display: none;
+  }
+  .program-small-font {
+    display: flex;
+  }
+  .program-large-font {
+    display: none;
+  }
   @media (min-width: 800px) {
+    .milestones-small-font {
+      display: none;
+    }
+    .milestones-large-font {
+      display: flex;
+    }
+    .program-small-font {
+      display: none;
+    }
+    .program-large-font {
+      display: flex;
+    }
     .home {
       width: 100%;
     }
     .completed {
-        background-color: var(--color-purple-600);
+      background-color: var(--color-purple-600);
     }
     .animate-fill {
-        transform: scaleX(0); /* Start from zero width */
-        transform-origin: left; /* Expand from the left */
-        animation: fillAnimation 1s ease-in-out forwards;
+      transform: scaleX(0); /* Start from zero width */
+      transform-origin: left; /* Expand from the left */
+      animation: fillAnimation 1s ease-in-out forwards;
     }
 
     @keyframes fillAnimation {
-        from {
-            transform: scaleX(0);
-        }
-        to {
-            transform: scaleX(1);
-        }
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
     }
     .program-days-container {
-        display: flex;
-        align-items: flex-end;
-        column-gap: 6px;
+      display: flex;
+      align-items: flex-end;
+      column-gap: 6px;
     }
     .program-days-container p {
-        padding-bottom: 5px;
+      padding-bottom: 5px;
     }
     .streak-count {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        column-gap: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      column-gap: 4px;
     }
     .home .streak {
       height: 32px;
+    }
+  }
+  @media (min-width: 1000px) {
+    .milestones-streak {
+      height: 24px;
     }
   }
 </style>

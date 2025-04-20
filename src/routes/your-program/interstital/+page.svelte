@@ -23,7 +23,7 @@
   onMount(() => {
     setTimeout(() => {
       goto('/your-program/summary');
-    }, 1500);
+    }, 3000);
   });
 </script>
 

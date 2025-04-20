@@ -199,4 +199,16 @@
     background-color: var(--text-primary) !important;
     color: var(--background) !important;
   }
+
+  @media (min-width: 400px) {
+    .tone-blob--text {
+      text-align: center;
+      max-width: 80%;
+      /* height: 87px; */
+      position: absolute;
+      top: 37%;
+      left: 5%;
+      transform: translateX(5%) translateY(25%);
+    }
+  }
 </style>

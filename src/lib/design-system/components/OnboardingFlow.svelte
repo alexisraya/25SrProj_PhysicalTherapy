@@ -92,5 +92,6 @@
     justify-content: center;
     margin: 30px 0 48px 0;
     row-gap: 12px;
+    line-height: 150%;
   }
 </style>
