@@ -58,6 +58,7 @@
   }
 
   if (type == 'mood') {
+    console.log('mood');
     yLimit = 5;
     ySteps = 1;
   }
@@ -89,6 +90,14 @@
   }
 
   function updateChart() {
+    if (type == 'mood') {
+      console.log('mood');
+      yLimit = 5;
+      ySteps = 1;
+    } else {
+      yLimit = 10;
+      ySteps = 2;
+    }
     // Clear previous chart if it exists
     if (svgElement) {
       d3.select(svgElement).selectAll('*').remove();
