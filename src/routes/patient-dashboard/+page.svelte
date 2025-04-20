@@ -122,7 +122,7 @@
         <PainMoodDropdown />
       </div>
 
-      <!-- <Chart /> -->
+      <!-- <LineChart dataArr={[5]}/> -->
       <div class="no-metrics-container">
         <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
         <p

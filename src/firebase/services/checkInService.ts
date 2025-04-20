@@ -81,7 +81,7 @@ export async function hasCompletedTodayCheckIn(userId: string): Promise<boolean>
  */
 export async function getCheckInStats(
   userId: string,
-  period: 'week' | 'month' | '3months' | '6months'
+  period: 'week' | 'month' | '3months' | '6months' | 'year' | 'all'
 ): Promise<CheckInStats> {
   try {
     const now = new Date();
@@ -99,6 +99,12 @@ export async function getCheckInStats(
         break;
       case '6months':
         startDate.setMonth(now.getMonth() - 6);
+        break;
+      case 'year':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      case 'all':
+        startDate = new Date(2000, 0, 1); // January 1, 2000
         break;
       default:
         throw new Error('Invalid period specified');
