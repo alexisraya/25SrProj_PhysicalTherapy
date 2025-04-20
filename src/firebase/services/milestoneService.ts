@@ -103,7 +103,7 @@ export async function getUserGoals(userId: string): Promise<Record<string, Goal[
         goalId: goalDoc.id,
         month: parseInt(month),
         unlocked: !!goalData.unlocked,
-        unlockedAt: goalData.Data.unlockedAt || null
+        unlockedAt: goalData.unlockedAt || null
       } as Goal);
     });
 
@@ -143,8 +143,6 @@ export async function updateGoalLockStatus(
         unlockedAt: null
       });
     }
-
-    await updateDoc(userGoalRef, { unlocked });
   } catch (error) {
     console.error('Error updating goal lock status:', error);
     throw error;

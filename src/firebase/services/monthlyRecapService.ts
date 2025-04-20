@@ -119,18 +119,20 @@ export async function getAllMonthlyRecaps(
 }
 
 // Helper: calculate date range for a specific month
-function calculateMonthDateRange(
-  creationDateStr: string,
-  month: number
-): { startDate: string; endDate: string } {
+function calculateMonthDateRange(creationDateStr: string, month: number): { startDate: string, endDate: string } {
   const creationDate = new Date(creationDateStr);
-
+  const today = new Date();
+  
   const startDate = new Date(creationDate);
   startDate.setDate(startDate.getDate() + (month - 1) * 30);
-
+  
   const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + 30);
 
+  if (endDate > today) {
+    endDate.setTime(today.getTime());
+  }
+  
   return {
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString()
