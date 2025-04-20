@@ -231,7 +231,7 @@
         dataArr={strengthStats}
         type="strength"
         title="Strength Progress"
-        yLabel="Pounds"
+        yLabel="Strength scale"
         labels={strengthStats.map((_, i) => `Week ${i + 1}`)}
       />
     {:else}
