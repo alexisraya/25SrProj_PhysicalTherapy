@@ -39,7 +39,9 @@
   <div class="achievement-grid">
     <div class="achievement-body {type}-body">
       <div class="achievement-image-container">
-        <Icon name="polar-bear" size="small" />
+        <div class="floating-icon">
+          <Icon name="polar-bear" size="small" />
+        </div>
       </div>
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -112,7 +114,6 @@
     align-items: center;
     justify-content: center;
   }
-
   .achievement-mark {
     color: var(--color-grey-300); /* light/dark mode exception */
     text-align: center;
@@ -142,5 +143,19 @@
     .milestones-large {
       display: flex;
     }
+  }
+  @keyframes floatUpDown {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  .achievement-image-container:hover .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite;
   }
 </style>

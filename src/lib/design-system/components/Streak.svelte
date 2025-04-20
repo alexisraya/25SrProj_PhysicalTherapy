@@ -48,9 +48,10 @@
     {#each Array(streakDaysCompleted).fill(0) as _, i}
       <div class="streak-container">
         <div
-          class="streak completed {streakType !== 'home' ? 'tall' : ''} {streakType === 'milestones'
-            ? 'milestones-streak'
-            : ''}"
+          class="streak completed {streakType !== 'home' ? 'tall' : ''} {i ===
+          streakDaysCompleted - 1
+            ? 'animate-fill'
+            : ''} {streakType === 'milestones' ? 'milestones-streak' : ''}"
         ></div>
         {#if streakType == 'home'}
           <p
@@ -210,6 +211,37 @@
     }
     .home {
       width: 100%;
+    }
+    .completed {
+      background-color: var(--color-purple-600);
+    }
+    .animate-fill {
+      transform: scaleX(0); /* Start from zero width */
+      transform-origin: left; /* Expand from the left */
+      animation: fillAnimation 1s ease-in-out forwards;
+    }
+
+    @keyframes fillAnimation {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+    .program-days-container {
+      display: flex;
+      align-items: flex-end;
+      column-gap: 6px;
+    }
+    .program-days-container p {
+      padding-bottom: 5px;
+    }
+    .streak-count {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      column-gap: 4px;
     }
     .home .streak {
       height: 32px;
