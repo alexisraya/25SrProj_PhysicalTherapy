@@ -18,6 +18,7 @@
   import { getUserMetrics } from '$firebase/services/metricsService';
   import RomStrengthDropdown from '$lib/design-system/components/RomStrengthDropdown.svelte';
   import { typography } from '$lib/design-system/typography';
+  import RemixIcon from './RemixIcon.svelte';
 
   let program: Program | null = null;
   let stats: UserStats | null = null;
@@ -234,8 +235,22 @@
         labels={strengthStats.map((_, i) => `Week ${i + 1}`)}
       />
     {:else}
-      <div class="no-data-message">
-        <p>No {recoveryChartType === 'rom' ? 'range of motion' : 'strength'} data available</p>
+      <div class="no-data-container">
+        <div class="no-metrics-container">
+          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .regular}; font-weight: {typography.fontWeights.medium};"
+          >
+            No metrics yet
+          </p>
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .xsmall}; font-weight: {typography.fontWeights.regular};"
+          >
+            Your physical therapist will add your data here when tracked
+          </p>
+        </div>
       </div>
     {/if}
   </div>
@@ -274,14 +289,28 @@
         timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
         title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
       />
+      <div class="timeframe-selector">
+        <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
+      </div>
     {:else}
-      <div class="no-data-message">
-        <p>No {checkInChartType} data available for {checkInTimeFrame}</p>
+      <div class="no-data-container">
+        <div class="no-metrics-container">
+          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .regular}; font-weight: {typography.fontWeights.medium};"
+          >
+            No metrics yet
+          </p>
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .xsmall}; font-weight: {typography.fontWeights.regular};"
+          >
+            Complete your check in to see up-to-date data here
+          </p>
+        </div>
       </div>
     {/if}
-    <div class="timeframe-selector">
-      <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
-    </div>
   </div>
 </div>
 
@@ -315,11 +344,24 @@
     padding: 0 12px 12px;
   }
 
-  .no-data-message {
+  .no-data-container {
+    width: 100%;
+    height: 200px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    min-height: 200px;
+    justify-content: center;
+  }
+
+  .no-metrics-container {
+    color: var(--text-secondary);
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 182px;
+    margin-top: 32px;
   }
 
   .recovery-metrics {
