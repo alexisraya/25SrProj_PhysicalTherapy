@@ -60,21 +60,40 @@ export async function completeExercise(
     const seconds = adjustedValues?.seconds ?? exercise.seconds ?? 0;
     const weight = adjustedValues?.weight ?? exercise.weight ?? 0;
 
-        if (exercise.exerciseType === 'distance') {
-            stats.totalSets += sets;
-            stats.totalReps += steps;
-            stats.totalDistance += sets * steps;
-        } 
-        else if (exercise.exerciseType === 'weight') {
-            stats.totalSets += sets;
-            stats.totalReps += sets * reps;
-            stats.totalWeight += sets * reps * weight;
-        } 
-        else if (exercise.exerciseType === 'time') {
-            stats.totalSets += sets;
-            stats.totalReps += reps;
-            stats.totalTime += sets * reps * seconds;
-        }
+    if (exercise.exerciseType === 'distance') {
+      stats.totalSets += sets;
+      stats.totalReps += steps;
+      stats.totalDistance += sets * steps;
+    } else if (exercise.exerciseType === 'weight') {
+      stats.totalSets += sets;
+      stats.totalReps += sets * reps;
+      stats.totalWeight += sets * reps * weight;
+    } else if (exercise.exerciseType === 'time') {
+      stats.totalSets += sets;
+      stats.totalReps += reps;
+      stats.totalTime += sets * reps * seconds;
+    }
+
+    const monthKey = today.toISOString().substring(0, 7); // Format: YYYY-MM
+
+    const creationDate = new Date(user.createdAt);
+    const monthsPassed = Math.ceil(
+      (today.getTime() - creationDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+    );
+
+    if (!stats.monthlyProgress) {
+      stats.monthlyProgress = {};
+    }
+
+    if (!stats.monthlyProgress[monthKey]) {
+      stats.monthlyProgress[monthKey] = {
+        month: monthsPassed,
+        exercisesCompleted: 0,
+        programsCompleted: 0
+      };
+    }
+
+    stats.monthlyProgress[monthKey].exercisesCompleted++;
 
     const allCompleted = updatedExercises.every((ex) => ex.completed || ex.skipped);
 
@@ -126,6 +145,29 @@ export async function skipExercise(
 
     if (allCompleted) {
       stats.completedPrograms++;
+
+      const today = new Date();
+      const monthKey = today.toISOString().substring(0, 7); // Format: YYYY-MM
+
+      if (!stats.monthlyProgress) {
+        stats.monthlyProgress = {};
+      }
+
+      const creationDate = new Date(user.createdAt);
+      const monthsPassed = Math.ceil(
+        (today.getTime() - creationDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
+      );
+
+      if (!stats.monthlyProgress[monthKey]) {
+        stats.monthlyProgress[monthKey] = {
+          month: monthsPassed,
+          exercisesCompleted: 0,
+          programsCompleted: 0
+        };
+      }
+
+      stats.monthlyProgress[monthKey].programsCompleted++;
+
       await updateProgram(userId, {
         exercises: updatedExercises,
         completed: true

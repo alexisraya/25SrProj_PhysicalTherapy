@@ -57,6 +57,14 @@ export interface UserStats {
     daysCompleted: number;
     exercisesCompleted: number;
   };
+  monthlyProgress: {
+    [key: string]: {
+      // key format: 'YYYY-MM'
+      month: number;
+      exercisesCompleted: number;
+      programsCompleted: number;
+    };
+  };
 
   // OVERALL STATS
   completedExercises: number;
