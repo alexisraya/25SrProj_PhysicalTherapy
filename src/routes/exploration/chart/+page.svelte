@@ -1,5 +1,5 @@
 <script>
-  import Chart from '$lib/design-system/components/Chart.svelte';
+  import LineChart from '$lib/design-system/components/LineChart.svelte';
 
   let chartType = 'bar';
 
@@ -26,7 +26,7 @@
 </script>
 
 <div class="container">
-  <Chart />
+  <LineChart dataArr={[5]} />
 </div>
 
 <style>

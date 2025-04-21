@@ -48,10 +48,10 @@
             <RemixIcon name="list-check-2" />
             <a href="/your-program" on:click={closeMenu}>Program</a>
           </div>
-          <!-- <div class="menu-item" class:active={$page.url.pathname === '/profile'}>
+          <div class="menu-item" class:active={$page.url.pathname === '/profile'}>
             <RemixIcon name="user-3-line" />
             <a href="/profile" on:click={closeMenu}>Profile</a>
-          </div> -->
+          </div>
         </div>
       </div>
 

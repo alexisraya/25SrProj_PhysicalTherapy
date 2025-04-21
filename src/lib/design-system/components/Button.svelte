@@ -1,15 +1,37 @@
 <script lang="ts">
   import { typography } from '$lib/design-system';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import { onMount } from 'svelte';
 
   export let isDisabled = false;
   export let buttonType = 'primary'; // "primary" or "secondary"
   export let cta: string;
   export let onClickFunc;
   export let buttonIcon;
+
+  let button: HTMLButtonElement;
+
+  onMount(() => {
+    if (button) {
+      // Only handle page visibility changes to fix the stuck state issue
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'hidden') {
+          // When leaving the page, ensure any active state is cleared
+          button.classList.remove('active');
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  });
 </script>
 
 <button
+  bind:this={button}
   class={isDisabled ? `${buttonType}-disabled` : `${buttonType}`}
   disabled={isDisabled}
   on:click={onClickFunc}
@@ -36,6 +58,9 @@
     column-gap: 7px;
     cursor: pointer;
     transition: 0.25s ease;
+    -webkit-tap-highlight-color: transparent; /* Prevent default mobile tap highlight */
+    touch-action: manipulation; /* Optimize for touch */
+    will-change: transform; /* Optimize for animations */
   }
 
   /* Primary Button Styles */
@@ -46,11 +71,12 @@
   }
 
   /* Primary Hover */
-  /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
-  .primary:hover {
-    background-color: var(--color-blue-900);
-    border: 1px solid var(--button-primary-bg);
-    color: var(--text-primary);
+  @media (hover: hover) {
+    .primary:hover {
+      background-color: var(--button-primary-bg-hover);
+      border: 1px solid var(--button-primary-bg);
+      color: var(--background);
+    }
   }
 
   /* Primary Active */
@@ -59,12 +85,12 @@
   }
 
   /* Disabled Primary Button Styles */
-  /* TODO: DANE HOVER STATE LIGHT/DARK MODE COLORS */
   .primary-disabled {
     background-color: var(--button-primary-disabled-bg);
     border: 1px solid var(--button-primary-disabled-bg);
     color: var(--button-primary-disabled-text);
     cursor: default;
+    transform: none !important; /* Prevent active state on disabled buttons */
   }
 
   /* Secondary Button Styles */
@@ -74,11 +100,13 @@
     border: 1px solid var(--button-secondary-border);
   }
 
-  /* Secondary Hover */
-  .secondary:hover {
-    background-color: var(--color-blue-50);
-    color: var(--color-blue-800);
-    border: 1px solid var(--color-blue-800);
+  /* Secondary Hover - only apply on devices with hover capability */
+  @media (hover: hover) {
+    .secondary:hover {
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-border-hover);
+      border: 1px solid var(--button-secondary-border-hover);
+    }
   }
 
   /* Secondary Active */
@@ -92,5 +120,6 @@
     border: 1px solid var(--button-secondary-disabled-border);
     color: var(--button-secondary-disabled-border);
     cursor: default;
+    transform: none !important; /* Prevent active state on disabled buttons */
   }
 </style>

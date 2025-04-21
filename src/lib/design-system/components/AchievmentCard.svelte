@@ -51,7 +51,7 @@
 
 <div class="achievement-card-container">
   <div class="achievement-body">
-    <div class="achievement-image-container {isLocked ? 'locked' : ''}">
+    <div class="achievement-image-container {isLocked ? 'locked' : 'unlocked'}">
       {#if isLocked}
         {#if currentTheme == 'light'}
           <Icon name="lock-yellow-light" size="small" />
@@ -59,33 +59,35 @@
           <Icon name="lock-yellow-dark" size="small" />
         {/if}
       {:else}
-        <Icon name="polar-bear" size="small" />
+        <div class="floating-icon">
+          <Icon name="polar-bear" size="small" />
+        </div>
       {/if}
     </div>
+
     {#if isLocked}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
       >
         Locked
       </p>
     {:else}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
       >
         {achievementTitle}
       </p>
     {/if}
+
     <p
       class="achievement-mark"
-      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-        .xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
     >
       {valueLabel}
     </p>
   </div>
 </div>
+
 
 <style>
   p {
@@ -120,9 +122,23 @@
     border-radius: 4px;
     border: 2px solid var(--locked-achievement-image-border);
   }
-
   .achievement-mark {
     color: var(--color-grey-300); /* light/dark mode exception */
     text-align: center;
   }
+  .unlocked:hover .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
+  }
+  @keyframes floatUpDown {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
 </style>
+

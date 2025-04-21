@@ -58,9 +58,17 @@
     </div>
     <div class="heading">
       {#if currentTheme == 'light'}
-        <img src={ProgramCompletePlayButtonLight} alt="program complete icon" />
+        <img
+          src={ProgramCompletePlayButtonLight}
+          alt="program complete icon"
+          class="complete-icon"
+        />
       {:else}
-        <img src={ProgramCompletePlayButtonDark} alt="program complete icon" />
+        <img
+          src={ProgramCompletePlayButtonDark}
+          alt="program complete icon"
+          class="complete-icon"
+        />
       {/if}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -127,6 +135,8 @@
   .summary-page-container {
     padding: 32px 24px;
     position: relative;
+    max-width: 552px;
+    margin: auto;
   }
 
   .blob-container {
@@ -186,5 +196,29 @@
     flex-direction: column;
     row-gap: 12px;
     align-items: center;
+  }
+  @media (min-width: 500px) {
+    .complete-icon {
+      width: 124px;
+      height: 124px;
+    }
+    .blob {
+      position: absolute;
+      top: -35vw;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100vw);
+      z-index: 0;
+    }
+  }
+  @media (min-width: 1000px) {
+    .blob {
+      top: -40vw;
+    }
+  }
+  @media (min-width: 1200px) {
+    .blob {
+      top: -42vw;
+    }
   }
 </style>
