@@ -8,6 +8,7 @@
   import Button from '$lib/design-system/components/Button.svelte';
 
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
 
   let currentTheme: 'light' | 'dark' = 'light';
 
@@ -22,6 +23,10 @@
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       currentTheme = prefersDark ? 'dark' : 'light';
     }
+  }
+
+  function logout() {
+    goto('/logout');
   }
 
   onMount(() => {
@@ -121,7 +126,7 @@
   </div>
 </div>
 <div class="logout-container">
-  <Button buttonType="secondary" cta="Log out"></Button>
+  <Button buttonType="secondary" cta="Log out" onClickFunc={logout}></Button>
 </div>
 
 <style>
