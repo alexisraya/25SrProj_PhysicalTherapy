@@ -111,6 +111,7 @@
         romStats = metrics.rangeOfMotion || [];
         strengthStats = metrics.strength || [];
       }
+      console.log(stats);
     } catch (err) {
       console.error('Error loading completion data:', err);
       error = err instanceof Error ? err.message : 'Failed to load completion data';
@@ -257,10 +258,7 @@
 
   <div class="stat-section stats">
     {#if stats}
-      <StatBlock
-        statTitle="Completed Exercises"
-        stat={program?.exercises.filter((ex) => ex.completed).length || 0}
-      />
+      <StatBlock statTitle="Completed Exercises" stat={stats.completedExercises} />
       <StatBlock statTitle="Completed Programs" stat={stats.completedPrograms} />
       <StatBlock statTitle="Total Reps" stat={stats.totalReps} />
       <StatBlock statTitle="Total Sets" stat={stats.totalSets} />

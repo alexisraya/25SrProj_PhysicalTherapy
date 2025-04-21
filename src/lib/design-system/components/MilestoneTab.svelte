@@ -8,16 +8,27 @@
   import Goal from '$lib/design-system/components/Goal.svelte';
   import { typography } from '$lib/design-system/typography';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import { getUserStats, getWeeklyProgress } from '$firebase/services/statService';
 
   let goals;
-  onMount(() => {
+
+  let stats;
+  let weeklyProgress;
+  let longestStreak = 0;
+  let currentStreak = 0;
+  onMount(async () => {
     if ($authStore.currentUser) {
       goalStore.loadGoals($authStore.currentUser.uid);
       console.log($goalStore.goals);
+      stats = await getUserStats($authStore.currentUser.uid);
+      longestStreak = stats?.longestStreak;
+      weeklyProgress = await getWeeklyProgress($authStore.currentUser.uid);
+      console.log(weeklyProgress);
+      currentStreak = weeklyProgress.daysCompleted;
     }
   });
 
-  goals = $goalStore.goals[2].slice(0, 5); //TODO: ALEXIS Make Month dynamic
+  goals = $goalStore.goals[2].slice(0, 5).reverse(); //TODO: ALEXIS Make Month dynamic
 </script>
 
 <div class="milestone-header">
@@ -37,7 +48,12 @@
     </div>
     <div class="streak-section">
       <div class="streak-small">
-        <Streak streakType="milestones" streakTotalDays={5} streakDaysCompleted={1} />
+        <Streak
+          streakType="milestones"
+          streakTotalDays={5}
+          streakDaysCompleted={currentStreak}
+          overallStreak={longestStreak}
+        />
       </div>
       <!-- TODO: Alexis Make dynamic -->
     </div>

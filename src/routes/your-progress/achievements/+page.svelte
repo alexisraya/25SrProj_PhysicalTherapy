@@ -9,6 +9,7 @@
     if ($authStore.currentUser) {
       achievementStore.loadAchievements($authStore.currentUser.uid);
     }
+    console.log($achievementStore);
   });
 </script>
 
