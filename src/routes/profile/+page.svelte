@@ -9,6 +9,9 @@
 
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  export let data;
+
+  $: userData = data.userData;
 
   let currentTheme: 'light' | 'dark' = 'light';
 
@@ -39,7 +42,7 @@
     };
 
     window.addEventListener('themeChanged', handleThemeChange);
-
+    console.log(userData);
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
     };
@@ -90,7 +93,7 @@
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
               .regular}; font-weight: {typography.fontWeights.medium};"
           >
-            Firstname Lastname
+            {userData.displayName}
           </p>
         </div>
         <div class="profile-section">
@@ -104,7 +107,7 @@
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
               .regular}; font-weight: {typography.fontWeights.medium};"
           >
-            email@email.com
+            {userData.email}
           </p>
         </div>
         <div class="profile-section">
