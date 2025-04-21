@@ -24,7 +24,7 @@
   $: userData = data.userData;
   $: error = data.error;
 
-  $: overallStreak = stats.completedPrograms;
+  $: overallStreak = stats.longestStreak;
   $: streakDaysCompleted = weeklyProgress.daysCompleted;
 
   // Determine if we're in a loading state
