@@ -6,6 +6,10 @@
   import ProgramCompletePlayButtonDark from '$lib/assets/iconography/ProgramCompletePlayButtonDark.svg';
   import SummaryBlob from '$lib/assets/background-images/SummaryBlob.svg';
   import { onMount } from 'svelte';
+  import Button from '$lib/design-system/components/Button.svelte';
+  import { checkInStore } from '$stores/checkInStore';
+  import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
 
   export let data;
 
@@ -13,13 +17,13 @@
   $: stats = data.stats;
   $: weeklyProgress = data.weeklyProgress;
   $: error = data.error;
-
   console.log(data);
 
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
 
   let currentTheme: 'light' | 'dark' = 'light';
+  let checkInCompleted = false;
 
   function updateThemeFromStorage() {
     // Check localStorage directly
@@ -34,7 +38,20 @@
     }
   }
 
-  onMount(() => {
+  function goToCheckIn() {
+    goto('/check-in');
+  }
+
+  async function loadCheckIn() {
+    try {
+      await checkInStore.checkTodayStatus();
+      checkInCompleted = get(checkInStore).todayCompleted;
+    } catch (err) {
+      console.error('Error checking check-in status:', err);
+    }
+  }
+
+  onMount(async () => {
     // Initial check from localStorage
     updateThemeFromStorage();
 
@@ -42,6 +59,8 @@
     const handleThemeChange = () => {
       updateThemeFromStorage();
     };
+
+    await loadCheckIn();
 
     window.addEventListener('themeChanged', handleThemeChange);
 
@@ -58,9 +77,17 @@
     </div>
     <div class="heading">
       {#if currentTheme == 'light'}
-        <img src={ProgramCompletePlayButtonLight} alt="program complete icon" />
+        <img
+          src={ProgramCompletePlayButtonLight}
+          alt="program complete icon"
+          class="complete-icon"
+        />
       {:else}
-        <img src={ProgramCompletePlayButtonDark} alt="program complete icon" />
+        <img
+          src={ProgramCompletePlayButtonDark}
+          alt="program complete icon"
+          class="complete-icon"
+        />
       {/if}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -69,6 +96,18 @@
         You're done!
       </h3>
     </div>
+    {#if !checkInCompleted}
+      <div class="subtitle-container">
+        <p
+          class="subtitle"
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.regular};"
+        >
+          What's next today?
+        </p>
+        <Button cta="Check in on pain and mood" buttonType="secondary" onClickFunc={goToCheckIn} />
+      </div>
+    {/if}
     {#if program}
       <div class="summary-container">
         <!-- Add achievements if any were unlocked that day -->
@@ -127,6 +166,8 @@
   .summary-page-container {
     padding: 32px 24px;
     position: relative;
+    max-width: 552px;
+    margin: auto;
   }
 
   .blob-container {
@@ -186,5 +227,42 @@
     flex-direction: column;
     row-gap: 12px;
     align-items: center;
+  }
+
+  .subtitle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 16px;
+    margin-top: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+  }
+  @media (min-width: 500px) {
+    .complete-icon {
+      width: 124px;
+      height: 124px;
+    }
+    .blob {
+      position: absolute;
+      top: -35vw;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100vw);
+      z-index: 0;
+    }
+  }
+  @media (min-width: 1000px) {
+    .blob {
+      top: -40vw;
+    }
+  }
+  @media (min-width: 1200px) {
+    .blob {
+      top: -42vw;
+    }
   }
 </style>

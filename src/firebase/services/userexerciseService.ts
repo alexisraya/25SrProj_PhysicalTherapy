@@ -73,6 +73,19 @@ export async function completeExercise(
       stats.totalReps += reps;
       stats.totalTime += sets * reps * seconds;
     }
+    if (exercise.exerciseType === 'distance') {
+      stats.totalSets += sets;
+      stats.totalReps += steps;
+      stats.totalDistance += sets * steps;
+    } else if (exercise.exerciseType === 'weight') {
+      stats.totalSets += sets;
+      stats.totalReps += sets * reps;
+      stats.totalWeight += sets * reps * weight;
+    } else if (exercise.exerciseType === 'time') {
+      stats.totalSets += sets;
+      stats.totalReps += reps;
+      stats.totalTime += sets * reps * seconds;
+    }
 
     const monthKey = today.toISOString().substring(0, 7); // Format: YYYY-MM
 

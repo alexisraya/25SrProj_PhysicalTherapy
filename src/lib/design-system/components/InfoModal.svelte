@@ -49,7 +49,10 @@
   <button class="close-button" on:click={closeModal}>
     <RemixIcon name="close-line" />
   </button>
-  <div class="modal-icon-container {isGoal ? 'goal' : 'achievement'}">
+
+  <div
+    class="modal-icon-container {isLocked ? (isGoal ? 'goal-locked' : 'achievement-locked') : (isGoal ? 'goal-unlocked' : 'achievement-unlocked')}"
+  >
     {#if isLocked}
       {#if isGoal}
         {#if currentTheme == 'light'}
@@ -57,65 +60,56 @@
         {:else}
           <Icon name="lock-dark" size="small" />
         {/if}
-      {:else if currentTheme == 'light'}
-        <Icon name="lock-yellow-light" size="small" />
       {:else}
-        <Icon name="lock-yellow-dark" size="small" />
+        {#if currentTheme == 'light'}
+          <Icon name="lock-yellow-light" size="small" />
+        {:else}
+          <Icon name="lock-yellow-dark" size="small" />
+        {/if}
       {/if}
     {:else}
-      <Icon name={iconName} size="small" />
+      <div class="floating-icon">
+        <Icon name={iconName} size="small" />
+      </div>
     {/if}
   </div>
+
   <div class="modal-information">
     {#if isGoal}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .regular}; font-weight: {typography.fontWeights.bold};"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.regular}; font-weight: {typography.fontWeights.bold};"
       >
         {infoName}
       </p>
     {/if}
+
     {#if isLocked}
       {#if isGoal}
         <p
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .small}; font-weight: {typography.fontWeights.regular};"
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};"
         >
           Your physical therapist will unlock this when ready.
         </p>
       {:else}
         <p
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .small}; font-weight: {typography.fontWeights.regular};"
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};"
         >
           Keep completing your program to unlock more achievements!
         </p>
       {/if}
     {:else}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .small}; font-weight: {typography.fontWeights.regular};"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.small}; font-weight: {typography.fontWeights.regular};"
       >
         Long description of goal goes here
       </p>
     {/if}
-    {#if isGoal}
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xxsmall}; font-weight: {typography.fontWeights
-          .regular}; font-style: italic; color: var(--text-secondary);"
-      >
-        Week #
-      </p>
-    {:else}
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .xxsmall}; font-weight: {typography.fontWeights
-          .regular}; font-style: italic; color: var(--text-secondary);"
-      >
-        Metric
-      </p>
-    {/if}
+
+    <p
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic; color: var(--text-secondary);"
+    >
+      {isGoal ? 'Week #' : 'Metric'}
+    </p>
   </div>
 </div>
 
@@ -145,11 +139,27 @@
     justify-content: center;
   }
   .goal {
-    background-color: var(--color-blue-525); /* Light/dark mode exception */
+    background-color: var(--color-blue-525);
+    border-radius: 100px;
+  }
+  .goal-unlocked {
+    background-color: var(--color-blue-550);
+    border-radius: 100px;
+  }
+  .goal-locked {
+    border: solid 2px var(--color-blue-100);
     border-radius: 100px;
   }
   .achievement {
-    background-color: var(--color-yellow-550); /* Light/dark mode exception */
+    background-color: var(--color-yellow-550);
+    border-radius: 4px;
+  }
+  .achievement-unlocked {
+    background-color: var(--color-yellow-550);
+    border-radius: 4px;
+  }
+  .achievement-locked {
+    border: solid 2px var(--color-yellow-200);
     border-radius: 4px;
   }
   .modal-information {
@@ -172,4 +182,20 @@
     margin: 16px;
     cursor: pointer;
   }
+  .goal-unlocked:hover .floating-icon,
+  .achievement-unlocked:hover .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite;
+  }
+  @keyframes floatUpDown {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
 </style>
+

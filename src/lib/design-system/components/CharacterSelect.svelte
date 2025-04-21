@@ -49,39 +49,55 @@
   p {
     margin: 0;
   }
+
   button {
     background-color: transparent;
     border: 0;
   }
+
   .select-character-section {
+    box-sizing: border-box;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     column-gap: 16px;
   }
+
+  .select-character-section * {
+    transition: ease-in-out 0.2s;
+  }
+
   .character {
+    box-sizing: border-box;
     border-radius: 10px;
     position: relative;
     display: inline-block;
     width: 99px; /* Adjust as needed */
     cursor: pointer;
     padding: 4px;
+    transition: ease-in-out 0.2s;
   }
+
   .character img {
+    box-sizing: border-box;
     display: block;
     width: 100%;
     height: auto;
     border-radius: 8px;
   }
+
   .character--overlay {
+    box-sizing: border-box;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: var(--color-grey-opactity-dark);
+    transition: ease-in-out 0.2s;
   }
+
   .character--name {
     position: absolute;
     bottom: 8px;
@@ -92,14 +108,20 @@
     color: var(--color-blue-1100);
     text-align: center;
   }
-  /* Styling for the selected character */
+
   .selected {
     border: 1px solid var(--color-blue-1100);
+    transition: ease-in-out 0.2s;
   }
+
   .selected-overlay {
     display: none;
+    opacity: 0;
+    transition: ease-in-out 0.2s;
   }
+
   .selected-name {
     color: var(--color-grey-0) !important;
   }
 </style>
+

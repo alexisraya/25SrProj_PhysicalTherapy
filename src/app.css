@@ -103,6 +103,9 @@
   --button-primary-disabled-text: var(--color-grey-300);
   --button-secondary-border: var(--color-blue-1100);
   --button-secondary-disabled-border: var(--color-blue-50);
+  --button-primary-bg-hover: var(--color-blue-900);
+  --button-secondary-bg-hover: var(--color-blue-50);
+  --button-secondary-border-hover: var(--color-blue-800);
 
   --mark-complete-button: var(--color-grey-400);
 
@@ -124,6 +127,15 @@
   --locked-achievement-image-border: var(--color-yellow-200);
   --achievement-card-background: var(--color-yellow-100);
   --achievement-card-border: var(--color-yellow-600);
+
+  --exercise-section-divider: var(--color-grey-200);
+  --hold-to-complete-bg: var(--color-blue-100);
+  --hold-to-complete-stroke: var(--color-blue-1000);
+
+  --onboarding-progress-background: var(--color-grey-200);
+
+  --program-edit-text: var(--color-grey-400);
+  --program-bg-wave: var(--color-blue-100);
 }
 
 [data-theme='dark'] {
@@ -148,6 +160,9 @@
   --button-primary-disabled-text: var(--color-blue-800);
   --button-secondary-border: var(--color-grey-0);
   --button-secondary-disabled-border: var(--color-blue-800);
+  --button-primary-bg-hover: var(--color-blue-100);
+  --button-secondary-bg-hover: var(--color-blue-1000);
+  --button-secondary-border-hover: var(--color-blue-100);
 
   --mark-complete-button: var(--color-grey-200);
 
@@ -169,6 +184,15 @@
   --locked-achievement-image-border: var(--color-yellow-opacity);
   --achievement-card-background: var(--color-yellow-opacity);
   --achievement-card-border: var(--color-yellow-550);
+
+  --exercise-section-divider: var(--color-blue-900);
+  --hold-to-complete-bg: var(--color-blue-900);
+  --hold-to-complete-stroke: var(--color-grey-0);
+
+  --onboarding-progress-background: var(--color-blue-opacity);
+
+  --program-edit-text: var(--color-grey-200);
+  --program-bg-wave: var(--color-blue-1000);
 }
 
 @font-face {

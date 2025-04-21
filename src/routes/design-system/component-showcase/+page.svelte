@@ -173,36 +173,51 @@
     </div>
   </div>
 
+<!-- Character Select -->
+  <div class="component-section">
+    <h2>Character Select</h2>
+    <CharacterSelect />
+  </div>
+  <!-- Exercise Info Block -->
+  <div class="component-section purple">
+    <h2>Exercise Info Block</h2>
+    <ExerciseInfoBlock />
+  </div>
+  <!-- Info Modal -->
+  <div class="component-section">
+    <h2>Info Modal</h2>
+    <div class="grey">
+      <InfoModal iconName="stairs" infoName="Climb stairs" isGoal />
+      <InfoModal iconName="thunderstorm" />
+      <InfoModal isLocked />
+      <InfoModal isLocked isGoal infoName="Goal" />
+    </div>
+  </div>
   <!-- Skeleton Block -->
   <div class="component-section">
     <h2>Skeleton Loader</h2>
     <Skeleton />
   </div>
 </div>
-
 <style>
   h1,
   h2 {
     margin: 0;
   }
-
   .container {
     margin: 20px;
   }
-
   .component-section {
     display: flex;
     flex-direction: column;
     row-gap: 16px;
     margin-bottom: 48px;
   }
-
   .component-items {
     display: flex;
     flex-direction: column;
     row-gap: 8px;
   }
-
   .goal-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
@@ -210,7 +225,6 @@
     justify-content: center;
     padding-top: 10px;
   }
-
   .milestone {
     display: flex;
     column-gap: 8px;
@@ -218,7 +232,6 @@
     background-color: #eaeaea;
     padding: 16px;
   }
-
   .grey {
     display: flex;
     flex-wrap: wrap;
@@ -226,5 +239,8 @@
     padding: 16px;
     row-gap: 16px;
     column-gap: 16px;
+  }
+  .purple {
+    background-color: #997cbe;
   }
 </style>
