@@ -24,6 +24,9 @@
   $: userData = data.userData;
   $: error = data.error;
 
+  $: overallStreak = stats.completedPrograms;
+  $: streakDaysCompleted = weeklyProgress.daysCompleted;
+
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
 
@@ -203,6 +206,10 @@
       await loadCheckIn();
     }
 
+    console.log('LOOK HERE');
+    console.log(overallStreak);
+    console.log(streakDaysCompleted);
+
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
     };
@@ -253,8 +260,8 @@
     <Streak
       streakType="home"
       streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak}
-      streakDaysCompleted={weeklyProgress.daysCompleted}
-      overallStreak={stats?.completedPrograms}
+      {streakDaysCompleted}
+      {overallStreak}
     />
     <div class="break" />
     {#if !checkInCompleted}
