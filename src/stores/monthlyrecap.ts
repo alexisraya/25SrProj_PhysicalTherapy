@@ -2,56 +2,35 @@ import { writable } from 'svelte/store';
 
 export interface MonthlyRecapStep {
   id: string;
-  title: string;
-  description: string;
-  caption?: string;
 }
 
 export const recapSteps: MonthlyRecapStep[] = [
   {
-    id: 'intro',
-    title: '',
-    description: ""
+    id: 'intro'
   },
   {
-    id: 'pain',
-    title: '',
-    description: ""
+    id: 'pain'
   },
   {
-    id: 'mood',
-    title: '',
-    description: ""
+    id: 'mood'
   },
   {
-    id: 'programs',
-    title: '',
-    description: ""
+    id: 'programs'
   },
   {
-    id: 'exercises',
-    title: '',
-    description: ""
+    id: 'exercises'
   },
   {
-    id: 'achievements',
-    title: '',
-    description: ""
+    id: 'achievements'
   },
   {
-    id: 'goals',
-    title: '',
-    description: ""
+    id: 'goals'
   },
   {
-    id: 'metrics',
-    title: '',
-    description: ""
+    id: 'metrics'
   },
   {
-    id: 'summary',
-    title: '',
-    description: ""
+    id: 'summary'
   }
 ];
 
