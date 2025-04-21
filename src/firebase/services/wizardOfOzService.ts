@@ -431,12 +431,12 @@ async function applyRun3Scenario(userId: string, user: User): Promise<void> {
     completed: true,
     assignedAt: today.toISOString(),
     updatedAt: completionTime.toISOString(),
-    estimatedTime: 25
+    estimatedTime: 75
   });
 
   // Reset goals and unlock the specified ones
   await resetAllGoals(userId);
-  const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-7', 'goal-8', 'goal-9'];
+  const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-7', 'goal-8', 'goal-9', 'goal-10'];
   
   for (const goalId of goalsToUnlock) {
     await unlockGoal(userId, goalId);
