@@ -40,6 +40,7 @@
     align-items: center;
     justify-content: flex-end;
     width: 100%;
+    z-index: 2;
   }
   .first {
     justify-content: space-between;

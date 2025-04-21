@@ -12,7 +12,7 @@
   const stepComponents: ComponentType[] = [Pain, Mood, Reflection];
 </script>
 
-<div class="checkin-container">
+<div class={$currentCheckInStep === 2 ? 'reflection-container' : 'checkin-container'}>
   <CheckInNav currentStep={$currentCheckInStep} />
   <div class="step-content">
     {#if $currentCheckInStep != 2}
@@ -39,13 +39,15 @@
     {/if}
     <svelte:component this={stepComponents[$currentCheckInStep]} />
   </div>
-  <CheckInActions
-    isFirstStep={$currentCheckInStep === 0}
-    isLastStep={$currentCheckInStep === checkInSteps.length - 1}
-    onNext={goToNext}
-    onPrevious={goToPrevious}
-    currentStepIndex={$currentCheckInStep}
-  />
+  <div class={$currentCheckInStep === 2 ? 'reflection-button' : 'checkin-button'}>
+    <CheckInActions
+      isFirstStep={$currentCheckInStep === 0}
+      isLastStep={$currentCheckInStep === checkInSteps.length - 1}
+      onNext={goToNext}
+      onPrevious={goToPrevious}
+      currentStepIndex={$currentCheckInStep}
+    />
+  </div>
 </div>
 
 <style>
@@ -61,7 +63,31 @@
     background-color: var(--background);
     width: 100%;
     height: 100%;
-    max-height: 785px;
+    /* max-height: 785px; */
+    max-width: 808px;
+    overflow-x: visible;
+  }
+  .checkin-button {
+    width: 100%;
+    margin: auto;
+  }
+  .reflection-button {
+    width: calc(100% - 48px);
+    margin: auto;
+    position: fixed;
+    bottom: 24px;
+  }
+  .reflection-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: space-between; */
+    margin: 0 24px;
+    padding: 20px 0 34px 0;
+    background-color: var(--background);
+    width: 100%;
+    height: 100%;
     max-width: 808px;
     overflow-x: visible;
   }
@@ -79,5 +105,14 @@
     margin: 8px 0 16px 0;
     padding: 0px 24px;
     row-gap: 12px;
+  }
+
+  @media (min-width: 800px) {
+    .reflection-container {
+      /* max-height: 785px; */
+    }
+    .checkin-container {
+      max-height: 785px;
+    }
   }
 </style>

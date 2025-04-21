@@ -67,5 +67,6 @@
     display: flex;
     width: 100%;
     max-width: 448px;
+    margin: auto;
   }
 </style>
