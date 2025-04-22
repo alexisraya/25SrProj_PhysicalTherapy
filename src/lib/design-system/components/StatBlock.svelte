@@ -4,20 +4,26 @@
   export let statTitle: string;
   export let stat: number;
   export let unit: string = '';
+  export let type: string = '';
+  export let position: string = '';
 </script>
 
-<div class="program-stat-container">
-  <div class="stat-border"></div>
-  <div class="stat-text">
+<div class="program-stat-container {position}">
+  <div class="stat-border {position}-{type}"></div>
+  <div class="stat-text {type}">
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-        .small}; font-weight: {typography.fontWeights.medium};"
+        .small}; font-weight: {typography.fontWeights.medium}; color: {position == 'second'
+        ? 'var(--color-blue-1100)'
+        : 'var(--text-primary)'};"
     >
       {statTitle}
     </p>
     <h1
       style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-        .h0}; font-weight: {typography.fontWeights.medium};"
+        .h0}; font-weight: {typography.fontWeights.medium}; color: {position == 'second'
+        ? 'var(--color-blue-1100)'
+        : 'var(--text-primary)'};"
     >
       {stat}<span style="font-size: {typography.fontSizes.regular};">{unit}</span>
     </h1>
@@ -41,5 +47,18 @@
     height: 100%;
     border-radius: 30px;
     background-color: var(--color-purple-550); /* Light mode dark mode exception */
+  }
+  .first-recap {
+    background-color: var(--text-primary);
+  }
+  .second-recap {
+    background-color: var(--color-blue-110);
+  }
+  .recap {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .second {
+    flex-direction: row-reverse;
   }
 </style>

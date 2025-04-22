@@ -26,9 +26,9 @@
   </div>
   {#if currentStep > 1}
     <ProgressBar
-      totalExercises={6}
+      totalExercises={8}
       completedExercises={currentStep}
-      remainingExercises={6 - currentStep}
+      remainingExercises={8 - currentStep}
       isOnboarding={true}
     />
   {/if}
