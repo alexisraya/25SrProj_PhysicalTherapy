@@ -43,7 +43,7 @@ export async function updateUserStats(userId: string, exercise: AssignedExercise
 
     if (exercise.exerciseType === 'distance') {
       stats.totalSets += exercise.sets ?? 0;
-      stats.totalReps += exercise.steps ?? 0;
+      stats.totalReps += (exercise.steps ?? 0) * (exercise.sets ?? 0);
       stats.totalDistance += (exercise.steps ?? 0) * (exercise.sets ?? 0);
     } else if (exercise.exerciseType === 'weight') {
       stats.totalSets += exercise.sets ?? 0;
@@ -51,8 +51,8 @@ export async function updateUserStats(userId: string, exercise: AssignedExercise
       stats.totalWeight += (exercise.weight ?? 0) * (exercise.reps ?? 0) * (exercise.sets ?? 0);
     } else if (exercise.exerciseType === 'time') {
       stats.totalSets += exercise.sets ?? 0;
-      stats.totalReps += exercise.reps ?? 0;
-      stats.totalTime += (exercise.seconds ?? 0) * (exercise.reps ?? 0);
+      stats.totalReps += (exercise.reps ?? 0) * (exercise.sets ?? 0);
+      stats.totalTime += (exercise.seconds ?? 0) * (exercise.reps ?? 0) * (exercise.sets ?? 0);
     }
 
     await updateDoc(userRef, { stats });
@@ -123,11 +123,14 @@ export async function resetWeeklyProgress(userId: string) {
     if (stats.weeklyProgress.weekStartDate !== currentPersonalWeekStart) {
       // If they completed 5+ days, increment the streak counter
       if (stats.weeklyProgress.daysCompleted >= 5) {
-        // Simply increment longestStreak by 1
-        stats.longestStreak += 1;
-        console.log(`User completed 5+ days! Streak increased to ${stats.longestStreak}`);
+        stats.currentStreak += 1;
+        stats.longestStreak = Math.max(stats.currentStreak, stats.longestStreak);
+        console.log(`User completed 5+ days! Streak increased to ${stats.currentStreak}`);
+      } else {
+        // Reset current streak if they didn't complete enough days
+        stats.currentStreak = 0;
+        console.log('User did not complete enough days, streak reset.');
       }
-      // Never reset longestStreak, it only goes up
 
       // Reset the weekly progress for the new week
       stats.weeklyProgress = {
@@ -261,11 +264,34 @@ export async function updateStreakOnCompletion(userId: string): Promise<void> {
     stats.streakHistory.push({ date: today.toISOString(), completed: true });
     stats.lastCompletedDate = today.toISOString();
 
-    // Update weekly progress if this is the current week
-    if (stats.weeklyProgress?.weekStartDate === getPersonalWeekStart(user.createdAt, today)) {
-      // Cap at 5 days per week (our weekly target)
-      stats.weeklyProgress.daysCompleted = Math.min(5, stats.weeklyProgress.daysCompleted + 1);
+    // Check if today belongs to the current weekly period
+    const personalWeekStart = getPersonalWeekStart(user.createdAt, today);
+
+    if (!stats.weeklyProgress) {
+      stats.weeklyProgress = {
+        weekStartDate: personalWeekStart,
+        daysCompleted: 0,
+        exercisesCompleted: 0
+      };
     }
+
+    // Create the weekly progress if it doesn't exist or reset if it's a new week
+    if (stats.weeklyProgress.weekStartDate !== personalWeekStart) {
+      // If we're in a new week, reset the weekly progress
+      stats.weeklyProgress = {
+        weekStartDate: personalWeekStart,
+        daysCompleted: 1, // Set to 1 since we completed today
+        exercisesCompleted: stats.weeklyProgress.exercisesCompleted || 0
+      };
+    } else {
+      // Same week, increment days completed (cap at 5)
+      stats.weeklyProgress.daysCompleted = Math.min(
+        5,
+        (stats.weeklyProgress.daysCompleted || 0) + 1
+      );
+    }
+
+    console.log(`Updated days completed: ${stats.weeklyProgress.daysCompleted}`);
 
     await updateUser(userId, { stats });
     await checkAchievements(userId);

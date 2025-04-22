@@ -62,7 +62,7 @@ export async function completeExercise(
 
     if (exercise.exerciseType === 'distance') {
       stats.totalSets += sets;
-      stats.totalReps += steps;
+      stats.totalReps += sets * steps;
       stats.totalDistance += sets * steps;
     } else if (exercise.exerciseType === 'weight') {
       stats.totalSets += sets;
@@ -70,7 +70,7 @@ export async function completeExercise(
       stats.totalWeight += sets * reps * weight;
     } else if (exercise.exerciseType === 'time') {
       stats.totalSets += sets;
-      stats.totalReps += reps;
+      stats.totalReps += sets * reps;
       stats.totalTime += sets * reps * seconds;
     }
 
