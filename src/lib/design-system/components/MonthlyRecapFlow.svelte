@@ -3,7 +3,8 @@
     currentRecapStep,
     recapSteps,
     goToNextRecap,
-    goToPreviousRecap
+    goToPreviousRecap,
+    currentMonth
   } from '$stores/monthlyrecap';
   import type { ComponentType } from 'svelte';
   import MonthlyRecapActions from '$lib/design-system/components/MonthlyRecapActions.svelte';
@@ -32,8 +33,9 @@
 </script>
 
 <div class="recap-container">
-  <MonthlyRecapNav currentStep={$currentRecapStep} />
+  <MonthlyRecapNav currentStep={$currentRecapStep + 1} />
   <div class="step-content">
+    <!-- Simplified component usage - no more props passing -->
     <svelte:component this={stepComponents[$currentRecapStep]} />
   </div>
   <MonthlyRecapActions
@@ -48,19 +50,19 @@
 <style>
   /* add media query and align-self: flex start */
   .recap-container {
+    position: relative;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    margin: 0 24px;
-    padding: 20px 0 34px 0;
+    /* margin: 0 24px; */
+    padding-bottom: 34px;
     background-color: var(--background);
     width: 100%;
     height: 100%;
     max-height: 785px;
     max-width: 808px;
-    overflow-x: hidden;
   }
   .step-content {
     width: 100%;

@@ -24,8 +24,10 @@
 
 <style>
   .actions-container {
+    box-sizing: border-box;
     display: flex;
     width: 100%;
     max-width: 448px;
+    padding: 0 24px;
   }
 </style>

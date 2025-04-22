@@ -2,12 +2,12 @@
   import MonthlyRecapFlow from '$lib/design-system/components/MonthlyRecapFlow.svelte';
 </script>
 
-<div class="onboarding-page-container">
+<div class="recap-page-container">
   <MonthlyRecapFlow />
 </div>
 
 <style>
-  .onboarding-page-container {
+  .recap-page-container {
     background-color: var(--background);
     display: flex;
     align-items: center;
