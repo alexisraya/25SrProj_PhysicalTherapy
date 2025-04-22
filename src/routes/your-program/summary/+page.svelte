@@ -145,6 +145,7 @@
                 exerciseName={exercise.exerciseName}
                 isTooPainful={exercise.skipped}
                 cardType="summary"
+                isOnSummary
               />
             {/each}
           </div>
