@@ -220,7 +220,7 @@
   }
   .exercise_info {
     position: relative;
-    bottom: 15px;
+    display: block;
     background: var(--color-grey-opactity-dark); /* light/dark mode exception */
     border-radius: 30px;
     color: var(--text-primary);

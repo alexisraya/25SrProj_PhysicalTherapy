@@ -7,6 +7,24 @@
   export let modelPath = ''; // Path to the 3D model
   let container;
   let mixer; // Animation mixer
+
+  function handleResize() {
+    if (!container) return;
+
+    // Force a specific aspect ratio if needed
+    const aspectRatio = 9 / 16; // Or whatever ratio works best for your model
+
+    // Check what layout we're in (mobile vs desktop)
+    const isMobile = window.innerWidth < 800;
+
+    // Set a consistent height based on width and aspect ratio
+    if (isMobile) {
+      container.style.height = `${container.clientWidth / aspectRatio}px`;
+    } else {
+      // For desktop you might want a different approach
+      container.style.height = '50vh'; // Or another value
+    }
+  }
   // limit zoom in and out, x axis, y axis. intial camera view
   onMount(() => {
     const scene = new THREE.Scene();
@@ -75,16 +93,22 @@
 
     // Handle window resize
     const onWindowResize = () => {
+      if (!container) return;
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
     };
 
-    window.addEventListener('resize', onWindowResize);
+    // Call resize handler initially and on window resize
+    handleResize();
+    window.addEventListener('resize', () => {
+      handleResize();
+      onWindowResize();
+    });
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', onWindowResize);
+      window.removeEventListener('resize', handleResize);
     };
   });
 </script>
@@ -95,7 +119,7 @@
 <style>
   .three-canvas {
     width: 100%;
-    height: 100%;
     background: transparent;
+    min-height: 385px;
   }
 </style>

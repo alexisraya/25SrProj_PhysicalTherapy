@@ -10,6 +10,7 @@
   export let editMode = false;
   export let isComplete = false;
   export let isTooPainful = false;
+  export let isOnSummary = false;
 
   export let exerciseName: string;
   export let exerciseSet: string;
@@ -30,7 +31,7 @@
   }
 
   const onClick = () => {
-    if (!editMode) {
+    if (!editMode && !isOnSummary) {
       goto(`/your-program/${exerciseId}`);
     }
   };
@@ -45,7 +46,9 @@
       >
         {exerciseName}
       </p>
-      <RemixIcon name="arrow-right-s-line" />
+      {#if !isOnSummary}
+        <RemixIcon name="arrow-right-s-line" />
+      {/if}
     </div>
     {#if !isComplete}
       <div class="tags-container">
@@ -112,9 +115,10 @@
   /* .your-program {
         width: 326px;
     }
-    .summary {
-        width: 100%;
-    } */
+  */
+  .summary {
+    cursor: default;
+  }
   .exercise-container--left {
     display: flex;
     flex-direction: column;

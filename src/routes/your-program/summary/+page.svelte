@@ -6,6 +6,10 @@
   import ProgramCompletePlayButtonDark from '$lib/assets/iconography/ProgramCompletePlayButtonDark.svg';
   import SummaryBlob from '$lib/assets/background-images/SummaryBlob.svg';
   import { onMount } from 'svelte';
+  import Button from '$lib/design-system/components/Button.svelte';
+  import { checkInStore } from '$stores/checkInStore';
+  import { get } from 'svelte/store';
+  import { goto } from '$app/navigation';
 
   export let data;
 
@@ -13,13 +17,16 @@
   $: stats = data.stats;
   $: weeklyProgress = data.weeklyProgress;
   $: error = data.error;
-
-  console.log(data);
+  $: longestStreak = stats.longestStreak;
+  console.log('ALEXIS');
+  console.log(data.stats);
+  console.log(longestStreak);
 
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
 
   let currentTheme: 'light' | 'dark' = 'light';
+  let checkInCompleted = false;
 
   function updateThemeFromStorage() {
     // Check localStorage directly
@@ -34,7 +41,20 @@
     }
   }
 
-  onMount(() => {
+  function goToCheckIn() {
+    goto('/check-in');
+  }
+
+  async function loadCheckIn() {
+    try {
+      await checkInStore.checkTodayStatus();
+      checkInCompleted = get(checkInStore).todayCompleted;
+    } catch (err) {
+      console.error('Error checking check-in status:', err);
+    }
+  }
+
+  onMount(async () => {
     // Initial check from localStorage
     updateThemeFromStorage();
 
@@ -42,6 +62,8 @@
     const handleThemeChange = () => {
       updateThemeFromStorage();
     };
+
+    await loadCheckIn();
 
     window.addEventListener('themeChanged', handleThemeChange);
 
@@ -77,6 +99,18 @@
         You're done!
       </h3>
     </div>
+    {#if !checkInCompleted}
+      <div class="subtitle-container">
+        <p
+          class="subtitle"
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.regular};"
+        >
+          What's next today?
+        </p>
+        <Button cta="Check in on pain and mood" buttonType="secondary" onClickFunc={goToCheckIn} />
+      </div>
+    {/if}
     {#if program}
       <div class="summary-container">
         <!-- Add achievements if any were unlocked that day -->
@@ -93,7 +127,7 @@
             streakType="program"
             streakTotalDays={5}
             streakDaysCompleted={weeklyProgress.daysCompleted}
-            overallStreak={stats?.currentStreak}
+            overallStreak={longestStreak}
           />
         </div>
         <div class="exercise-summary">
@@ -111,6 +145,7 @@
                 exerciseName={exercise.exerciseName}
                 isTooPainful={exercise.skipped}
                 cardType="summary"
+                isOnSummary
               />
             {/each}
           </div>
@@ -196,6 +231,19 @@
     flex-direction: column;
     row-gap: 12px;
     align-items: center;
+  }
+
+  .subtitle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 16px;
+    margin-top: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
   }
   @media (min-width: 500px) {
     .complete-icon {

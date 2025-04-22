@@ -32,7 +32,7 @@
 >
   <p
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-      .small}; font-weight: {typography.fontWeights.medium};"
+      .small}; font-weight: {typography.fontWeights.medium}; color: var(--text-primary)"
   >
     {rating}
   </p>

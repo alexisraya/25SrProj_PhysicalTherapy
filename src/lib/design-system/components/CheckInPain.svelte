@@ -3,10 +3,14 @@
   import PainCheckInItem from '$lib/design-system/components/PainCheckInItem.svelte';
   import { fade, fly } from 'svelte/transition';
   import { setPainLevel } from '$stores/checkInStore';
+  import { setStepComplete } from '$stores/checkin';
 
   let numbers = Array.from({ length: 10 }, (_, i) => i + 1);
   let selectedRating: number | null = null;
   let selectedRatingText = '--';
+  $: {
+    setStepComplete(0, selectedRating !== null);
+  }
 
   function handleSelect(event: CustomEvent<number>) {
     selectedRating = event.detail;

@@ -3,12 +3,16 @@
   import { scale } from 'svelte/transition';
   import { onMount } from 'svelte';
   import { setMoodLevel } from '$stores/checkInStore';
+  import { setStepComplete } from '$stores/checkin';
 
   let numbers = Array.from({ length: 5 }, (_, i) => i + 1);
   let selectedRating: number | null = null;
   let selectedRatingImg = '/mood-faces/mood-face-default.svg';
   let iconContainerElement: HTMLDivElement;
   let iconImgElement: HTMLImageElement;
+  $: {
+    setStepComplete(1, selectedRating !== null);
+  }
 
   const moodIcons = [
     '/mood-faces/mood-face-motivated.svg',

@@ -4,13 +4,32 @@
   import { typography } from '$lib/design-system/typography';
   import { goto } from '$app/navigation';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import { achievementsMap } from '$lib/achievements';
 
   export let type: string; // "program", "milestones"
   export let achievementDescription: string;
+  export let achievmentId: string;
+  export let iconName = '';
+
+  let action = 'walked the';
+  if (achievmentId.includes('time')) {
+    action = 'exercised as long as it takes for';
+  } else if (achievmentId.includes('weight')) {
+    action = 'listed the weight of a';
+  }
 
   const onClick = () => {
     goto('/your-progress/achievements');
   };
+
+  // In Achievement.svelte
+  // Add a console log in the script section
+  $: console.log(
+    'Achievement component received ID:',
+    achievmentId,
+    'Icon mapping:',
+    achievementsMap[achievmentId]
+  );
 </script>
 
 <button
@@ -40,25 +59,40 @@
     <div class="achievement-body {type}-body">
       <div class="achievement-image-container">
         <div class="floating-icon">
-          <Icon name="polar-bear" size="small" />
+          {#if iconName}
+            <Icon name={iconName} size="small" />
+          {:else if achievementsMap[achievmentId]}
+            <Icon name={achievementsMap[achievmentId]} size="small" />
+          {:else}
+            <Icon name="trophy" size="small" />
+          {/if}
         </div>
       </div>
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .xsmall}; font-weight: {typography.fontWeights.regular};"
       >
-        {achievementDescription}
+        You've {action}
+        {achievementDescription}!
       </p>
     </div>
     <div class="achievement-body {type}-body {type}-large">
       <div class="achievement-image-container">
-        <Icon name="polar-bear" size="small" />
+        <!-- Check if we have a mapping for this achievement ID -->
+        {#if iconName}
+          <Icon name={iconName} size="small" />
+        {:else if achievementsMap[achievmentId]}
+          <Icon name={achievementsMap[achievmentId]} size="small" />
+        {:else}
+          <Icon name="trophy" size="small" />
+        {/if}
       </div>
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .xsmall}; font-weight: {typography.fontWeights.regular};"
       >
-        {achievementDescription}
+        You've {action}
+        {achievementDescription}!
       </p>
     </div>
   </div>

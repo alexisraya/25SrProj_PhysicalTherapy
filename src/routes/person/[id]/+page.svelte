@@ -15,6 +15,7 @@
   import type { Exercise } from '$firebase/types/exerciseType';
   import ProgramManagement from '$lib/design-system/components/ProgramManagement.svelte';
   import PatientMetrics from '$lib/design-system/components/PatientMetrics.svelte';
+  import WizardControls from '$lib/design-system/components/WizardControls.svelte';
 
   let patient: User | null = null;
   let currentProgram: Program | null = null;
@@ -229,6 +230,10 @@
       <p><strong>Name:</strong> {patient.firstName} {patient.lastName}</p>
       <p><strong>Email:</strong> {patient.email}</p>
       <p><strong>Start Date:</strong> {formatDate(patient.createdAt)}</p>
+      <div class="wizard-section">
+        <h2>Wizard of Oz Controls</h2>
+        <WizardControls patientId={patient.userId} />
+      </div>
       <div class="program-header">
         <h2>Program Overview</h2>
         {#if currentProgram}
@@ -481,5 +486,19 @@
     color: white;
     text-decoration: none;
     border-radius: 0.25rem;
+  }
+
+    .wizard-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .info-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
   }
 </style>
