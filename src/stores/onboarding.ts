@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
 
 export interface OnboardingStep {
   id: string;
@@ -7,6 +8,8 @@ export interface OnboardingStep {
   caption?: string;
   requiresChoice?: boolean;
 }
+
+export const hasCompletedOnboarding = writable<boolean>(false);
 
 // Define steps first
 export const steps: OnboardingStep[] = [
@@ -100,4 +103,27 @@ export function isCurrentStepComplete(stepIndex: number): boolean {
     complete = status[stepIndex];
   })();
   return complete;
+}
+
+export function completeOnboarding(): void {
+  hasCompletedOnboarding.set(true);
+
+  if (browser) {
+    try {
+      localStorage.setItem('onboardingCompleted', 'true');
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }
+}
+
+if (browser) {
+  try {
+    const storedCompletion = localStorage.getItem('onboardingCompleted');
+    if (storedCompletion === 'true') {
+      hasCompletedOnboarding.set(true);
+    }
+  } catch (error) {
+    console.error('Error accessing localStorage:', error);
+  }
 }
