@@ -11,7 +11,7 @@
   export let currentStepIndex: number;
 
   const handleLastStepAction = () => {
-    goto('check-in');
+    goto('/check-in');
   };
 
   $: isStepComplete = $stepCompletionStatus[currentStepIndex];
