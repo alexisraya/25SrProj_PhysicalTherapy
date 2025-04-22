@@ -35,7 +35,6 @@
     };
 
     window.addEventListener('themeChanged', handleThemeChange);
-
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
     };
@@ -43,26 +42,28 @@
 </script>
 
 <div class="milestone-month-container {isActive ? 'active-container' : ''}">
-  {#if isComplete}
-    <svg width="60" height="60">
-      <circle cx="30" cy="30" r="29.5" fill="none" stroke={Colors.green[550]} stroke-width="1" />
-      <circle cx="30" cy="30" r="25" />
-    </svg>
-  {:else if isUpcoming}
-    <svg width="60" height="60">
-      <circle cx="30" cy="30" r="30" />
-    </svg>
-  {:else}
-    <!-- TODO: ALEXIS light/dark mode image -->
+  {#if isActive}
+    <!-- Active state always takes precedence -->
     {#if currentTheme == 'light'}
       <img src={ActiveMilestoneLight} alt="active milestone background" />
     {:else}
       <img src={ActiveMilestoneDark} alt="active milestone background" />
     {/if}
+  {:else if isComplete}
+    <!-- Complete state if not active -->
+    <svg width="60" height="60">
+      <circle cx="30" cy="30" r="29.5" fill="none" stroke={Colors.green[550]} stroke-width="1" />
+      <circle cx="30" cy="30" r="25" />
+    </svg>
+  {:else}
+    <!-- Upcoming state if neither active nor complete -->
+    <svg width="60" height="60">
+      <circle cx="30" cy="30" r="30" />
+    </svg>
   {/if}
 
   <h1
-    class="milestone-month {isActive ? 'active' : ''} {isUpcoming ? 'upcoming' : ''}"
+    class="milestone-month {isActive ? 'active' : ''} {isUpcoming && !isActive ? 'upcoming' : ''}"
     style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
       .h1}; font-weight: {typography.fontWeights.regular}"
   >
@@ -91,11 +92,14 @@
     transform: translate(-50%, -50%);
     margin: 0;
   }
+  .upcoming {
+    color: var(--upcoming-milestone);
+  }
+
+  /* Make sure active state overrides upcoming */
   .active {
     top: 50%;
     transform: translate(-50%, -57%);
-  }
-  .upcoming {
-    color: var(--upcoming-milestone);
+    color: var(--text-primary); /* Or whatever your default text color is */
   }
 </style>

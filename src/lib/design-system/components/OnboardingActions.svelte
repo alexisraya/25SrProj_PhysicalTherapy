@@ -3,6 +3,8 @@
   import Button from '$lib/design-system/components/Button.svelte';
   import DoubleButton from '$lib/design-system/components/DoubleButton.svelte';
   import { goto } from '$app/navigation';
+  // Add import for completeOnboarding function
+  import { completeOnboarding } from '$stores/onboarding';
 
   export let onNext: () => void;
   export let onPrevious: () => void;
@@ -11,6 +13,8 @@
   export let currentStepIndex: number;
 
   const handleLastStepAction = () => {
+    // Mark onboarding as completed before navigation
+    completeOnboarding();
     goto('/check-in');
   };
 

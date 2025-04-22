@@ -8,11 +8,6 @@
   console.log('DATA ARR');
   console.log(dataArr);
 
-  // Add reactivity statement to rebuild chart when dataArr changes
-  $: if (svgElement && dataArr && dataArr.length > 0) {
-    updateChart();
-  }
-
   export let timeframe = 'week'; // 'week', '1month', '3months', '6months', 'all time'
   export let type = 'pain'; // 'pain', 'mood';
   export let width = 600;
@@ -43,18 +38,64 @@
   let yLimit = 10;
   let ySteps = 2;
 
-  if (timeframe == '1month') {
-    xLimit = 4;
-    xLabel = 'Weeks';
-  } else if (timeframe == '3months') {
-    xLimit = 12;
-    xLabel = 'Weeks';
-  } else if (timeframe == '6months') {
-    xLimit = 6;
-    xLabel = 'Months';
-  } else if (timeframe == 'all time') {
-    xLimit = 12; // change later
-    xLabel = 'Months';
+  $: if (svgElement && dataArr && dataArr.length > 0) {
+    updateChart();
+  }
+
+  // Add this reactive statement to update limits when timeframe changes
+  // Update the reactive statement for consistent xLimits
+  $: {
+    // Set timeframe-specific constants
+    if (timeframe === 'week') {
+      xLimit = 7; // 7 days in a week
+      xSteps = 1;
+      xLabel = 'Days';
+    } else if (timeframe === 'month') {
+      xLimit = 4; // 4 weeks in a month
+      xSteps = 1;
+      xLabel = 'Weeks';
+    } else if (timeframe === '3months') {
+      xLimit = 13; // 13 weeks in 3 months
+      xSteps = 1;
+      xLabel = 'Weeks';
+    } else if (timeframe === '6months') {
+      xLimit = 26; // 26 weeks in 6 months
+      xSteps = 2; // Skip every other tick for better readability
+      xLabel = 'Weeks';
+    } else if (timeframe === 'year') {
+      xLimit = 12; // 12 months in a year
+      xSteps = 1;
+      xLabel = 'Months';
+    } else if (timeframe === 'all') {
+      xLimit = 12; // Default to 12 for all time
+      xSteps = 1;
+      xLabel = 'Months';
+    }
+
+    // Update the chart if it exists
+    if (svgElement && dataArr && dataArr.length > 0) {
+      updateChart();
+    }
+  }
+
+  // Helper function to get default x-axis limits
+  function getDefaultXLimit(timeframe: string): number {
+    switch (timeframe) {
+      case 'week':
+        return 7;
+      case 'month':
+        return 4;
+      case '3months':
+        return 12;
+      case '6months':
+        return 6;
+      case 'year':
+        return 12;
+      case 'all':
+        return 12;
+      default:
+        return 7;
+    }
   }
 
   if (type == 'mood') {
@@ -80,32 +121,92 @@
 
   let svgElement;
 
-  function convertToCoordinates(): { x: number; y: number }[] {
-    if (!dataArr || !dataArr.length) return [];
+  // Add this function to aggregate data based on timeframe
+  function aggregateDataByTimeframe(rawData: number[], timeframe: string): number[] {
+    if (!rawData || rawData.length === 0) return [];
 
-    return dataArr.map((y, index) => ({
-      x: index + 1,
+    // For 'week' timeframe, return raw data (daily measurements)
+    if (timeframe === 'week') return rawData;
+
+    // For other timeframes, aggregate based on the period
+    let aggregatedData: number[] = [];
+
+    if (timeframe === 'month') {
+      // Group by week (assuming data points are daily)
+      const weeksData = [];
+      for (let i = 0; i < rawData.length; i += 7) {
+        // Get slice of up to 7 days
+        const weekSlice = rawData.slice(i, i + 7);
+        // Calculate average (only including non-zero/defined values)
+        const validValues = weekSlice.filter(
+          (val) => val !== undefined && val !== null && val !== 0
+        );
+        if (validValues.length > 0) {
+          const avg = validValues.reduce((sum, val) => sum + val, 0) / validValues.length;
+          weeksData.push(Math.round(avg * 10) / 10); // Round to 1 decimal place
+        }
+      }
+      aggregatedData = weeksData;
+    } else if (timeframe === '3months' || timeframe === '6months') {
+      // Group by week for 3-month view
+      const weeksData = [];
+      for (let i = 0; i < rawData.length; i += 7) {
+        const weekSlice = rawData.slice(i, i + 7);
+        const validValues = weekSlice.filter(
+          (val) => val !== undefined && val !== null && val !== 0
+        );
+        if (validValues.length > 0) {
+          const avg = validValues.reduce((sum, val) => sum + val, 0) / validValues.length;
+          weeksData.push(Math.round(avg * 10) / 10);
+        }
+      }
+      aggregatedData = weeksData;
+    } else if (timeframe === 'year' || timeframe === 'all') {
+      // Group by month (assuming ~30 days per month)
+      const monthsData = [];
+      for (let i = 0; i < rawData.length; i += 30) {
+        const monthSlice = rawData.slice(i, i + 30);
+        const validValues = monthSlice.filter(
+          (val) => val !== undefined && val !== null && val !== 0
+        );
+        if (validValues.length > 0) {
+          const avg = validValues.reduce((sum, val) => sum + val, 0) / validValues.length;
+          monthsData.push(Math.round(avg * 10) / 10);
+        }
+      }
+      aggregatedData = monthsData;
+    }
+
+    return aggregatedData;
+  }
+
+  function convertToCoordinates(): { x: number; y: number }[] {
+    // First aggregate the data based on timeframe
+    const aggregatedData = aggregateDataByTimeframe(dataArr, timeframe);
+
+    if (!aggregatedData || aggregatedData.length === 0) return [];
+
+    // Calculate spacing between points based on the number of data points
+    const pointCount = aggregatedData.length;
+
+    // Create evenly spaced points
+    return aggregatedData.map((y, index) => ({
+      x: index + 1, // Start from 1 for better readability
       y
     }));
   }
 
   function updateChart() {
-    if (type == 'mood') {
-      console.log('mood');
-      yLimit = 5;
-      ySteps = 1;
-    } else {
-      yLimit = 10;
-      ySteps = 2;
-    }
-    // Clear previous chart if it exists
+    // Clear previous chart
     if (svgElement) {
       d3.select(svgElement).selectAll('*').remove();
     }
 
-    const data = convertToCoordinates();
-    console.log('DATA in updateChart');
-    console.log(data);
+    // Get aggregated data
+    const aggregatedData = aggregateDataByTimeframe(dataArr, timeframe);
+    const data = aggregatedData.map((y, index) => ({ x: index + 1, y }));
+
+    console.log('Aggregated data for timeframe', timeframe, data);
 
     if (!data || data.length === 0) return;
 
@@ -155,11 +256,12 @@
       )
       .attr('d', line);
 
-    // Create axis generators with custom tick size
+    // Adjust x-axis ticks based on data points
     const xAxis = d3
       .axisBottom(xScale)
       .tickFormat((d) => (d === 0 ? '' : d3.format('d')(d)))
-      .tickValues(d3.range(0, xLimit + 1, xSteps))
+      // Always use the full xLimit range of ticks, regardless of data length
+      .tickValues(d3.range(1, xLimit + 1, xSteps))
       .tickSize(tickSize)
       .tickPadding(15);
 
@@ -169,6 +271,9 @@
       .tickValues(d3.range(0, yLimit + 1, ySteps))
       .tickSize(tickSize)
       .tickPadding(15);
+
+    // Rest of your chart rendering code (unchanged)
+    // ...
 
     // Add the x-axis with custom styling
     const xAxisGroup = svg
@@ -267,7 +372,6 @@
       .text(yLabel);
 
     // Measure the text and position the background appropriately
-    // We need to be more careful with rotated text measurements
     const yTextBox = yLabelText.node().getBBox();
     yLabelBg
       .attr('transform', 'rotate(-90)')
@@ -298,8 +402,10 @@
       .attr('cy', (d) => yScale(d.y))
       .attr('r', pointRadius)
       .attr('fill', (d) => {
-        // Use color from colorMap if y value exists there, otherwise use defaultColor
-        return colorMap[d.y] || defaultColor;
+        // Round the y value to nearest integer for color mapping
+        const roundedValue = Math.round(d.y);
+        // Use color from colorMap if rounded y value exists there, otherwise use defaultColor
+        return colorMap[roundedValue] || defaultColor;
       });
   }
 

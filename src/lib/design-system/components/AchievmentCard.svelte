@@ -2,10 +2,12 @@
   import Icon from './Icon.svelte';
   import { typography } from '$lib/design-system/typography';
   import { onMount } from 'svelte';
+  import { achievementsMap } from '$lib/achievements';
 
   export let achievementTitle: string;
   export let achievementMark: string;
   export let achievementValue: number;
+  export let achievmentId: string;
   export let isLocked = false;
 
   let valueLabel = `${achievementValue} ${achievementMark}`;
@@ -60,20 +62,22 @@
         {/if}
       {:else}
         <div class="floating-icon">
-          <Icon name="polar-bear" size="small" />
+          <Icon name={achievementsMap[achievmentId]} size="small" />
         </div>
       {/if}
     </div>
 
     {#if isLocked}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
       >
         Locked
       </p>
     {:else}
       <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
+        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+          .xsmall}; font-weight: {typography.fontWeights.regular}; text-align: center;"
       >
         {achievementTitle}
       </p>
@@ -81,13 +85,13 @@
 
     <p
       class="achievement-mark"
-      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .xsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic;"
     >
       {valueLabel}
     </p>
   </div>
 </div>
-
 
 <style>
   p {
@@ -141,4 +145,3 @@
     }
   }
 </style>
-
