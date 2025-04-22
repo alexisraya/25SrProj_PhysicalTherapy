@@ -198,11 +198,6 @@ export async function getWeeklyProgress(userId: string): Promise<{
   exercisesCompleted: number;
   remainingDays: number;
   daysNeededForStreak: number;
-  weekStartDate: string;
-  daysCompleted: number;
-  exercisesCompleted: number;
-  remainingDays: number;
-  daysNeededForStreak: number;
 }> {
   try {
     const stats = await getUserStats(userId);
