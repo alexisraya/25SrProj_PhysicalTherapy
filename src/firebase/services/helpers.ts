@@ -43,7 +43,7 @@ export function initializeUserStats(): UserStats {
 
   return {
     currentStreak: 0,
-    longestStreak: 0, // Keeping this even though not actively used
+    longestStreak: 0,
     lastCompletedDate: null,
     weeklyProgress: {
       weekStartDate: getWeekStartDate(),

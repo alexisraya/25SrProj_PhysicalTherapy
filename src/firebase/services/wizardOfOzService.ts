@@ -1,5 +1,5 @@
 import { db } from '$lib/helpers/firebase';
-import { doc, getDoc, updateDoc, collection, getDocs, query, where, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, query, where, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { getUser, updateUser } from './userService';
 import { getCurrentProgram, updateProgram } from './programService';
 import { updateRangeOfMotion, updateStrength } from './metricsService';
@@ -94,6 +94,15 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
     streakHistory: [],
     achievements: {}
   };
+
+  await clearAllCheckIns(userId);
+  const metricsRef = doc(db, 'userMetrics', userId);
+  await setDoc(metricsRef, {
+    userId,
+    rangeOfMotion: [],
+    strength: [],
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
 
   await updateUser(userId, { stats });
   await updateRangeOfMotion(userId, 1, 60);
@@ -223,6 +232,9 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
       "weight-2": { unlocked: true, unlockedAt: getDateDaysAgo(7).toISOString() }
     }
   };
+
+  await clearAllCheckIns(userId);
+  await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
 
   await updateUser(userId, { stats });
   await updateRangeOfMotion(userId, 1, 72);
@@ -444,6 +456,20 @@ async function applyRun3Scenario(userId: string, user: User): Promise<void> {
 
   await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
   await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);
+}
+
+async function clearAllCheckIns(userId: string): Promise<void> {
+  try {
+    const checkInsRef = collection(db, 'users', userId, 'checkIns');
+    const checkInsSnapshot = await getDocs(checkInsRef);
+    
+    for (const doc of checkInsSnapshot.docs) {
+      await deleteDoc(doc.ref);
+    }
+    console.log(`Cleared all check-ins for user ${userId}`);
+  } catch (error) {
+    console.error(`Error clearing check-ins for user ${userId}:`, error);
+  }
 }
 
 // Helper function: unlock a specific goal

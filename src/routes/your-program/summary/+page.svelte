@@ -124,7 +124,7 @@
             streakType="program"
             streakTotalDays={5}
             streakDaysCompleted={weeklyProgress.daysCompleted}
-            overallStreak={stats?.currentStreak}
+            overallStreak={stats?.longestStreak}
           />
         </div>
         <div class="exercise-summary">
