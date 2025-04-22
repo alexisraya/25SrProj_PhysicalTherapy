@@ -101,16 +101,16 @@
       if (monthAchievements.length > 0) {
         chosenAchievement = monthAchievements[0];
       } else {
-        chosenAchievement = $unlockedAchievements[0];
+        chosenAchievement = null;
       }
 
       // Add these debug logs
-      console.log('New chosen achievement:', chosenAchievement);
-      console.log('Achievement ID:', chosenAchievement.achieveId);
-      console.log('Icon mapping:', achievementsMap[chosenAchievement.achieveId]);
+      console.log('Active month:', month);
+      console.log('Achievements for this month:', monthAchievements);
+      if (chosenAchievement) {
+        console.log('Chosen achievement:', chosenAchievement);
+      }
     }
-
-    console.log('Active month changed to:', activeMonth);
   }
 
   // Function to update goals based on the active month
@@ -127,6 +127,32 @@
   function getMonthAchievements(achievements, month) {
     if (!achievements || achievements.length === 0) return [];
 
+    // Filter achievements that have unlockedAt timestamp
+    const achievementsWithDates = achievements.filter((a) => a.unlockedAt);
+
+    if (achievementsWithDates.length > 0) {
+      // Get user's creation date
+      const userCreatedAt = new Date($authStore.currentUser?.createdAt);
+
+      // Calculate month boundaries
+      const monthStartDate = new Date(userCreatedAt);
+      monthStartDate.setDate(monthStartDate.getDate() + (month - 1) * 30);
+
+      const monthEndDate = new Date(monthStartDate);
+      monthEndDate.setDate(monthEndDate.getDate() + 30);
+
+      // Filter by unlock date
+      const monthAchievements = achievementsWithDates.filter((a) => {
+        const unlockDate = new Date(a.unlockedAt);
+        return unlockDate >= monthStartDate && unlockDate < monthEndDate;
+      });
+
+      if (monthAchievements.length > 0) {
+        return monthAchievements;
+      }
+    }
+
+    // Fall back to categorization by achievement properties
     // Filter achievements that have icon mappings
     const validAchievements = achievements.filter(
       (a) => a.achieveId && achievementsMap && achievementsMap[a.achieveId]
@@ -134,8 +160,7 @@
 
     if (validAchievements.length === 0) return achievements;
 
-    // Simple mapping strategy - you can customize this based on your needs
-    // For example, distribute achievements by type across months
+    // Simple mapping strategy - distribute by type across months
     const distanceAchievements = achievements.filter((a) => a.achieveType === 'distance');
     const weightAchievements = achievements.filter((a) => a.achieveType === 'weight');
     const timeAchievements = achievements.filter((a) => a.achieveType === 'time');
@@ -161,6 +186,44 @@
         return achievements;
     }
   }
+
+  // function getMonthAchievements(achievements, month) {
+  //   if (!achievements || achievements.length === 0) return [];
+
+  //   // Filter achievements that have icon mappings
+  //   const validAchievements = achievements.filter(
+  //     (a) => a.achieveId && achievementsMap && achievementsMap[a.achieveId]
+  //   );
+
+  //   if (validAchievements.length === 0) return achievements;
+
+  //   // Simple mapping strategy - you can customize this based on your needs
+  //   // For example, distribute achievements by type across months
+  //   const distanceAchievements = achievements.filter((a) => a.achieveType === 'distance');
+  //   const weightAchievements = achievements.filter((a) => a.achieveType === 'weight');
+  //   const timeAchievements = achievements.filter((a) => a.achieveType === 'time');
+
+  //   switch (month) {
+  //     case 1:
+  //       // Month 1: Basic achievements with lower target values
+  //       return achievements.filter((a) => a.targetValue < 1000);
+  //     case 2:
+  //       // Month 2: Focus on distance achievements
+  //       return distanceAchievements;
+  //     case 3:
+  //       // Month 3: Focus on weight achievements
+  //       return weightAchievements;
+  //     case 4:
+  //       // Month 4: Focus on time achievements
+  //       return timeAchievements;
+  //     case 5:
+  //       // Month 5: Advanced achievements with higher target values
+  //       return achievements.filter((a) => a.targetValue >= 5000);
+  //     default:
+  //       // Default fallback
+  //       return achievements;
+  //   }
+  // }
 
   // Replace the hardcoded goals assignment
   // Remove this line: goals = $goalStore.goals[2].slice(0, 5).reverse();
