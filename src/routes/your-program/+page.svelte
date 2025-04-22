@@ -208,48 +208,74 @@
       isSaving = true;
       error.set(null);
 
-      // Get all selected exercises
-      const exercisesToComplete = Object.entries(selectedExercises)
+      // First, collect all the selected exercise IDs
+      const selectedExerciseIds = Object.entries(selectedExercises)
         .filter(([_, isSelected]) => isSelected)
-        .map(([exerciseId, _]) => {
-          const exercise = $program?.exercises.find((ex) => ex.exerciseId === exerciseId);
-          if (!exercise) return null;
+        .map(([exerciseId, _]) => exerciseId);
 
-          const adjustedValues = {
-            sets: exercise.sets || 0,
-            reps: exercise.reps || 0,
-            steps: exercise.steps || 0,
-            seconds: exercise.seconds || 0,
-            weight: exercise.weight || 0
-          };
+      console.log('Selected exercises to complete:', selectedExerciseIds);
 
-          return completeExercise(userId, exerciseId, adjustedValues);
-        })
-        .filter(Boolean);
-
-      // Complete all selected exercises
-      if (exercisesToComplete.length > 0) {
-        await Promise.all(exercisesToComplete);
-
-        // Refresh data
-        const [programData, statsData, weeklyData] = await Promise.all([
-          getCurrentProgram(userId),
-          getUserStats(userId),
-          getWeeklyProgress(userId)
-        ]);
-
-        program.set(programData);
-        stats.set(statsData);
-        weeklyProgress.set(weeklyData);
-
-        // Check if all exercises are completed
-        if (programData?.exercises.every((ex) => ex.completed || ex.skipped)) {
-          goto('/exploration/firebase-test/program-complete');
-        }
+      if (selectedExerciseIds.length === 0) {
+        // No selections, just toggle mode
+        isEditing = false;
+        editingTransition = true;
+        buttonLabel = 'Mark them complete here';
+        buttonIcon = 'pencil-fill';
+        setTimeout(() => {
+          editingTransition = false;
+        }, 400);
+        return;
       }
 
-      // Transition to non-edit mode
-      toggleEditMode();
+      // Complete each exercise one by one to ensure they all get processed
+      for (const exerciseId of selectedExerciseIds) {
+        const exercise = $program?.exercises.find((ex) => ex.exerciseId === exerciseId);
+        if (!exercise) continue;
+
+        const adjustedValues = {
+          sets: exercise.sets || 0,
+          reps: exercise.reps || 0,
+          steps: exercise.steps || 0,
+          seconds: exercise.seconds || 0,
+          weight: exercise.weight || 0
+        };
+
+        console.log(`Completing exercise ${exerciseId}:`, adjustedValues);
+        await completeExercise(userId, exerciseId, adjustedValues);
+      }
+
+      // After all exercises are completed, refresh data
+      const [programData, statsData, weeklyData] = await Promise.all([
+        getCurrentProgram(userId),
+        getUserStats(userId),
+        getWeeklyProgress(userId)
+      ]);
+
+      console.log('Updated program data:', programData);
+
+      program.set(programData);
+      stats.set(statsData);
+      weeklyProgress.set(weeklyData);
+
+      // Check if all exercises are completed
+      if (programData?.exercises.every((ex) => ex.completed || ex.skipped)) {
+        goto('/your-program/summary');
+        return; // Exit early if navigating away
+      }
+
+      // Reset all state variables directly
+      isEditing = false;
+      editingTransition = true;
+      selectedExercises = {};
+
+      // Update button appearance
+      buttonLabel = 'Mark them complete here';
+      buttonIcon = 'pencil-fill';
+
+      // End transition after timeout
+      setTimeout(() => {
+        editingTransition = false;
+      }, 400);
     } catch (err) {
       console.error('Error saving completed exercises:', err);
       error.set(err instanceof Error ? err.message : 'Failed to mark exercises as complete');
@@ -274,16 +300,16 @@
     if (editingTransition) return; // Prevent multiple clicks during transition
     editingTransition = true;
 
+    // If we're in edit mode and have selections, save them
+    if (isEditing && Object.values(selectedExercises).some((selected) => selected)) {
+      saveCompletedExercises(); // This now handles all state changes
+      return;
+    }
+
     // Set up next state values based on current state
     if (isEditing) {
-      // If we're leaving edit mode and have selected exercises, save them
-      if (Object.values(selectedExercises).some((selected) => selected)) {
-        saveCompletedExercises();
-        return; // saveCompletedExercises will call toggleEditMode again
-      } else {
-        nextButtonLabel = 'Mark them complete here';
-        nextButtonIcon = 'pencil-fill';
-      }
+      nextButtonLabel = 'Mark them complete here';
+      nextButtonIcon = 'pencil-fill';
     } else {
       nextButtonLabel = 'Save changes';
       nextButtonIcon = 'check-line';

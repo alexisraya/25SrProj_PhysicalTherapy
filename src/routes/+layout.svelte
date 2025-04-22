@@ -10,9 +10,32 @@
   import { page } from '$app/stores';
   import { setupToneContext, type ToneType } from '$lib/helpers/toneContext';
   import { browser } from '$app/environment';
+  import { hasCompletedOnboarding } from '$stores/onboarding';
+  import { goto } from '$app/navigation';
 
   let currentUserId: string | null = null;
   let initialTone: ToneType = 'kind';
+
+  function checkOnboardingStatus() {
+    // Get current path
+    const currentPath = $page.url.pathname;
+
+    // Skip check if user is already on onboarding or login pages
+    if (currentPath === '/onboarding' || currentPath === '/login' || currentPath === '/register') {
+      return;
+    }
+
+    // Get onboarding completion status
+    let hasCompleted = false;
+    hasCompletedOnboarding.subscribe((value) => {
+      hasCompleted = value;
+    })();
+
+    // If user hasn't completed onboarding, redirect to onboarding page
+    if (!hasCompleted && $authStore.currentUser) {
+      goto('/onboarding');
+    }
+  }
 
   if (browser) {
     try {
@@ -43,6 +66,8 @@
           userStore.loadUser(user.uid);
           programStore.loadProgram(user.uid);
           goalStore.loadGoals(user.uid);
+
+          checkOnboardingStatus();
         }
       } else {
         currentUserId = null;
@@ -64,10 +89,17 @@
       });
     }
 
+    const pageUnsubscribe = page.subscribe(() => {
+      if ($authStore.currentUser && !$authStore.isLoading) {
+        checkOnboardingStatus();
+      }
+    });
+
     // Return cleanup function that unsubscribes from both
     return () => {
       authUnsubscribe();
       toneUnsubscribe();
+      pageUnsubscribe();
     };
   });
 

@@ -118,3 +118,9 @@ export const achievementsByType = derived<typeof achievementStore, AchievementsB
     return byType;
   }
 );
+
+export function getUnlockedAchievements(isLocked: boolean = false) {
+  return derived<typeof achievementStore, AchievementWithStatus[]>(achievementStore, ($store) =>
+    $store.achievements.filter((a) => (isLocked ? !a.unlocked : a.unlocked))
+  );
+}
