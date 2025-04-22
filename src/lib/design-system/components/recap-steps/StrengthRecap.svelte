@@ -5,21 +5,42 @@
   import { getAllMonthlyRecaps, type MonthlyRecap } from '$firebase/services/monthlyRecapService';
   import { currentMonth } from '$stores/monthlyrecap';
   import { getTone } from '$lib/helpers/toneContext';
-  import BarChart from '$lib/design-system/components/BarChart.svelte';
+  import RecapBarChart from '../RecapBarChart.svelte';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
   let metricsData;
+  let lastMonthMetricsData;
+  let data = []; // Initialize with empty array
+  let error = '';
+  let loading = true;
+
+  // Consistently use the same indexing approach
   $: {
-    if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth - 1 < recaps.length) {
+    if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
+      if ($currentMonth > 1) {
+        lastMonthMetricsData = recaps[$currentMonth - 2]?.metrics;
+
+        // Only create data array if both values exist
+        if (
+          metricsData?.strength?.value !== undefined &&
+          lastMonthMetricsData?.strength?.value !== undefined
+        ) {
+          data = [
+            { month: `${$currentMonth - 1}`, degrees: lastMonthMetricsData.strength.value },
+            { month: `${$currentMonth}`, degrees: metricsData.strength.value }
+          ];
+          console.log('Chart data:', data);
+        }
+      }
     }
   }
 
   const { text } = getTone();
-  const descreaseText = $text(`recap_strength_decrease`);
-  const increaseText = $text(`strength_increase`);
-  const steadyText = $text(`strength_steady`);
+  const descreaseText = $text(`recap_rom_decrease`);
+  const increaseText = $text(`rom_increase`);
+  const steadyText = $text(`rom_steady`);
 
   onMount(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -31,6 +52,7 @@
 
       userId = user.uid;
       await loadRecaps();
+      loading = false;
     });
 
     return unsubscribe;
@@ -40,30 +62,25 @@
     try {
       recaps = await getAllMonthlyRecaps(userId, 5);
       console.log('Loaded recaps:', recaps);
-
-      if (recaps && recaps.length > 0 && $currentMonth >= 0 && $currentMonth < recaps.length) {
-        metricsData = recaps[$currentMonth]?.metrics;
-        console.log('Metrics data:', metricsData);
-
-        // Check if unlocked exists before trying to access it
-        if (metricsData) {
-          console.log('First metricsData ID:', metricsData);
-        }
-      }
     } catch (err) {
       console.error('Error loading recaps:', err);
+      error = 'Error loading recaps';
     }
   }
 </script>
 
-{#if metricsData}
+{#if loading}
+  <p>Loading...</p>
+{:else if error}
+  <p>{error}</p>
+{:else if metricsData?.strength}
   <div class="pain-recap-container">
-    {#if $currentMonth == 1 || metricsData.strength.change == 0 || metricsData.strength.change == null}
+    {#if $currentMonth === 1 || !metricsData.strength.change}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're strength has been steady
+        Your strength has been steady
       </h3>
       <p>{steadyText}</p>
     {:else if metricsData.strength.change < 0}
@@ -71,7 +88,7 @@
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're strength has decreased
+        Your strength has decreased
       </h3>
       <p>{descreaseText}</p>
     {:else}
@@ -79,10 +96,24 @@
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're strength has increased
+        Your strength has increased
       </h3>
       <p>{increaseText}</p>
     {/if}
-    <BarChart dataArr={[40, 65]} yLabel="Degrees" type="rom" title="Strength Progress" />
+
+    {#if data && data.length === 2}
+      <RecapBarChart
+        coordinates={data}
+        xAxisColor="var(--color-blue-1100)"
+        yAxisColor="var(--text-primary)"
+        yAxisMax={5}
+        yAxisTicks={[1, 2, 3, 4, 5]}
+        yAxisTitle="Rating"
+      />
+    {:else}
+      <p>Insufficient data to display chart</p>
+    {/if}
   </div>
+{:else}
+  <p>No strength data available</p>
 {/if}

@@ -5,14 +5,35 @@
   import { getAllMonthlyRecaps, type MonthlyRecap } from '$firebase/services/monthlyRecapService';
   import { currentMonth } from '$stores/monthlyrecap';
   import { getTone } from '$lib/helpers/toneContext';
-  import BarChart from '$lib/design-system/components/BarChart.svelte';
+  import RecapBarChart from '../RecapBarChart.svelte';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
   let metricsData;
+  let lastMonthMetricsData;
+  let data = []; // Initialize with empty array
+  let error = '';
+  let loading = true;
+
+  // Consistently use the same indexing approach
   $: {
-    if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth - 1 < recaps.length) {
+    if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
+      if ($currentMonth > 1) {
+        lastMonthMetricsData = recaps[$currentMonth - 2]?.metrics;
+
+        // Only create data array if both values exist
+        if (
+          metricsData?.rangeOfMotion?.value !== undefined &&
+          lastMonthMetricsData?.rangeOfMotion?.value !== undefined
+        ) {
+          data = [
+            { month: `${$currentMonth - 1}`, degrees: lastMonthMetricsData.rangeOfMotion.value },
+            { month: `${$currentMonth}`, degrees: metricsData.rangeOfMotion.value }
+          ];
+          console.log('Chart data:', data);
+        }
+      }
     }
   }
 
@@ -31,6 +52,7 @@
 
       userId = user.uid;
       await loadRecaps();
+      loading = false;
     });
 
     return unsubscribe;
@@ -40,30 +62,25 @@
     try {
       recaps = await getAllMonthlyRecaps(userId, 5);
       console.log('Loaded recaps:', recaps);
-
-      if (recaps && recaps.length > 0 && $currentMonth >= 0 && $currentMonth < recaps.length) {
-        metricsData = recaps[$currentMonth]?.metrics;
-        console.log('Metrics data:', metricsData);
-
-        // Check if unlocked exists before trying to access it
-        if (metricsData) {
-          console.log('First metricsData ID:', metricsData);
-        }
-      }
     } catch (err) {
       console.error('Error loading recaps:', err);
+      error = 'Error loading recaps';
     }
   }
 </script>
 
-{#if metricsData}
+{#if loading}
+  <p>Loading...</p>
+{:else if error}
+  <p>{error}</p>
+{:else if metricsData?.rangeOfMotion}
   <div class="pain-recap-container">
-    {#if $currentMonth == 1 || metricsData.rangeOfMotion.change == 0 || metricsData.rangeOfMotion.change == null}
+    {#if $currentMonth === 1 || !metricsData.rangeOfMotion.change}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're range of motion has been steady
+        Your range of motion has been steady
       </h3>
       <p>{steadyText}</p>
     {:else if metricsData.rangeOfMotion.change < 0}
@@ -71,7 +88,7 @@
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're range of motion has decreased
+        Your range of motion has decreased
       </h3>
       <p>{descreaseText}</p>
     {:else}
@@ -79,10 +96,17 @@
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        You're range of motion has increased
+        Your range of motion has increased
       </h3>
       <p>{increaseText}</p>
     {/if}
-    <BarChart dataArr={[40, 65]} yLabel="Degrees" type="rom" title="Range of Motion Progress" />
+
+    {#if data && data.length === 2}
+      <RecapBarChart coordinates={data} />
+    {:else}
+      <p>Insufficient data to display chart</p>
+    {/if}
   </div>
+{:else}
+  <p>No range of motion data available</p>
 {/if}
