@@ -1,12 +1,14 @@
 <script>
   import { typography } from '$lib/design-system/typography';
   import Character from '$lib/assets/iconography/Character.png';
+  import Character2 from '$lib/assets/iconography/Character2.png';
+  import Character3 from '$lib/assets/iconography/Character3.png';
 
   // Define your characters – you could also fetch these from an API or define more properties
   let characters = [
-    { id: 1, name: 'Bree', image: Character },
+    { id: 1, name: 'Alex', image: Character3 },
     { id: 2, name: 'Kieran', image: Character },
-    { id: 3, name: 'Alex', image: Character }
+    { id: 3, name: 'Bree', image: Character2 }
   ];
 
   // Set the initial selected character (e.g., the first one)
@@ -20,10 +22,8 @@
 
 <div class="select-character-section">
   {#each characters as character}
-    <button
-      class="character {selectedId === character.id ? 'selected' : ''}"
-      on:click={() => selectCharacter(character.id)}
-    >
+    <button class="character {selectedId === character.id ? 'selected' : ''}">
+      <!-- on:click={() => selectCharacter(character.id)} -->
       <img
         class="character--img {selectedId === character.id ? 'selected-img' : ''}"
         src={character.image}
@@ -83,17 +83,21 @@
     box-sizing: border-box;
     display: block;
     width: 100%;
-    height: auto;
+    object-fit: cover;
+    height: 100px;
     border-radius: 8px;
   }
 
   .character--overlay {
     box-sizing: border-box;
+    border-radius: 4px;
+
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 1%;
+    left: 5px;
+    margin: 4px auto;
+    width: 90%;
+    height: 91%;
     background: var(--color-grey-opactity-dark);
     transition: ease-in-out 0.2s;
   }
@@ -110,7 +114,7 @@
   }
 
   .selected {
-    border: 1px solid var(--color-blue-1100);
+    border: 1px solid var(--text-primary);
     transition: ease-in-out 0.2s;
   }
 
@@ -124,4 +128,3 @@
     color: var(--color-grey-0) !important;
   }
 </style>
-
