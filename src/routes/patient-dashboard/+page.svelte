@@ -295,36 +295,38 @@
         </p>
         <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
       </div>
-      {#if activeCheckInData && activeCheckInData.length > 0}
-        <LineChart
-          dataArr={activeCheckInData}
-          type={checkInChartType}
-          timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
-          title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
-        />
-        <div class="timeframe-selector">
-          <XAxisTimeFrameSelectors
-            selectedTimeFrame={checkInTimeFrame}
-            on:timeframeChange={handleCheckInTimeFrameChange}
+      <div class="chart-body">
+        {#if activeCheckInData && activeCheckInData.length > 0}
+          <LineChart
+            dataArr={activeCheckInData}
+            type={checkInChartType}
+            timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
+            title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
           />
-        </div>
-      {:else}
-        <div class="no-metrics-container">
-          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights.medium};"
-          >
-            No metrics yet
-          </p>
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .xsmall}; font-weight: {typography.fontWeights.regular};"
-          >
-            Complete your check in to see up-to-date data here
-          </p>
-        </div>
-      {/if}
+          <div class="timeframe-selector">
+            <XAxisTimeFrameSelectors
+              selectedTimeFrame={checkInTimeFrame}
+              on:timeframeChange={handleCheckInTimeFrameChange}
+            />
+          </div>
+        {:else}
+          <div class="no-metrics-container">
+            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .regular}; font-weight: {typography.fontWeights.medium};"
+            >
+              No metrics yet
+            </p>
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights.regular};"
+            >
+              Complete your check in to see up-to-date data here
+            </p>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 {:else}
@@ -397,6 +399,7 @@
     width: 100%;
   }
   .timeframe-selector {
+    box-sizing: border-box;
     padding: 0 12px 12px;
     width: 100%;
   }
@@ -434,6 +437,12 @@
     justify-content: space-between;
     padding: 8px 12px;
     width: 100%;
+  }
+
+  .chart-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   @media (min-width: 800px) {
     .break {
