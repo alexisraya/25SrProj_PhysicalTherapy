@@ -3,6 +3,8 @@
   import { authStore } from '$stores/authStore';
   import { achievementStore, achievementsByType } from '$stores/achieveStore';
   import AchievmentCard from '$lib/design-system/components/AchievmentCard.svelte';
+  import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+
   import { typography } from '$lib/design-system';
 
   onMount(() => {
@@ -12,6 +14,18 @@
   });
 </script>
 
+<div class="back-arrow-container">
+  <a href="./" class="back-arrow">
+    <RemixIcon name="arrow-left-s-line" size="32px" />
+    <p
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .small}; font-weight: {typography.fontWeights.bold};"
+      class="arrow-text"
+    >
+      Back
+    </p>
+  </a>
+</div>
 <div class="achievement-page-container">
   {#if $achievementStore.isLoading}
     <div class="loading-container">
@@ -113,6 +127,23 @@
   h3 {
     margin: 0;
   }
+  a {
+    color: var(--primary-text);
+  }
+  .loading-container {
+    margin: auto;
+  }
+  .back-arrow-container {
+    position: absolute;
+    padding: 24px;
+  }
+  .back-arrow {
+    display: inline-flex;
+    align-items: center;
+  }
+  .arrow-text {
+    display: none;
+  }
   .achievement-page-container {
     display: flex;
     flex-direction: column;
@@ -164,6 +195,13 @@
     }
     .large-screen-show {
       display: block;
+    }
+    .arrow-text {
+      display: block;
+    }
+    .back-arrow-container {
+      position: absolute;
+      padding: 24px;
     }
   }
 </style>
