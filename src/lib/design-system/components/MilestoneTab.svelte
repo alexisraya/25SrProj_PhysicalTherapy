@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import { authStore } from '$stores/authStore';
   import { goalStore } from '$stores/goalStore';
@@ -10,33 +10,82 @@
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
   import { getUserStats, getWeeklyProgress } from '$firebase/services/statService';
 
-  let goals;
-
   let stats;
+  let monthlyProgress;
   let weeklyProgress;
+  let completedMonths = [];
   let longestStreak = 0;
   let currentStreak = 0;
+  // In MilestoneTab.svelte, add these changes to the script section
+
+  // Add state for active month
+  let activeMonth = 2; // Set your default active month (seems to be month 2 based on your code)
+  let totalMonths = 5; // Total number of months to display
+  let goals = [];
+
+  // Update the onMount function to load the correct goals for the active month
   onMount(async () => {
     if ($authStore.currentUser) {
-      goalStore.loadGoals($authStore.currentUser.uid);
-      console.log($goalStore.goals);
+      await goalStore.loadGoals($authStore.currentUser.uid);
+
       stats = await getUserStats($authStore.currentUser.uid);
+      monthlyProgress = stats?.monthlyProgress;
+      completedMonths = Object.keys(monthlyProgress);
+
+      // Set active month to the NEXT month after completed ones
+      // or to 1 if no months are completed yet
+      activeMonth = completedMonths.length > 0 ? completedMonths.length : 1;
+
+      // Make sure activeMonth doesn't exceed total months
+      if (activeMonth > totalMonths) {
+        activeMonth = totalMonths;
+      }
+
       longestStreak = stats?.longestStreak;
       weeklyProgress = await getWeeklyProgress($authStore.currentUser.uid);
-      console.log(weeklyProgress);
       currentStreak = weeklyProgress.daysCompleted;
+
+      updateGoalsForActiveMonth();
     }
   });
 
-  goals = $goalStore.goals[2].slice(0, 5).reverse(); //TODO: ALEXIS Make Month dynamic
+  // In MilestoneTab.svelte
+  function selectMonth(month) {
+    // Always update the activeMonth regardless of current state
+    activeMonth = month;
+    updateGoalsForActiveMonth();
+    console.log('Active month changed to:', activeMonth);
+  }
+
+  // Function to update goals based on the active month
+  function updateGoalsForActiveMonth() {
+    // Check if goals are loaded
+    if ($goalStore.goals && $goalStore.goals[activeMonth]) {
+      goals = $goalStore.goals[activeMonth].reverse().slice(0, 5);
+    } else {
+      // Fallback if goals for this month aren't available
+      goals = [];
+    }
+  }
+
+  // Replace the hardcoded goals assignment
+  // Remove this line: goals = $goalStore.goals[2].slice(0, 5).reverse();
 </script>
 
 <div class="milestone-header">
-  <MilestoneMonths month={1} isComplete />
-  <MilestoneMonths month={2} isActive />
-  <MilestoneMonths month={3} isUpcoming />
-  <MilestoneMonths month={4} isUpcoming />
-  <MilestoneMonths month={5} isUpcoming />
+  {#each Array(totalMonths) as _, index}
+    {@const month = index + 1}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="month-selector" on:click={() => selectMonth(month)}>
+      <MilestoneMonths
+        {month}
+        isComplete={month <= completedMonths.length}
+        isActive={month === activeMonth}
+        isUpcoming={month > completedMonths.length}
+      />
+    </div>
+  {/each}
 </div>
 <div class="milestone-background">
   <div class="milestone-body">
@@ -77,13 +126,24 @@
         <RemixIcon name="arrow-right-s-line" />
       </a>
       <div class="goals-container">
-        {#each goals as goalItem}
-          <Goal
-            goalName={goalItem.goalName}
-            isLocked={!goalItem.unlocked}
-            extraInfo={goalItem.timeframe}
-          />
-        {/each}
+        {#if goals.length > 0}
+          {#each goals as goalItem}
+            <Goal
+              goalName={goalItem.goalName}
+              isLocked={!goalItem.unlocked}
+              extraInfo={goalItem.timeframe}
+            />
+          {/each}
+        {:else}
+          <div class="no-goals">
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights.regular};"
+            >
+              No goals available for this month
+            </p>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -105,6 +165,9 @@
     &::-webkit-scrollbar {
       display: none;
     }
+  }
+  .month-selector {
+    cursor: pointer;
   }
   .milestone-body {
     display: grid;
