@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { authStore } from '$stores/authStore';
   import { goalStore } from '$stores/goalStore';
+  import { achievementStore, getUnlockedAchievements } from '$stores/achieveStore';
   import MilestoneMonths from '$lib/design-system/components/MilestoneMonths.svelte';
   import Achievement from '$lib/design-system/components/Achievement.svelte';
   import Streak from '$lib/design-system/components/Streak.svelte';
@@ -9,10 +10,27 @@
   import { typography } from '$lib/design-system/typography';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
   import { getUserStats, getWeeklyProgress } from '$firebase/services/statService';
+  import { achievementsMap } from '$lib/achievements';
 
   let stats;
   let monthlyProgress;
   let weeklyProgress;
+  let unlockedAchievements;
+  let chosenAchievement;
+  $: if ($unlockedAchievements && $unlockedAchievements.length > 0) {
+    // Get achievements for the active month
+    const monthAchievements = getMonthAchievements($unlockedAchievements, activeMonth);
+
+    if (monthAchievements.length > 0) {
+      // If we have achievements for this month, pick one
+      chosenAchievement = monthAchievements[0];
+    } else {
+      // Fallback: use any unlocked achievement
+      chosenAchievement = $unlockedAchievements[0];
+    }
+
+    console.log(`Selected achievement for month ${activeMonth}:`, chosenAchievement);
+  }
   let completedMonths = [];
   let longestStreak = 0;
   let currentStreak = 0;
@@ -22,19 +40,39 @@
   let activeMonth = 2; // Set your default active month (seems to be month 2 based on your code)
   let totalMonths = 5; // Total number of months to display
   let goals = [];
+  let achievements = [];
+  let achievementIconId = '';
 
   // Update the onMount function to load the correct goals for the active month
   onMount(async () => {
     if ($authStore.currentUser) {
       await goalStore.loadGoals($authStore.currentUser.uid);
+      await achievementStore.loadAchievements($authStore.currentUser.uid);
 
       stats = await getUserStats($authStore.currentUser.uid);
       monthlyProgress = stats?.monthlyProgress;
+      console.log('LOOK HERE');
+      console.log($achievementStore);
+      console.log($goalStore);
+
       completedMonths = Object.keys(monthlyProgress);
 
       // Set active month to the NEXT month after completed ones
       // or to 1 if no months are completed yet
       activeMonth = completedMonths.length > 0 ? completedMonths.length : 1;
+      unlockedAchievements = getUnlockedAchievements();
+
+      // Wait until the next tick to ensure the store is populated
+      setTimeout(() => {
+        // Make sure we have achievements before picking a random one
+        if ($unlockedAchievements && $unlockedAchievements.length > 0) {
+          // Get a random index (between 0 and length-1)
+          const randomIndex = Math.floor(Math.random() * $unlockedAchievements.length);
+          // Use the random index to select an achievement
+          chosenAchievement = $unlockedAchievements[randomIndex];
+          console.log('Chosen achievement:', chosenAchievement);
+        }
+      }, 0);
 
       // Make sure activeMonth doesn't exceed total months
       if (activeMonth > totalMonths) {
@@ -50,10 +88,28 @@
   });
 
   // In MilestoneTab.svelte
+  // In your selectMonth function in MilestoneTab.svelte
   function selectMonth(month) {
     // Always update the activeMonth regardless of current state
     activeMonth = month;
     updateGoalsForActiveMonth();
+
+    // Also update the achievement for this month
+    if ($unlockedAchievements && $unlockedAchievements.length > 0) {
+      const monthAchievements = getMonthAchievements($unlockedAchievements, month);
+
+      if (monthAchievements.length > 0) {
+        chosenAchievement = monthAchievements[0];
+      } else {
+        chosenAchievement = $unlockedAchievements[0];
+      }
+
+      // Add these debug logs
+      console.log('New chosen achievement:', chosenAchievement);
+      console.log('Achievement ID:', chosenAchievement.achieveId);
+      console.log('Icon mapping:', achievementsMap[chosenAchievement.achieveId]);
+    }
+
     console.log('Active month changed to:', activeMonth);
   }
 
@@ -65,6 +121,44 @@
     } else {
       // Fallback if goals for this month aren't available
       goals = [];
+    }
+  }
+
+  function getMonthAchievements(achievements, month) {
+    if (!achievements || achievements.length === 0) return [];
+
+    // Filter achievements that have icon mappings
+    const validAchievements = achievements.filter(
+      (a) => a.achieveId && achievementsMap && achievementsMap[a.achieveId]
+    );
+
+    if (validAchievements.length === 0) return achievements;
+
+    // Simple mapping strategy - you can customize this based on your needs
+    // For example, distribute achievements by type across months
+    const distanceAchievements = achievements.filter((a) => a.achieveType === 'distance');
+    const weightAchievements = achievements.filter((a) => a.achieveType === 'weight');
+    const timeAchievements = achievements.filter((a) => a.achieveType === 'time');
+
+    switch (month) {
+      case 1:
+        // Month 1: Basic achievements with lower target values
+        return achievements.filter((a) => a.targetValue < 1000);
+      case 2:
+        // Month 2: Focus on distance achievements
+        return distanceAchievements;
+      case 3:
+        // Month 3: Focus on weight achievements
+        return weightAchievements;
+      case 4:
+        // Month 4: Focus on time achievements
+        return timeAchievements;
+      case 5:
+        // Month 5: Advanced achievements with higher target values
+        return achievements.filter((a) => a.targetValue >= 5000);
+      default:
+        // Default fallback
+        return achievements;
     }
   }
 
@@ -89,12 +183,28 @@
 </div>
 <div class="milestone-background">
   <div class="milestone-body">
-    <div class="achievement-section">
-      <Achievement
-        type="milestones"
-        achievementDescription="You've lifted the weight of a polar bear!"
-      />
-    </div>
+    {#if $unlockedAchievements && $unlockedAchievements.length > 0 && chosenAchievement}
+      <div class="achievement-section">
+        {#key activeMonth}
+          <Achievement
+            type="milestones"
+            achievementDescription={chosenAchievement.achieveName}
+            achievmentId={chosenAchievement.achieveId}
+            iconName={achievementsMap[chosenAchievement.achieveId]}
+          />
+        {/key}
+      </div>
+    {:else}
+      <div class="achievement-section">
+        <Achievement
+          type="milestones"
+          achievementDescription="No achievements unlocked for this month yet!"
+          achievmentId="placeholder"
+          iconName="trophy"
+        />
+      </div>
+    {/if}
+
     <div class="streak-section">
       <div class="streak-small">
         <Streak
