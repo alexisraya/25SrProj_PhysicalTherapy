@@ -205,6 +205,10 @@
       }
     }
   }
+  function convertStepsToMiles(steps: number): number {
+    const miles = steps * (0.413 / 5280);
+    return parseFloat(miles.toFixed(2));
+  }
 </script>
 
 <div class="stats-container">
@@ -262,8 +266,12 @@
       <StatBlock statTitle="Completed Programs" stat={stats.completedPrograms} />
       <StatBlock statTitle="Total Reps" stat={stats.totalReps} />
       <StatBlock statTitle="Total Sets" stat={stats.totalSets} />
-      <StatBlock statTitle="Total Lifted" stat={stats.totalWeight} />
-      <StatBlock statTitle="Total Distance" stat={stats.totalDistance} />
+      <StatBlock statTitle="Total Lifted" stat={stats.totalWeight} unit="lbs" />
+      <StatBlock
+        statTitle="Total Distance"
+        stat={convertStepsToMiles(stats.totalDistance)}
+        unit="mi"
+      />
     {:else}
       <p>Loading Stats...</p>
     {/if}
