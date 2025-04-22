@@ -288,7 +288,6 @@
         </a>
         <ProgressBar totalExercises={program.exercises.length} {completedExercises} />
       </div>
-
       <ExerciseModel modelPath="/models/SmallTest2.glb" />
       <div class="exercise-info-container">
         <ExerciseInfoBlock
@@ -619,12 +618,26 @@
   }
 
   .exercise-info-container {
+    display: block;
     position: relative;
-    bottom: 112px;
+    bottom: 12px;
   }
 
   .hide-mobile {
     display: none;
+  }
+
+  .exercise_container--top {
+    /* Other existing styles */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Create a dedicated container for the model with fixed proportions */
+  :global(.exercise-model) {
+    width: 100%;
+    /* Don't set height here - let the component handle it */
+    margin: 20px 0;
   }
 
   /* Media query for screens larger than 800px */
@@ -653,6 +666,10 @@
       padding: 20px;
       justify-content: center;
       position: relative; /* For positioning child elements */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-top: 150px;
     }
 
     /* Right half - Exercise info/controls */
@@ -740,7 +757,20 @@
     }
 
     .exercise-info-container {
-      bottom: 0px;
+      bottom: 0;
+      position: relative;
+    }
+  }
+  @media screen and (max-width: 799px) {
+    .exercise_container-bottom::before {
+      content: none; /* Remove the pseudo-element on mobile */
+      display: none;
+      height: 0;
+    }
+
+    .exercise_container--top :global(.exercise-model) {
+      margin-top: auto; /* Reset the margin */
+      flex: none; /* Reset the flex property */
     }
   }
 </style>
