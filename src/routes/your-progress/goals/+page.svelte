@@ -4,6 +4,7 @@
   import { goalStore } from '$stores/goalStore';
   import Goal from '$lib/design-system/components/Goal.svelte';
   import { typography } from '$lib/design-system';
+  import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
   onMount(() => {
     if ($authStore.currentUser) {
@@ -16,6 +17,18 @@
   }
 </script>
 
+<div class="back-arrow-container">
+  <a href="./" class="back-arrow">
+    <RemixIcon name="arrow-left-s-line" size="32px" />
+    <p
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .small}; font-weight: {typography.fontWeights.bold};"
+      class="arrow-text"
+    >
+      Back
+    </p>
+  </a>
+</div>
 <div class="goals-page-container">
   <div class="goals-header">
     <h3
@@ -81,6 +94,23 @@
   h3 {
     margin: 0;
   }
+  a {
+    color: var(--primary-text);
+  }
+  .loading-container {
+    margin: auto;
+  }
+  .back-arrow-container {
+    position: absolute;
+    padding: 16px;
+  }
+  .back-arrow {
+    display: inline-flex;
+    align-items: center;
+  }
+  .arrow-text {
+    display: none;
+  }
   .goals-page-container {
     display: flex;
     flex-direction: column;
@@ -127,6 +157,13 @@
       justify-content: center;
       column-gap: 25.5px;
       row-gap: 16px;
+    }
+    .arrow-text {
+      display: block;
+    }
+    .back-arrow-container {
+      position: absolute;
+      padding: 24px;
     }
   }
 </style>
