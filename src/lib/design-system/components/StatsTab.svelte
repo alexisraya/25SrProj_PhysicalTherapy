@@ -214,26 +214,14 @@
   }
 
   async function handleCheckInTimeFrameChange(event) {
-    const newTimeFrame = event.detail;
+    // Update the timeframe first
+    checkInTimeFrame = event.detail;
 
-    // Only update if the timeframe actually changed
-    if (newTimeFrame === checkInTimeFrame) return;
-
-    checkInTimeFrame = newTimeFrame;
-
-    // Show loading state for this section
-    // You might want to add a local loading state for just this section
-
-    // Load data for this timeframe if not loaded yet
+    // Then load data if needed
     if (!painStatsData[checkInTimeFrame]?.length && !moodStatsData[checkInTimeFrame]?.length) {
       if ($authStore.currentUser) {
         const apiTimeFrame = convertTimeFrameToApiFormat(checkInTimeFrame);
-        try {
-          await loadCheckInStatus($authStore.currentUser.uid, apiTimeFrame);
-        } catch (err) {
-          console.error(`Error loading data for timeframe ${checkInTimeFrame}:`, err);
-          // Handle error appropriately
-        }
+        await loadCheckInStatus($authStore.currentUser.uid, apiTimeFrame);
       }
     }
   }
@@ -328,7 +316,10 @@
           title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
         />
         <div class="timeframe-selector">
-          <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
+          <XAxisTimeFrameSelectors
+            selectedTimeFrame={checkInTimeFrame}
+            on:timeframeChange={handleCheckInTimeFrameChange}
+          />
         </div>
       {:else}
         <div class="no-data-container">

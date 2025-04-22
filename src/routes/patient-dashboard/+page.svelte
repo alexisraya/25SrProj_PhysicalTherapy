@@ -178,9 +178,10 @@
   }
 
   async function handleCheckInTimeFrameChange(event) {
+    // Update the timeframe first
     checkInTimeFrame = event.detail;
 
-    // Load data for this timeframe if not loaded yet
+    // Then load data if needed
     if (!painStatsData[checkInTimeFrame]?.length && !moodStatsData[checkInTimeFrame]?.length) {
       if ($authStore.currentUser) {
         const apiTimeFrame = convertTimeFrameToApiFormat(checkInTimeFrame);
@@ -302,7 +303,10 @@
           title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
         />
         <div class="timeframe-selector">
-          <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
+          <XAxisTimeFrameSelectors
+            selectedTimeFrame={checkInTimeFrame}
+            on:timeframeChange={handleCheckInTimeFrameChange}
+          />
         </div>
       {:else}
         <div class="no-metrics-container">
