@@ -2,8 +2,11 @@
   import { typography } from '$lib/design-system';
   import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
   import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
+  import ProgramCompletePlayButtonLightLarge from '$lib/assets/iconography/ProgramCompletePlayButtonLightLarge.svg';
+  import ProgramCompletePlayButtonDarkLarge from '$lib/assets/iconography/ProgramCompletePlayButtonDarkLarge.svg';
   import homeBackgroundSmallLight from '$lib/assets/background-images/HomeBackgroundSmallLight.svg';
   import homeBackgroundSmallDark from '$lib/assets/background-images/HomeBackgroundSmallDark.svg';
+  import homeBackgroundComplete from '$lib/assets/background-images/HomeBackgroundComplete.svg';
   import Streak from '$lib/design-system/components/Streak.svelte';
   import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
   import LineChart from '$lib/design-system/components/LineChart.svelte';
@@ -210,6 +213,7 @@
     console.log('LOOK HERE');
     console.log(overallStreak);
     console.log(streakDaysCompleted);
+    console.log(program.completed);
 
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
@@ -219,7 +223,13 @@
 
 {#if program && stats && weeklyProgress}
   <div class="wave-container">
-    {#if currentTheme == 'light'}
+    {#if program.completed}
+      <img
+        class="background-wave wave-complete"
+        src={homeBackgroundComplete}
+        alt="background wave"
+      />
+    {:else if currentTheme == 'light'}
       <img
         class="background-wave wave-light"
         src={homeBackgroundSmallLight}
@@ -245,16 +255,24 @@
           style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
             .regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;"
         >
-          {$text(programCTAText)}
+          {program.completed ? $text(programCompleteText) : $text(programCTAText)}
         </p>
       </div>
-      <a href="/your-program">
+      {#if program.completed}
         {#if currentTheme == 'light'}
-          <img src={PlayButtonLight} alt="play button" />
+          <img src={ProgramCompletePlayButtonLightLarge} alt="play button" />
         {:else}
-          <img src={PlayButtonDark} alt="play button" />
+          <img src={ProgramCompletePlayButtonDarkLarge} alt="play button" />
         {/if}
-      </a>
+      {:else}
+        <a href="/your-program">
+          {#if currentTheme == 'light'}
+            <img src={PlayButtonLight} alt="play button" />
+          {:else}
+            <img src={PlayButtonDark} alt="play button" />
+          {/if}
+        </a>
+      {/if}
     </div>
   </div>
   <div class="body-container">
@@ -483,6 +501,9 @@
     }
     .wave-dark {
       content: url('/src/lib/assets/background-images/HomeBackgroundLargeDark.svg');
+    }
+    .wave-complete {
+      content: url('/src/lib/assets/background-images/HomeBackgroundCompleteLarge.svg');
     }
     .background-wave {
       width: 1500px;
