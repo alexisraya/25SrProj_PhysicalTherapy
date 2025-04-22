@@ -7,7 +7,7 @@
 
   let numbers = Array.from({ length: 5 }, (_, i) => i + 1);
   let selectedRating: number | null = null;
-  let selectedRatingImg = '/mood-faces/mood-face-default.png';
+  let selectedRatingImg = '/mood-faces/mood-face-default.svg';
   let iconContainerElement: HTMLDivElement;
   let iconImgElement: HTMLImageElement;
   $: {
@@ -15,11 +15,11 @@
   }
 
   const moodIcons = [
-    '/mood-faces/mood-face-motivated.png',
-    '/mood-faces/mood-face-hopeful.png',
-    '/mood-faces/mood-face-indifferent.png',
-    '/mood-faces/mood-face-uncertain.png',
-    '/mood-faces/mood-face-discouraged.png'
+    '/mood-faces/mood-face-motivated.svg',
+    '/mood-faces/mood-face-hopeful.svg',
+    '/mood-faces/mood-face-indifferent.svg',
+    '/mood-faces/mood-face-uncertain.svg',
+    '/mood-faces/mood-face-discouraged.svg'
   ];
 
   function handleSelect(event: CustomEvent<number>) {

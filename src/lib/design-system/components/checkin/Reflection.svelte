@@ -100,11 +100,11 @@
   ];
 
   const moodIcons = [
-    '/mood-faces/mood-face-motivated-small.png',
-    '/mood-faces/mood-face-hopeful-small.png',
-    '/mood-faces/mood-face-indifferent-small.png',
-    '/mood-faces/mood-face-uncertain-small.png',
-    '/mood-faces/mood-face-discouraged-small.png'
+    '/mood-faces/mood-face-motivated.svg',
+    '/mood-faces/mood-face-hopeful.svg',
+    '/mood-faces/mood-face-indifferent.svg',
+    '/mood-faces/mood-face-uncertain.svg',
+    '/mood-faces/mood-face-discouraged.svg'
   ];
 
   $: bgMobile = moodLevel
@@ -126,7 +126,7 @@
       {#if moodLevel !== null && painLevel !== null}
         <img src={moodIcons[moodLevel - 1]} alt="{moodDescription} face" />
         <p class:uncertain-text={moodLevel === 4}>
-          You're feeling {moodDescription.toLowerCase()} with {painDescription.toLowerCase()} pain
+          You're feeling {moodDescription.toLowerCase()} with {painDescription.toLowerCase()}
         </p>
       {/if}
     </div>
@@ -193,6 +193,9 @@
     column-gap: 12px;
     width: 100%;
   }
+  .reflection-header--copy img {
+    max-width: 58px;
+  }
   .reflection-body {
     display: flex;
     flex-direction: column;
@@ -242,6 +245,9 @@
   @media (min-width: 1000px) {
     .bg {
       top: calc(332px - (100vw * 0.351));
+    }
+    .reflection-header--copy img {
+      max-width: 100px;
     }
   }
   @media (min-width: 1100px) {
