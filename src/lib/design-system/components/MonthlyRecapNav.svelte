@@ -5,7 +5,7 @@
   export let currentStep: number;
 </script>
 
-<div class="onboarding-nav-container {currentStep == 0 ? 'first' : ''}">
+<div class="recap-nav-container {currentStep == 0 ? 'first' : ''}">
   {#if currentStep > 0}
     <ProgressBar
       totalExercises={6}
@@ -30,7 +30,7 @@
   a:visited {
     color: var(--text-primary);
   }
-  .onboarding-nav-container {
+  .recap-nav-container {
     display: flex;
     flex-direction: column;
     align-items: flex-end;

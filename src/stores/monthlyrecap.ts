@@ -35,6 +35,7 @@ export const recapSteps: MonthlyRecapStep[] = [
 ];
 
 export const currentRecapStep = writable<number>(0);
+
 export function goToNextRecap(): void {
   currentRecapStep.update((step) => {
     if (step < recapSteps.length - 1) {

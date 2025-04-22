@@ -1,9 +1,9 @@
 <script>
-  import OnboardingFlow from '$lib/design-system/components/OnboardingFlow.svelte';
+  import MonthlyRecapFlow from '$lib/design-system/components/MonthlyRecapFlow.svelte';
 </script>
 
 <div class="onboarding-page-container">
-  <OnboardingFlow />
+  <MonthlyRecapFlow />
 </div>
 
 <style>
