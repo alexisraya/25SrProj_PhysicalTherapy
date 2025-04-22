@@ -412,7 +412,7 @@
                 .regular}; font-weight: {typography.fontWeights.regular}; line-height: {typography
                 .lineHeight.expanded}"
             >
-              This is an example of a suggested modification, they're all pretty short.
+              {exerciseDetails.modification}
             </p>
           </div>
         </details>
