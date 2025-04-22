@@ -11,6 +11,7 @@
     if ($authStore.currentUser) {
       achievementStore.loadAchievements($authStore.currentUser.uid);
     }
+    console.log($achievementStore);
   });
 </script>
 
@@ -72,6 +73,7 @@
             achievementTitle={achievement.achieveName}
             achievementMark={achievement.targetUnits}
             achievementValue={achievement.targetValue}
+            achievmentId={achievement.achieveId}
             isLocked={!achievement.unlocked}
           />
         {/each}
@@ -93,6 +95,7 @@
             achievementTitle={achievement.achieveName}
             achievementMark={achievement.targetUnits}
             achievementValue={achievement.targetValue}
+            achievmentId={achievement.achieveId}
             isLocked={!achievement.unlocked}
           />
         {/each}
@@ -114,6 +117,7 @@
             achievementTitle={achievement.achieveName}
             achievementMark={achievement.targetUnits}
             achievementValue={achievement.targetValue}
+            achievmentId={achievement.achieveId}
             isLocked={!achievement.unlocked}
           />
         {/each}

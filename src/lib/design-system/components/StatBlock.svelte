@@ -3,6 +3,7 @@
 
   export let statTitle: string;
   export let stat: number;
+  export let unit: string = '';
 </script>
 
 <div class="program-stat-container">
@@ -18,7 +19,7 @@
       style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
         .h0}; font-weight: {typography.fontWeights.medium};"
     >
-      {stat}
+      {stat}<span style="font-size: {typography.fontSizes.regular};">{unit}</span>
     </h1>
   </div>
 </div>

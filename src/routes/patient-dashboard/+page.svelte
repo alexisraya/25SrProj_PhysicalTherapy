@@ -2,8 +2,11 @@
   import { typography } from '$lib/design-system';
   import PlayButtonLight from '$lib/assets/iconography/PlayButtonLight.svg';
   import PlayButtonDark from '$lib/assets/iconography/PlayButtonDark.svg';
+  import ProgramCompletePlayButtonLightLarge from '$lib/assets/iconography/ProgramCompletePlayButtonLightLarge.svg';
+  import ProgramCompletePlayButtonDarkLarge from '$lib/assets/iconography/ProgramCompletePlayButtonDarkLarge.svg';
   import homeBackgroundSmallLight from '$lib/assets/background-images/HomeBackgroundSmallLight.svg';
   import homeBackgroundSmallDark from '$lib/assets/background-images/HomeBackgroundSmallDark.svg';
+  import homeBackgroundComplete from '$lib/assets/background-images/HomeBackgroundComplete.svg';
   import Streak from '$lib/design-system/components/Streak.svelte';
   import PainMoodDropdown from '$lib/design-system/components/PainMoodDropdown.svelte';
   import LineChart from '$lib/design-system/components/LineChart.svelte';
@@ -24,7 +27,7 @@
   $: userData = data.userData;
   $: error = data.error;
 
-  $: overallStreak = stats.longestStreak || 0;
+  $: overallStreak = stats.longestStreak;
   $: streakDaysCompleted = weeklyProgress.daysCompleted;
 
   // Determine if we're in a loading state
@@ -178,9 +181,10 @@
   }
 
   async function handleCheckInTimeFrameChange(event) {
+    // Update the timeframe first
     checkInTimeFrame = event.detail;
 
-    // Load data for this timeframe if not loaded yet
+    // Then load data if needed
     if (!painStatsData[checkInTimeFrame]?.length && !moodStatsData[checkInTimeFrame]?.length) {
       if ($authStore.currentUser) {
         const apiTimeFrame = convertTimeFrameToApiFormat(checkInTimeFrame);
@@ -209,6 +213,7 @@
     console.log('LOOK HERE');
     console.log(overallStreak);
     console.log(streakDaysCompleted);
+    console.log(program.completed);
 
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
@@ -218,7 +223,13 @@
 
 {#if program && stats && weeklyProgress}
   <div class="wave-container">
-    {#if currentTheme == 'light'}
+    {#if program.completed}
+      <img
+        class="background-wave wave-complete"
+        src={homeBackgroundComplete}
+        alt="background wave"
+      />
+    {:else if currentTheme == 'light'}
       <img
         class="background-wave wave-light"
         src={homeBackgroundSmallLight}
@@ -244,16 +255,24 @@
           style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
             .regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;"
         >
-          {$text(programCTAText)}
+          {program.completed ? $text(programCompleteText) : $text(programCTAText)}
         </p>
       </div>
-      <a href="/your-program">
+      {#if program.completed}
         {#if currentTheme == 'light'}
-          <img src={PlayButtonLight} alt="play button" />
+          <img src={ProgramCompletePlayButtonLightLarge} alt="play button" />
         {:else}
-          <img src={PlayButtonDark} alt="play button" />
+          <img src={ProgramCompletePlayButtonDarkLarge} alt="play button" />
         {/if}
-      </a>
+      {:else}
+        <a href="/your-program">
+          {#if currentTheme == 'light'}
+            <img src={PlayButtonLight} alt="play button" />
+          {:else}
+            <img src={PlayButtonDark} alt="play button" />
+          {/if}
+        </a>
+      {/if}
     </div>
   </div>
   <div class="body-container">
@@ -294,33 +313,38 @@
         </p>
         <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
       </div>
-      {#if activeCheckInData && activeCheckInData.length > 0}
-        <LineChart
-          dataArr={activeCheckInData}
-          type={checkInChartType}
-          timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
-          title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
-        />
-        <div class="timeframe-selector">
-          <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
-        </div>
-      {:else}
-        <div class="no-metrics-container">
-          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights.medium};"
-          >
-            No metrics yet
-          </p>
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .xsmall}; font-weight: {typography.fontWeights.regular};"
-          >
-            Complete your check in to see up-to-date data here
-          </p>
-        </div>
-      {/if}
+      <div class="chart-body">
+        {#if activeCheckInData && activeCheckInData.length > 0}
+          <LineChart
+            dataArr={activeCheckInData}
+            type={checkInChartType}
+            timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
+            title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
+          />
+          <div class="timeframe-selector">
+            <XAxisTimeFrameSelectors
+              selectedTimeFrame={checkInTimeFrame}
+              on:timeframeChange={handleCheckInTimeFrameChange}
+            />
+          </div>
+        {:else}
+          <div class="no-metrics-container">
+            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .regular}; font-weight: {typography.fontWeights.medium};"
+            >
+              No metrics yet
+            </p>
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights.regular};"
+            >
+              Complete your check in to see up-to-date data here
+            </p>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 {:else}
@@ -393,6 +417,7 @@
     width: 100%;
   }
   .timeframe-selector {
+    box-sizing: border-box;
     padding: 0 12px 12px;
     width: 100%;
   }
@@ -430,6 +455,13 @@
     justify-content: space-between;
     padding: 8px 12px;
     width: 100%;
+  }
+
+  .chart-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   @media (min-width: 800px) {
     .break {
@@ -469,6 +501,9 @@
     }
     .wave-dark {
       content: url('/src/lib/assets/background-images/HomeBackgroundLargeDark.svg');
+    }
+    .wave-complete {
+      content: url('/src/lib/assets/background-images/HomeBackgroundCompleteLarge.svg');
     }
     .background-wave {
       width: 1500px;

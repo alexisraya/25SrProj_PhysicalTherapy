@@ -85,13 +85,38 @@
     }
   }
 
-  onMount(async () => {
-    try {
-      if (!$authStore.currentUser) return;
-      const userId = $authStore.currentUser.uid;
-      await checkAndResetProgress(userId);
+  let unsubscribe;
 
-      // Load initial data for 1 week timeframe
+  onMount(() => {
+    // Subscribe to auth changes
+    const unsubscribe = authStore.subscribe((authState) => {
+      if (!authState.isLoading) {
+        // Auth state is initialized (no longer loading)
+        if (authState.currentUser) {
+          // User is logged in, load data
+          loadUserData(authState.currentUser.uid);
+        } else {
+          // Auth is initialized but user is not logged in
+          loading = false;
+          error = 'User not authenticated';
+        }
+      }
+      // If still loading, we'll wait
+    });
+
+    // Clean up subscription on component destroy
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  });
+
+  // Move data loading to its own function
+  async function loadUserData(userId) {
+    try {
+      loading = true;
+      error = null; // Clear any previous errors
+
+      await checkAndResetProgress(userId);
       await loadCheckInStatus(userId, 'week');
 
       const [programData, statsData, weeklyData, metricsData] = await Promise.all([
@@ -107,68 +132,75 @@
       metrics = metricsData;
 
       if (metrics) {
-        console.log('METRICS DATA', metrics);
         romStats = metrics.rangeOfMotion || [];
         strengthStats = metrics.strength || [];
       }
     } catch (err) {
-      console.error('Error loading completion data:', err);
-      error = err instanceof Error ? err.message : 'Failed to load completion data';
+      console.error('Error loading data:', err);
+      error = err instanceof Error ? err.message : 'Failed to load data';
     } finally {
       loading = false;
     }
-  });
+  }
 
   async function loadCheckInStatus(userId: string, timeframe: string) {
     try {
       const checkInStats = await getCheckInStats(userId, timeframe);
 
+      // Map API timeframe to UI timeframe first (so we have it even if there's no data)
+      const uiTimeframe = mapApiTimeframeToUi(timeframe);
+
+      // Initialize arrays as empty even if no data
+      let painData: number[] = [];
+      let moodData: number[] = [];
+
       if (checkInStats && checkInStats.checkIns && checkInStats.checkIns.length > 0) {
         // Get pain and mood data from check-ins
-        const painData = checkInStats.checkIns.map((stat) => stat.painLevel);
-        const moodData = checkInStats.checkIns.map((stat) => stat.moodLevel);
-
-        // Map API timeframe back to UI timeframe
-        let uiTimeframe = 'week';
-        switch (timeframe) {
-          case 'week':
-            uiTimeframe = '1 Week';
-            break;
-          case 'month':
-            uiTimeframe = '1 Month';
-            break;
-          case '3months':
-            uiTimeframe = '3 Months';
-            break;
-          case '6months':
-            uiTimeframe = '6 Months';
-            break;
-          case 'year':
-            uiTimeframe = '1 Year';
-            break;
-          case 'all':
-            uiTimeframe = 'All Time';
-            break;
-        }
-
-        // Store data in the appropriate timeframe slot
-        painStatsData[uiTimeframe] = painData;
-        moodStatsData[uiTimeframe] = moodData;
-
-        // Trigger reactivity by reassigning the objects
-        painStatsData = { ...painStatsData };
-        moodStatsData = { ...moodStatsData };
+        painData = checkInStats.checkIns.map((stat) => stat.painLevel);
+        moodData = checkInStats.checkIns.map((stat) => stat.moodLevel);
 
         console.log(`Loaded ${timeframe} data:`, {
-          pain: painStatsData[uiTimeframe],
-          mood: moodStatsData[uiTimeframe]
+          pain: painData,
+          mood: moodData
         });
       } else {
         console.log(`No check-in data available for timeframe: ${timeframe}`);
       }
+
+      // Always update the data objects, even with empty arrays
+      painStatsData[uiTimeframe] = painData;
+      moodStatsData[uiTimeframe] = moodData;
+
+      // Trigger reactivity by reassigning the objects
+      painStatsData = { ...painStatsData };
+      moodStatsData = { ...moodStatsData };
+
+      return true;
     } catch (err) {
-      console.error('Error checking check-in status:', err);
-      errorMsg = err instanceof Error ? err.message : 'Failed to load check-in status';
+      console.error(`Error loading check-in data for ${timeframe}:`, err);
+      errorMsg =
+        err instanceof Error ? err.message : `Failed to load check-in data for ${timeframe}`;
+      return false;
+    }
+  }
+
+  // Helper function to map API timeframe to UI timeframe
+  function mapApiTimeframeToUi(timeframe: string): string {
+    switch (timeframe) {
+      case 'week':
+        return '1 Week';
+      case 'month':
+        return '1 Month';
+      case '3months':
+        return '3 Months';
+      case '6months':
+        return '6 Months';
+      case 'year':
+        return '1 Year';
+      case 'all':
+        return 'All Time';
+      default:
+        return '1 Week';
     }
   }
 
@@ -181,22 +213,11 @@
     checkInChartType = event.detail.value;
   }
 
-  async function handleRecoveryTimeFrameChange(event) {
-    recoveryTimeFrame = event.detail;
-
-    // Load data for this timeframe if not loaded yet
-    if (!painStatsData[recoveryTimeFrame]?.length && !moodStatsData[recoveryTimeFrame]?.length) {
-      if ($authStore.currentUser) {
-        const apiTimeFrame = convertTimeFrameToApiFormat(recoveryTimeFrame);
-        await loadCheckInStatus($authStore.currentUser.uid, apiTimeFrame);
-      }
-    }
-  }
-
   async function handleCheckInTimeFrameChange(event) {
+    // Update the timeframe first
     checkInTimeFrame = event.detail;
 
-    // Load data for this timeframe if not loaded yet
+    // Then load data if needed
     if (!painStatsData[checkInTimeFrame]?.length && !moodStatsData[checkInTimeFrame]?.length) {
       if ($authStore.currentUser) {
         const apiTimeFrame = convertTimeFrameToApiFormat(checkInTimeFrame);
@@ -204,114 +225,132 @@
       }
     }
   }
+  function convertStepsToMiles(steps: number): number {
+    const miles = steps * (0.413 / 5280);
+    return parseFloat(miles.toFixed(2));
+  }
 </script>
 
 <div class="stats-container">
-  <div class="stat-section recovery-metrics">
-    <div class="chart-header">
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .regular}; font-weight: {typography.fontWeights.medium}; margin: 0;"
-      >
-        Recovery Metrics
-      </p>
-      <RomStrengthDropdown value={recoveryChartType} on:change={handleRecoveryChartTypeChange} />
+  {#if loading}
+    <div class="loading-container"></div>
+  {:else if error}
+    <div class="error-container">
+      <p>Error loading data: {error}</p>
+      <button on:click={() => window.location.reload()}>Retry</button>
+    </div>
+  {:else}
+    <div class="stat-section recovery-metrics">
+      <div class="chart-header">
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.medium}; margin: 0;"
+        >
+          Recovery Metrics
+        </p>
+        <RomStrengthDropdown value={recoveryChartType} on:change={handleRecoveryChartTypeChange} />
+      </div>
+
+      {#if recoveryChartType === 'rom' && romStats && romStats.length > 0}
+        <BarChart
+          dataArr={romStats}
+          type="rom"
+          title="Range of Motion Progress"
+          yLabel="Degrees"
+          labels={romStats.map((_, i) => `Week ${i + 1}`)}
+        />
+      {:else if recoveryChartType === 'strength' && strengthStats && strengthStats.length > 0}
+        <BarChart
+          dataArr={strengthStats}
+          type="strength"
+          title="Strength Progress"
+          yLabel="Strength scale"
+          labels={strengthStats.map((_, i) => `Week ${i + 1}`)}
+        />
+      {:else}
+        <div class="no-data-container">
+          <div class="no-metrics-container">
+            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .regular}; font-weight: {typography.fontWeights.medium};"
+            >
+              No metrics yet
+            </p>
+            <p
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .xsmall}; font-weight: {typography.fontWeights.regular};"
+            >
+              Your physical therapist will add your data here when tracked
+            </p>
+          </div>
+        </div>
+      {/if}
     </div>
 
-    {#if recoveryChartType === 'rom' && romStats && romStats.length > 0}
-      <BarChart
-        dataArr={romStats}
-        type="rom"
-        title="Range of Motion Progress"
-        yLabel="Degrees"
-        labels={romStats.map((_, i) => `Week ${i + 1}`)}
-      />
-    {:else if recoveryChartType === 'strength' && strengthStats && strengthStats.length > 0}
-      <BarChart
-        dataArr={strengthStats}
-        type="strength"
-        title="Strength Progress"
-        yLabel="Strength scale"
-        labels={strengthStats.map((_, i) => `Week ${i + 1}`)}
-      />
-    {:else}
-      <div class="no-data-container">
-        <div class="no-metrics-container">
-          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights.medium};"
-          >
-            No metrics yet
-          </p>
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .xsmall}; font-weight: {typography.fontWeights.regular};"
-          >
-            Your physical therapist will add your data here when tracked
-          </p>
-        </div>
-      </div>
-    {/if}
-  </div>
-
-  <div class="stat-section stats">
-    {#if stats}
-      <StatBlock
-        statTitle="Completed Exercises"
-        stat={program?.exercises.filter((ex) => ex.completed).length || 0}
-      />
-      <StatBlock statTitle="Completed Programs" stat={stats.completedPrograms} />
-      <StatBlock statTitle="Total Reps" stat={stats.totalReps} />
-      <StatBlock statTitle="Total Sets" stat={stats.totalSets} />
-      <StatBlock statTitle="Total Lifted" stat={stats.totalWeight} />
-      <StatBlock statTitle="Total Distance" stat={stats.totalDistance} />
-    {:else}
-      <p>Loading Stats...</p>
-    {/if}
-  </div>
-
-  <div class="stat-section check-in-metrics">
-    <div class="chart-header">
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .regular}; font-weight: {typography.fontWeights.medium}; margin: 0;"
-      >
-        Check-in Metrics
-      </p>
-      <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
+    <div class="stat-section stats">
+      {#if stats}
+        <StatBlock statTitle="Completed Exercises" stat={stats.completedExercises} />
+        <StatBlock statTitle="Completed Programs" stat={stats.completedPrograms} />
+        <StatBlock statTitle="Total Reps" stat={stats.totalReps} />
+        <StatBlock statTitle="Total Sets" stat={stats.totalSets} />
+        <StatBlock statTitle="Total Lifted" stat={stats.totalWeight} unit="lbs" />
+        <StatBlock
+          statTitle="Total Distance"
+          stat={convertStepsToMiles(stats.totalDistance)}
+          unit="mi"
+        />
+      {:else}
+        <p>Loading Stats...</p>
+      {/if}
     </div>
 
-    {#if activeCheckInData && activeCheckInData.length > 0}
-      <LineChart
-        dataArr={activeCheckInData}
-        type={checkInChartType}
-        timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
-        title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
-      />
-      <div class="timeframe-selector">
-        <XAxisTimeFrameSelectors on:timeframeChange={handleCheckInTimeFrameChange} />
+    <div class="stat-section check-in-metrics">
+      <div class="chart-header">
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .regular}; font-weight: {typography.fontWeights.medium}; margin: 0;"
+        >
+          Check-in Metrics
+        </p>
+        <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
       </div>
-    {:else}
-      <div class="no-data-container">
-        <div class="no-metrics-container">
-          <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights.medium};"
-          >
-            No metrics yet
-          </p>
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .xsmall}; font-weight: {typography.fontWeights.regular};"
-          >
-            Complete your check in to see up-to-date data here
-          </p>
-        </div>
+      <div class="chart-body">
+        {#if activeCheckInData && activeCheckInData.length > 0}
+          <LineChart
+            dataArr={activeCheckInData}
+            type={checkInChartType}
+            timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
+            title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
+          />
+          <div class="timeframe-selector">
+            <XAxisTimeFrameSelectors
+              selectedTimeFrame={checkInTimeFrame}
+              on:timeframeChange={handleCheckInTimeFrameChange}
+            />
+          </div>
+        {:else}
+          <div class="no-data-container">
+            <div class="no-metrics-container">
+              <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .regular}; font-weight: {typography.fontWeights.medium};"
+              >
+                No metrics yet
+              </p>
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .xsmall}; font-weight: {typography.fontWeights.regular};"
+              >
+                Complete your check in to see up-to-date data here
+              </p>
+            </div>
+          </div>
+        {/if}
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -341,6 +380,8 @@
   }
 
   .timeframe-selector {
+    width: 100%;
+    box-sizing: border-box;
     padding: 0 12px 12px;
   }
 
@@ -384,6 +425,12 @@
     height: 100%;
     padding-top: 8px;
     border-bottom: solid 8px var(--background-secondary);
+  }
+  .chart-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   @media (min-width: 800px) {

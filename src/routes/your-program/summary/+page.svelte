@@ -17,7 +17,10 @@
   $: stats = data.stats;
   $: weeklyProgress = data.weeklyProgress;
   $: error = data.error;
-  console.log(data);
+  $: longestStreak = stats.longestStreak;
+  console.log('ALEXIS');
+  console.log(data.stats);
+  console.log(longestStreak);
 
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
@@ -124,7 +127,7 @@
             streakType="program"
             streakTotalDays={5}
             streakDaysCompleted={weeklyProgress.daysCompleted}
-            overallStreak={stats?.longestStreak}
+            overallStreak={longestStreak}
           />
         </div>
         <div class="exercise-summary">
@@ -142,6 +145,7 @@
                 exerciseName={exercise.exerciseName}
                 isTooPainful={exercise.skipped}
                 cardType="summary"
+                isOnSummary
               />
             {/each}
           </div>
