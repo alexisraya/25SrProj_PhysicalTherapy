@@ -13,6 +13,7 @@ interface Goal {
   month: number;
   timeframe: string;
   unlocked: boolean;
+  unlockedAt?: string | null;
 }
 
 export async function assignGoalsToUser(userId: string): Promise<void> {
@@ -79,11 +80,8 @@ export async function assignGoalsToUser(userId: string): Promise<void> {
 
 export async function getUserGoals(userId: string): Promise<Record<string, Goal[]>> {
   try {
-    console.log(`Fetching goals for user ${userId}`);
     const userGoalsRef = collection(db, `users/${userId}/goals`);
     const userGoalsSnap = await getDocs(userGoalsRef);
-
-    console.log(`Found ${userGoalsSnap.docs.length} goal documents for user ${userId}`);
 
     if (userGoalsSnap.empty) {
       console.warn(`No goals found for user ${userId}`);
@@ -93,7 +91,6 @@ export async function getUserGoals(userId: string): Promise<Record<string, Goal[
     const sortedGoals: Record<string, Goal[]> = {};
     userGoalsSnap.docs.forEach((goalDoc) => {
       const goalData = goalDoc.data();
-      console.log(`Processing goal ${goalDoc.id}:`, goalData);
 
       const month = (goalData.month || '1').toString();
 
@@ -105,7 +102,8 @@ export async function getUserGoals(userId: string): Promise<Record<string, Goal[
         ...goalData,
         goalId: goalDoc.id,
         month: parseInt(month),
-        unlocked: !!goalData.unlocked
+        unlocked: !!goalData.unlocked,
+        unlockedAt: goalData.unlockedAt || null
       } as Goal);
     });
 
@@ -134,10 +132,17 @@ export async function updateGoalLockStatus(
       throw new Error(`Goal ${goalId} not found for user ${userId}.`);
     }
 
-    await updateDoc(userGoalRef, { unlocked });
-    console.log(
-      `Therapist updated goal ${goalId} for user ${userId}: ${unlocked ? 'Unlocked' : 'Locked'}`
-    );
+    if (unlocked) {
+      await updateDoc(userGoalRef, {
+        unlocked,
+        unlockedAt: new Date().toISOString()
+      });
+    } else {
+      await updateDoc(userGoalRef, {
+        unlocked,
+        unlockedAt: null
+      });
+    }
   } catch (error) {
     console.error('Error updating goal lock status:', error);
     throw error;

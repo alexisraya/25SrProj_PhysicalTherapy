@@ -49,6 +49,16 @@ export async function updateUserStats(userId: string, exercise: AssignedExercise
     } else if (exercise.exerciseType === 'time') {
       stats.totalTime += (exercise.seconds ?? 0) * (exercise.reps ?? 0);
     }
+    if (exercise.exerciseType === 'distance') {
+      stats.totalSets += exercise.sets ?? 0;
+      stats.totalDistance += (exercise.steps ?? 0) * (exercise.sets ?? 0);
+    } else if (exercise.exerciseType === 'weight') {
+      stats.totalSets += exercise.sets ?? 0;
+      stats.totalReps += (exercise.reps ?? 0) * (exercise.sets ?? 0);
+      stats.totalWeight += (exercise.weight ?? 0) * (exercise.reps ?? 0) * (exercise.sets ?? 0);
+    } else if (exercise.exerciseType === 'time') {
+      stats.totalTime += (exercise.seconds ?? 0) * (exercise.reps ?? 0);
+    }
 
     await updateDoc(userRef, { stats });
     await checkAchievements(userId);
@@ -201,6 +211,14 @@ export async function getWeeklyProgress(userId: string): Promise<{
         exercisesCompleted: 0
       };
     }
+    // Initialize weekly progress if it doesn't exist
+    if (!stats.weeklyProgress) {
+      stats.weeklyProgress = {
+        weekStartDate: getWeekStartDate(),
+        daysCompleted: 0,
+        exercisesCompleted: 0
+      };
+    }
 
     const today = new Date();
     const weekStart = new Date(stats.weeklyProgress.weekStartDate);
@@ -235,23 +253,41 @@ export async function updateStreakOnCompletion(userId: string): Promise<void> {
   try {
     const user = await getUser(userId);
     if (!user?.stats) return;
+    try {
+      const user = await getUser(userId);
+      if (!user?.stats) return;
 
-    // Only update streak if we haven't already completed today
-    if (await hasCompletedToday(userId)) return;
+      // Only update streak if we haven't already completed today
+      if (await hasCompletedToday(userId)) return;
+      // Only update streak if we haven't already completed today
+      if (await hasCompletedToday(userId)) return;
 
-    const today = new Date();
-    const stats = { ...user.stats };
+      const today = new Date();
+      const stats = { ...user.stats };
 
-    // Add today's completion to streak history
-    stats.streakHistory.push({ date: today.toISOString(), completed: true });
-    stats.lastCompletedDate = today.toISOString();
+      // Add today's completion to streak history
+      stats.streakHistory.push({ date: today.toISOString(), completed: true });
+      stats.lastCompletedDate = today.toISOString();
+      // Add today's completion to streak history
+      stats.streakHistory.push({ date: today.toISOString(), completed: true });
+      stats.lastCompletedDate = today.toISOString();
 
-    // Update weekly progress if this is the current week
-    if (stats.weeklyProgress?.weekStartDate === getWeekStartDate(today)) {
-      // Cap at 5 days per week (our weekly target)
-      stats.weeklyProgress.daysCompleted = Math.min(5, stats.weeklyProgress.daysCompleted + 1);
+      // Update weekly progress if this is the current week
+      if (stats.weeklyProgress?.weekStartDate === getWeekStartDate(today)) {
+        // Cap at 5 days per week (our weekly target)
+        stats.weeklyProgress.daysCompleted = Math.min(5, stats.weeklyProgress.daysCompleted + 1);
+      }
+      // Update weekly progress if this is the current week
+      if (stats.weeklyProgress?.weekStartDate === getWeekStartDate(today)) {
+        // Cap at 5 days per week (our weekly target)
+        stats.weeklyProgress.daysCompleted = Math.min(5, stats.weeklyProgress.daysCompleted + 1);
+      }
+
+      await updateUser(userId, { stats });
+      await checkAchievements(userId);
+    } catch (error) {
+      console.error(`Error updating streak for user ${userId}:`, error);
     }
-
     await updateUser(userId, { stats });
     await checkAchievements(userId);
   } catch (error) {

@@ -39,6 +39,8 @@ export function getPersonalWeekStart(registrationDate: string, today: Date = new
  * Used when creating new users or if stats don't exist
  */
 export function initializeUserStats(): UserStats {
+  const currentMonth = new Date().toISOString().substring(0, 7); // Get current month in YYYY-MM format
+
   return {
     currentStreak: 0,
     longestStreak: 0, // Keeping this even though not actively used
@@ -47,6 +49,13 @@ export function initializeUserStats(): UserStats {
       weekStartDate: getWeekStartDate(),
       daysCompleted: 0,
       exercisesCompleted: 0
+    },
+    monthlyProgress: {
+      [currentMonth]: {
+        month: 1, // First month for new users
+        exercisesCompleted: 0,
+        programsCompleted: 0
+      }
     },
     completedExercises: 0,
     completedPrograms: 0,
