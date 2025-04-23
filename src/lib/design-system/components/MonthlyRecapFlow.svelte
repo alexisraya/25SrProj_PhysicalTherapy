@@ -27,7 +27,6 @@
     StrengthRecap,
     ExercisesRecap,
     GoalsRecap,
-    PainRecap,
     MoodRecap
   ];
 </script>
