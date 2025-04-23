@@ -1,0 +1,45 @@
+<script lang="ts">
+  import Button from '$lib/design-system/components/Button.svelte';
+  import DoubleButton from '$lib/design-system/components/DoubleButton.svelte';
+  import { goto } from '$app/navigation';
+
+  export let onNext: () => void;
+  export let onPrevious: () => void;
+  export let isFirstStep: boolean = false;
+  export let isLastStep: boolean = false;
+  export let currentStepIndex: number;
+
+  // Determine if we’re on PainRecap (index 6) or MoodRecap (index 7)
+  $: useInvertedStyle = currentStepIndex === 6;
+
+  function handleFinish() {
+    goto('/your-progress');
+  }
+</script>
+
+<div class="actions-container">
+  {#if isFirstStep}
+    <Button cta="Begin" onClickFunc={onNext} />
+  {:else}
+    <DoubleButton
+      ctaOne="Back"
+      ctaOneOnClickFunc={onPrevious}
+      ctaTwo={isLastStep ? 'Finish' : 'Next'}
+      ctaTwoOnClickFunc={isLastStep ? handleFinish : onNext}
+      ctaOneButtonType={useInvertedStyle ? 'secondary-inverted' : 'secondary'}
+      ctaTwoButtonType={useInvertedStyle ? 'primary-inverted' : 'primary'}
+    />
+  {/if}
+</div>
+
+<style>
+  .actions-container {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    margin: auto;
+    max-width: 448px;
+    padding: 0 24px 16px;
+    overflow: visible;
+  }
+</style>
