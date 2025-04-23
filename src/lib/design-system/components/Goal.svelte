@@ -2,11 +2,13 @@
   import { typography } from '$lib/design-system/typography';
   import { onMount } from 'svelte';
   import Icon from './Icon.svelte';
+  import { goalsMap } from '$lib/goals';
 
   export let goalName: string;
   export let isLocked: boolean = false;
   export let hasExtraInfo: boolean = false;
   export let extraInfo: string;
+  export let goalId: string;
 
   export const defaultGoals = [
     { goalName: 'Unlocked Goal', isLocked: false, hasExtraInfo: false },
@@ -57,14 +59,15 @@
           <Icon name="lock-dark" size="small" />
         {/if}
       {:else}
-        <Icon name="stairs" size="small" />
+        <Icon name={goalsMap[goalId]} size="small" />
       {/if}
     </div>
   </div>
 
   <p
     class="goal-name"
-    style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xsmall}; font-weight: {typography.fontWeights.regular};"
+    style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+      .xsmall}; font-weight: {typography.fontWeights.regular};"
   >
     {goalName}
   </p>
@@ -72,13 +75,13 @@
   {#if extraInfo}
     <p
       class="goal-extra"
-      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes.xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic"
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .xxsmall}; font-weight: {typography.fontWeights.regular}; font-style: italic"
     >
       {extraInfo}
     </p>
   {/if}
 </div>
-
 
 <style>
   p {
@@ -103,10 +106,16 @@
   }
 
   @keyframes floatUpDown {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(4px); } /* Moves slightly up */
-    100% { transform: translateY(0px); } /* Moves back down */
-}
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(4px);
+    } /* Moves slightly up */
+    100% {
+      transform: translateY(0px);
+    } /* Moves back down */
+  }
 
   .unlocked {
     background-color: var(--unlocked-goal-background);
@@ -129,4 +138,3 @@
     animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
   }
 </style>
-

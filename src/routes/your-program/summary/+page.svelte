@@ -13,6 +13,7 @@
   import AchievmentCard from '$lib/design-system/components/AchievmentCard.svelte';
   import Achievement from '$lib/design-system/components/Achievement.svelte';
   import { achievementsMap } from '$lib/achievements.js';
+  import { achievementStore, achievementsByType } from '$stores/achieveStore';
 
   export let data;
 
@@ -21,6 +22,7 @@
   $: weeklyProgress = data.weeklyProgress;
   $: error = data.error;
   $: longestStreak = stats.longestStreak;
+  $: achievmentsLibrary = stats.achievements;
   // Make sure we have an array of achievements
   $: achievementsArray = stats?.achievements
     ? Object.entries(stats.achievements).map(([id, data]) => ({
@@ -36,7 +38,6 @@
 
     const today = new Date();
     const unlocked = new Date(achievement.unlockedAt);
-
     return (
       today.getFullYear() === unlocked.getFullYear() &&
       today.getMonth() === unlocked.getMonth() &&
@@ -44,10 +45,9 @@
     );
   });
 
-  console.log('ALEXIS');
-  console.log(data.stats);
-  console.log(longestStreak);
-  console.log(achievementsArray);
+  $: foundItem = $achievementStore?.achievements?.find(
+    (achievement) => achievement.achieveId === todayAchievements[0]?.achieveId
+  );
 
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
@@ -92,7 +92,15 @@
 
     await loadCheckIn();
     window.addEventListener('themeChanged', handleThemeChange);
+    console.log('ALEXIS');
+    console.log(data.stats);
+    console.log(longestStreak);
     console.log(achievementsArray);
+    console.log('achievementsLibrary');
+    console.log(achievmentsLibrary);
+    console.log('achievementsStore');
+    console.log($achievementStore.achievements);
+
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
     };
@@ -154,10 +162,10 @@
               ? 'no-achievements'
               : ''}"
           >
-            {#if todayAchievements.length > 0}
+            {#if todayAchievements.length > 0 && foundItem}
               <Achievement
                 type="program"
-                achievementDescription={todayAchievements[0].achieveId.split('-').join(' ')}
+                achievementDescription={foundItem.achieveName}
                 achievmentId={todayAchievements[0].achieveId}
                 iconName={achievementsMap[todayAchievements[0].achieveId]}
               />

@@ -8,6 +8,7 @@ import {
   checkAndResetProgress
 } from '$firebase/services/statService';
 import { browser } from '$app/environment';
+import { achievementStore } from '$stores/achieveStore';
 
 // Disable SSR for this page
 export const ssr = false;
@@ -51,16 +52,18 @@ export const load: PageLoad = async () => {
           try {
             await checkAndResetProgress(userId);
 
-            const [program, stats, weeklyProgress] = await Promise.all([
+            const [program, stats, weeklyProgress, achievements] = await Promise.all([
               getCurrentProgram(userId),
               getUserStats(userId),
-              getWeeklyProgress(userId)
+              getWeeklyProgress(userId),
+              achievementStore.loadAchievements(userId)
             ]);
 
             resolve({
               program,
               stats,
               weeklyProgress,
+              achievements,
               error: null
             });
           } catch (err) {
@@ -70,6 +73,7 @@ export const load: PageLoad = async () => {
               program: null,
               stats: null,
               weeklyProgress: null,
+              achievements: null,
               error: err instanceof Error ? err.message : 'Failed to load completion data'
             });
           }
