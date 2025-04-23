@@ -1,8 +1,9 @@
 import { db } from '$lib/helpers/firebase';
-import { doc, getDoc, updateDoc, collection, getDocs, query, where, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, query, where, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { getUser, updateUser } from './userService';
 import { getCurrentProgram, updateProgram } from './programService';
 import { updateRangeOfMotion, updateStrength } from './metricsService';
+import { getWeekStartDate, getPersonalWeekStart } from './helpers';
 import type { User, UserStats, AssignedExercise } from '../types/userType';
 
 // Test scenarios for Wizard of Oz testing
@@ -75,7 +76,7 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
     weeklyProgress: {
       weekStartDate: getWeekStartDate(creationDate),
       daysCompleted: 0,
-      exercisesCompleted: 0
+      exercisesCompleted: 2
     },
     monthlyProgress: {
       [today.toISOString().substring(0, 7)]: {
@@ -84,21 +85,31 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
         programsCompleted: 0
       }
     },
-    completedExercises: 0,
+    completedExercises: 2,
     completedPrograms: 0,
-    totalSets: 0,
-    totalReps: 0,
+    totalSets: 4,
+    totalReps: 40,
     totalWeight: 0,
     totalDistance: 0,
-    totalTime: 0,
+    totalTime: 400,
     streakHistory: [],
     achievements: {}
   };
+
+  await clearAllCheckIns(userId);
+  const metricsRef = doc(db, 'userMetrics', userId);
+  await setDoc(metricsRef, {
+    userId,
+    rangeOfMotion: [],
+    strength: [],
+    updatedAt: new Date().toISOString()
+  }, { merge: true });
 
   await updateUser(userId, { stats });
   await updateRangeOfMotion(userId, 1, 60);
   await updateStrength(userId, 1, 2);
 
+  // Assign the standard starter exercises
   const exercises: AssignedExercise[] = [
     {
       exerciseId: 'quad-set',
@@ -108,7 +119,7 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
       sets: 1,
       reps: 10,
       seconds: 10,
-      completed: false,
+      completed: true,
     },
     {
       exerciseId: 'heel-slide',
@@ -118,7 +129,7 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
       sets: 3,
       reps: 10,
       seconds: 10,
-      completed: false,
+      completed: true,
     },
     {
       exerciseId: 'straight-leg-raise',
@@ -147,15 +158,17 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
  * Run 2: MONTH 1, WEEK 3, DAY 5 (before completing program)
  */
 async function applyRun2Scenario(userId: string, user: User): Promise<void> {
-  // Date setup remains the same
+  // Date setup
   const today = new Date();
+  
+  // Set creation date to 19 days ago
   const creationDate = new Date(today);
   creationDate.setDate(creationDate.getDate() - 19);
   creationDate.setHours(0, 0, 0, 0);
   
-  const weekStart = new Date(today);
-  weekStart.setDate(weekStart.getDate() - 5);
-  weekStart.setHours(0, 0, 0, 0);
+  // Calculate personal week start based on creation date
+  const weekStartDate = getPersonalWeekStart(creationDate.toISOString(), today);
+  console.log("Run2 - Personal week start:", weekStartDate);
   
   const lastCompletion = new Date(today);
   lastCompletion.setDate(lastCompletion.getDate() - 1);
@@ -168,7 +181,7 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
   const streakHistory = [];
   
   // Previous weeks' history
-  for (let i = 18; i >= 6; i--) {
+  for (let i = 18; i >= 5; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     const dayOfWeek = date.getDay();
@@ -179,8 +192,8 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
     });
   }
   
-  // Current week (4 days completed)
-  for (let i = 5; i >= 1; i--) {
+  // Current week (exactly 4 days completed)
+  for (let i = 4; i >= 1; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
     streakHistory.push({
@@ -189,13 +202,14 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
     });
   }
 
+  // Core stats setup - crucial for the wizard scenario
   const stats: UserStats = {
-    currentStreak: 2,
+    currentStreak: 2,  // This will become 3 after 5 days
     longestStreak: 2,
     lastCompletedDate: lastCompletion.toISOString(),
     weeklyProgress: {
-      weekStartDate: getWeekStartDate(weekStart),
-      daysCompleted: 4,
+      weekStartDate: weekStartDate, // Using the correct week start based on creation date
+      daysCompleted: 4,  // IMPORTANT: 4 days completed out of 5
       exercisesCompleted: 12
     },
     monthlyProgress: {
@@ -223,6 +237,11 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
       "weight-2": { unlocked: true, unlockedAt: getDateDaysAgo(7).toISOString() }
     }
   };
+  
+  console.log("Run2 - Setting up with days completed:", stats.weeklyProgress.daysCompleted);
+
+  await clearAllCheckIns(userId);
+  await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
 
   await updateUser(userId, { stats });
   await updateRangeOfMotion(userId, 1, 72);
@@ -269,6 +288,8 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
 
   await resetAllGoals(userId);
   await unlockGoal(userId, 'goal-1');
+  
+  console.log("Run2 setup complete with days completed:", stats.weeklyProgress.daysCompleted);
 }
 
 /**
@@ -446,6 +467,20 @@ async function applyRun3Scenario(userId: string, user: User): Promise<void> {
   await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);
 }
 
+async function clearAllCheckIns(userId: string): Promise<void> {
+  try {
+    const checkInsRef = collection(db, 'users', userId, 'checkIns');
+    const checkInsSnapshot = await getDocs(checkInsRef);
+    
+    for (const doc of checkInsSnapshot.docs) {
+      await deleteDoc(doc.ref);
+    }
+    console.log(`Cleared all check-ins for user ${userId}`);
+  } catch (error) {
+    console.error(`Error clearing check-ins for user ${userId}:`, error);
+  }
+}
+
 // Helper function: unlock a specific goal
 async function unlockGoal(userId: string, goalId: string): Promise<void> {
   try {
@@ -595,11 +630,22 @@ function getDateDaysAgo(days: number): Date {
 }
 
 /**
- * Helper function to get the week start date (Sunday)
+ * Helper function to get personal week start based on registration date
+ * Used to ensure consistency in the wizard of oz scenarios
  */
-function getWeekStartDate(date: Date = new Date()): string {
-  const sunday = new Date(date);
-  sunday.setDate(date.getDate() - date.getDay());
-  sunday.setHours(0, 0, 0, 0);
-  return sunday.toISOString();
+export function getPersonalWeekStartForRun2(creationDate: Date): string {
+  const today = new Date();
+  
+  // Calculate days since registration
+  const diffTime = Math.abs(today.getTime() - creationDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Calculate completed 7-day periods
+  const completedPeriods = Math.floor(diffDays / 7);
+  
+  // Calculate start of current period
+  const currentPeriodStart = new Date(creationDate);
+  currentPeriodStart.setDate(creationDate.getDate() + (completedPeriods * 7));
+  
+  return currentPeriodStart.toISOString();
 }

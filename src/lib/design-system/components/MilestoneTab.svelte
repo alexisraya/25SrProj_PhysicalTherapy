@@ -79,9 +79,9 @@
         activeMonth = totalMonths;
       }
 
-      longestStreak = stats?.longestStreak;
+      longestStreak = stats?.longestStreak || 0;
       weeklyProgress = await getWeeklyProgress($authStore.currentUser.uid);
-      currentStreak = weeklyProgress.daysCompleted;
+      const daysCompleted = weeklyProgress?.daysCompleted || 0;
 
       updateGoalsForActiveMonth();
     }
@@ -270,12 +270,17 @@
 
     <div class="streak-section">
       <div class="streak-small">
-        <Streak
-          streakType="milestones"
-          streakTotalDays={5}
-          streakDaysCompleted={currentStreak}
-          overallStreak={longestStreak}
-        />
+        {#if weeklyProgress}
+          <Streak
+            streakType="milestones"
+            streakTotalDays={5}
+            streakDaysCompleted={weeklyProgress.daysCompleted}
+            overallStreak={longestStreak || 0}
+          />
+        {:else}
+          <!-- Display a loading message or placeholder -->
+          <div class="streak-loading">Loading streak data...</div>
+        {/if}
       </div>
       <!-- TODO: Alexis Make dynamic -->
     </div>
