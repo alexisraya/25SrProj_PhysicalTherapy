@@ -33,7 +33,6 @@
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
       .regular}; font-weight: {typography.fontWeights.medium}"
   >
-    You've {action}
     {title}
   </p>
 </div>
@@ -47,6 +46,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+  .recap-goal-container p {
+    width: 100px;
   }
   .large {
     max-width: 290px;
@@ -63,6 +65,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 8px;
     border-radius: 50%; /* Makes it a circle */
     aspect-ratio: 1; /* Ensures width and height are equal */
   }

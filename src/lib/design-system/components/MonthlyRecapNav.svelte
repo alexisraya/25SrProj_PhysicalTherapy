@@ -76,6 +76,7 @@
     width: 100%;
     margin-top: 18px;
     padding: 0 24px;
+    z-index: 10;
   }
   .first {
     padding-top: 24px;

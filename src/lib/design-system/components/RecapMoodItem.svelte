@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let selectedRating: string = ''; // Provide a default value
+  export let selectedRating: string = '';
 
   const moodMap = {
     motivated: '/mood-faces/mood-face-motivated.svg',
@@ -7,7 +7,7 @@
     indifferent: '/mood-faces/mood-face-indifferent.svg',
     uncertain: '/mood-faces/mood-face-uncertain.svg',
     discouraged: '/mood-faces/mood-face-discouraged.svg',
-    default: '/mood-faces/mood-face-default.svg' // Add a default option
+    default: '/mood-faces/mood-face-default.svg'
   };
 
   const moodColors = {
@@ -16,12 +16,14 @@
     indifferent: '#D4663520',
     uncertain: '#D4663520',
     discouraged: '#D4663520',
-    default: '#8FD2EC20' // Add a default option
+    default: '#8FD2EC20'
   };
 
-  // Use a reactive statement to update the image when selectedRating changes
-  $: selectedRatingImg = moodMap[selectedRating] || moodMap.default;
-  $: selectedColor = moodColors[selectedRating] || moodColors.default;
+  $: normalizedRating = selectedRating.trim().toLowerCase();
+  $: selectedRatingImg = moodMap[normalizedRating] || moodMap.default;
+  $: selectedColor = moodColors[normalizedRating] || moodColors.default;
+
+  $: console.log('normalizedRating:', normalizedRating);
 </script>
 
 <div class="recap-mood-item-container" style="background-color: {selectedColor};">

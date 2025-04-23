@@ -7,6 +7,9 @@
   export let isFirstStep: boolean = false;
   export let isLastStep: boolean = false;
   export let currentStepIndex: number;
+
+  // Determine if we’re on PainRecap (index 6) or MoodRecap (index 7)
+  $: useInvertedStyle = currentStepIndex === 6;
 </script>
 
 <div class="actions-container">
@@ -18,6 +21,8 @@
       ctaOneOnClickFunc={onPrevious}
       ctaTwo={isLastStep ? 'Start check in' : 'Next'}
       ctaTwoOnClickFunc={onNext}
+      ctaOneButtonType={useInvertedStyle ? 'secondary-inverted' : 'secondary'}
+      ctaTwoButtonType={useInvertedStyle ? 'primary-inverted' : 'primary'}
     />
   {/if}
 </div>
@@ -27,7 +32,9 @@
     box-sizing: border-box;
     display: flex;
     width: 100%;
+    margin: auto;
     max-width: 448px;
-    padding: 0 24px;
+    padding: 0 24px 16px;
+    overflow: visible;
   }
 </style>

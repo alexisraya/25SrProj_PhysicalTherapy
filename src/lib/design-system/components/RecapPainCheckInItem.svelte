@@ -56,6 +56,9 @@
 </button>
 
 <style>
+  button {
+    border: none;
+  }
   p {
     margin: 0;
   }

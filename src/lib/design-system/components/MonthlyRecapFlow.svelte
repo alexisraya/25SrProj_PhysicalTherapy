@@ -21,17 +21,30 @@
 
   const stepComponents: ComponentType[] = [
     MonthRecap,
-    AchievementRecap,
-    PainRecap,
     ROMRecap,
     StrengthRecap,
-    ExercisesRecap,
     GoalsRecap,
+    AchievementRecap,
+    ExercisesRecap,
+    PainRecap,
     MoodRecap
   ];
+
+  $: bgClass = getBackgroundClass($currentRecapStep);
+
+  function getBackgroundClass(step: number): string {
+    // Check if current step is ROMRecap (index 1) or StrengthRecap (index 2)
+    if (step === 1) {
+      return 'rom-bg';
+    } else if (step === 2) {
+      return 'strength-bg';
+    } else {
+      return 'default-bg';
+    }
+  }
 </script>
 
-<div class="recap-container">
+<div class="recap-container {bgClass}">
   <MonthlyRecapNav currentStep={$currentRecapStep + 1} />
   <div class="step-content">
     <!-- Simplified component usage - no more props passing -->
@@ -57,15 +70,32 @@
     justify-content: space-between;
     /* margin: 0 24px; */
     padding-bottom: 34px;
-    background-color: var(--background);
     width: 100%;
     height: 100%;
     max-height: 785px;
     max-width: 808px;
+  }
+  .default-bg {
+    background-color: var(--background);
+  }
+  .rom-bg {
+    background-color: var(--color-blue-525);
+  }
+  .strength-bg {
+    background-color: var(--background);
   }
   .step-content {
     width: 100%;
     max-width: 448px;
     overflow-x: visible;
   }
+  /* .actions-wrapper {
+    width: 100%;
+    position: relative;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    z-index: 2;
+    margin-top: auto;
+  } */
 </style>

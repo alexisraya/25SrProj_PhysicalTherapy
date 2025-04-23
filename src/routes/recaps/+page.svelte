@@ -8,7 +8,6 @@
 
 <style>
   .recap-page-container {
-    background-color: var(--background);
     display: flex;
     align-items: center;
     justify-content: center;

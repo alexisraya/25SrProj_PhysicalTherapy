@@ -67,7 +67,24 @@
         You've been tracking your mood
       </h3>
       <p>Here's your average rating</p>
-      <RecapMoodItem selectedRating={commonMood} />
+      <div class="pain">
+        <RecapMoodItem selectedRating={commonMood} />
+      </div>
     {/if}
   </div>
 {/if}
+
+<style>
+  .pain-recap-container {
+    margin: 16px auto;
+    display: grid;
+    justify-items: center;
+  }
+  p,
+  h3 {
+    text-align: center;
+  }
+  .pain {
+    z-index: 5;
+  }
+</style>

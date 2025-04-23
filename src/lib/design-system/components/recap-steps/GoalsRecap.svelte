@@ -66,11 +66,7 @@
       {/if}
     </h3>
     <p>{goalsText}</p>
-    <div
-      class="monthly-achievments-container {goalData.unlocked.length <= 2
-        ? 'less-achivements'
-        : ''}"
-    >
+    <div class="monthly-goals-container {goalData.unlocked.length <= 2 ? 'less-achivements' : ''}">
       {#each goalData.unlocked.slice(0, 5) as goal}
         <RecapGoal goalId={goal.id} title={goal.name} ammount={goalData.unlocked.length} />
       {/each}
@@ -90,8 +86,9 @@
     row-gap: 24px;
     align-items: center;
     text-align: center;
+    margin: 16px auto;
   }
-  .monthly-achievments-container {
+  .monthly-goals-container {
     box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
