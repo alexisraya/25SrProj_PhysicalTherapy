@@ -98,12 +98,6 @@
     }
   }
 
-  if (type == 'mood') {
-    console.log('mood');
-    yLimit = 5;
-    ySteps = 1;
-  }
-
   // Props for conditional coloring - using CSS variable references
   export let colorMap = {
     1: 'var(--color-blue-525)',
@@ -197,6 +191,16 @@
   }
 
   function updateChart() {
+    if (type == 'mood') {
+      console.log('mood');
+      yLimit = 5;
+      ySteps = 1;
+    }
+    if (type == 'pain') {
+      console.log('pain');
+      yLimit = 10;
+      ySteps = 2;
+    }
     // Clear previous chart
     if (svgElement) {
       d3.select(svgElement).selectAll('*').remove();
