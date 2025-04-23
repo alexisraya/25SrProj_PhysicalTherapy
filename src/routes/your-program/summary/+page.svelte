@@ -10,6 +10,9 @@
   import { checkInStore } from '$stores/checkInStore';
   import { get } from 'svelte/store';
   import { goto } from '$app/navigation';
+  import AchievmentCard from '$lib/design-system/components/AchievmentCard.svelte';
+  import Achievement from '$lib/design-system/components/Achievement.svelte';
+  import { achievementsMap } from '$lib/achievements.js';
 
   export let data;
 
@@ -18,9 +21,33 @@
   $: weeklyProgress = data.weeklyProgress;
   $: error = data.error;
   $: longestStreak = stats.longestStreak;
+  // Make sure we have an array of achievements
+  $: achievementsArray = stats?.achievements
+    ? Object.entries(stats.achievements).map(([id, data]) => ({
+        achieveId: id,
+        unlocked: data.unlocked,
+        unlockedAt: data.unlockedAt
+      }))
+    : [];
+
+  // Filter for today's achievements
+  $: todayAchievements = achievementsArray.filter((achievement) => {
+    if (!achievement?.unlockedAt) return false;
+
+    const today = new Date();
+    const unlocked = new Date(achievement.unlockedAt);
+
+    return (
+      today.getFullYear() === unlocked.getFullYear() &&
+      today.getMonth() === unlocked.getMonth() &&
+      today.getDate() === unlocked.getDate()
+    );
+  });
+
   console.log('ALEXIS');
   console.log(data.stats);
   console.log(longestStreak);
+  console.log(achievementsArray);
 
   // Determine if we're in a loading state
   $: loading = !error && !program && !stats && !weeklyProgress;
@@ -64,9 +91,8 @@
     };
 
     await loadCheckIn();
-
     window.addEventListener('themeChanged', handleThemeChange);
-
+    console.log(achievementsArray);
     return () => {
       window.removeEventListener('themeChanged', updateThemeFromStorage);
     };
@@ -122,13 +148,27 @@
             Program Summary
           </p>
           <div class="horizontal-box"></div>
-          <!-- TODO: Alexis check Streak with Sabrina -->
-          <Streak
-            streakType="program"
-            streakTotalDays={5}
-            streakDaysCompleted={weeklyProgress.daysCompleted}
-            overallStreak={longestStreak}
-          />
+
+          <div
+            class="program-summary-content {todayAchievements.length === 0
+              ? 'no-achievements'
+              : ''}"
+          >
+            {#if todayAchievements.length > 0}
+              <Achievement
+                type="program"
+                achievementDescription={todayAchievements[0].achieveId.split('-').join(' ')}
+                achievmentId={todayAchievements[0].achieveId}
+                iconName={achievementsMap[todayAchievements[0].achieveId]}
+              />
+            {/if}
+            <Streak
+              streakType="program"
+              streakTotalDays={5}
+              streakDaysCompleted={weeklyProgress.daysCompleted}
+              overallStreak={longestStreak}
+            />
+          </div>
         </div>
         <div class="exercise-summary">
           <p
@@ -212,6 +252,18 @@
 
   .program-summary {
     width: 100%;
+  }
+
+  .program-summary-content {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: var(--background);
+    gap: 16px;
+  }
+
+  .program-summary-content.no-achievements {
+    grid-template-columns: 1fr; /* Change to a single column */
   }
 
   .exercise-summary {

@@ -141,13 +141,14 @@
     width: 100%;
   }
   .program {
+    box-sizing: border-box;
     background-color: var(--streak-background);
     border: 1px solid var(--streak-border);
     border-radius: 4px;
     padding: 16px 12px;
   }
   .program .streak-container {
-    height: 24px;
+    height: 100%;
   }
   .streak-container {
     display: flex;

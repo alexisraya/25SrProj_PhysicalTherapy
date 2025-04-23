@@ -166,6 +166,32 @@
     grid-template-columns: 1fr;
     gap: 24px;
   }
+
+  .summary {
+    border-radius: 4px;
+    border: 1px solid var(--achievement-card-border);
+    background: var(--achievement-card-background);
+    width: 100%;
+  }
+
+  /* Make sure the second achievement section is always visible for summary type */
+  .summary-large {
+    display: flex !important; /* Override any media queries */
+  }
+
+  /* Hide the first achievement section when type is summary */
+  .summary-body:not(.summary-large) {
+    display: none;
+  }
+
+  /* Header visibility control for summary type */
+  .summary .small-screen {
+    display: flex; /* Show small screen header by default */
+  }
+
+  .summary .large-screen {
+    display: none; /* Hide large screen header by default */
+  }
   @media (min-width: 1000px) {
     .small-screen {
       display: none;
@@ -176,6 +202,14 @@
 
     .milestones-large {
       display: flex;
+    }
+
+    .summary .small-screen {
+      display: none; /* Hide small screen header on large screens */
+    }
+
+    .summary .large-screen {
+      display: flex; /* Show large screen header on large screens */
     }
   }
   @keyframes floatUpDown {

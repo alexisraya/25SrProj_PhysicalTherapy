@@ -4,6 +4,8 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { getTone } from '$lib/helpers/toneContext';
+  import { getWeeklyProgress } from '$firebase/services/statService';
+  import { authStore } from '$stores/authStore';
 
   const { text } = getTone();
 
@@ -20,11 +22,45 @@
   const insterstitialSubtitleOption = interstitialSubtitleOptions[randomInsterstitialOption];
   const interstitialIconOption = interstitialIconOptions[randomInsterstitialOption];
 
+  let weeklyProgress: any = null;
+  let goToUrl = '/your-program/summary';
+
+  let unsubscribe;
+
   onMount(() => {
-    setTimeout(() => {
-      goto('/your-program/summary');
+    const timeoutId = setTimeout(() => {
+      goto(goToUrl);
     }, 3000);
+    // Subscribe to auth changes
+    const unsubscribe = authStore.subscribe((authState) => {
+      if (!authState.isLoading) {
+        // Auth state is initialized (no longer loading)
+        if (authState.currentUser) {
+          // User is logged in, load data
+          loadUserData(authState.currentUser.uid);
+        }
+      }
+      // If still loading, we'll wait
+    });
+
+    // Clean up subscription on component destroy
+    return () => {
+      clearTimeout(timeoutId);
+      if (unsubscribe) unsubscribe();
+    };
   });
+
+  async function loadUserData(userId) {
+    try {
+      const [weeklyData] = await Promise.all([getWeeklyProgress(userId)]);
+      weeklyProgress = weeklyData;
+      if (weeklyProgress.daysCompleted > 4) {
+        goToUrl = '/your-program/summary/interstital';
+      }
+    } catch (err) {
+      console.error('Error loading data:', err);
+    }
+  }
 </script>
 
 <div class="interstital-container">
