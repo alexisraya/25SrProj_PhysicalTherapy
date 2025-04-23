@@ -6,12 +6,16 @@
   export let ctaTwo: string;
   export let ctaTwoOnClickFunc;
   export let isCTATwoDisabled;
+
+  // Optional props with fallback values
+  export let ctaOneButtonType: string = 'secondary';
+  export let ctaTwoButtonType: string = 'primary';
 </script>
 
 <div class="double-button-container">
-  <Button buttonType="secondary" cta={ctaOne} onClickFunc={ctaOneOnClickFunc} />
+  <Button buttonType={ctaTwoButtonType} cta={ctaOne} onClickFunc={ctaOneOnClickFunc} />
   <Button
-    buttonType="primary"
+    buttonType={ctaOneButtonType}
     cta={ctaTwo}
     onClickFunc={ctaTwoOnClickFunc}
     isDisabled={isCTATwoDisabled}

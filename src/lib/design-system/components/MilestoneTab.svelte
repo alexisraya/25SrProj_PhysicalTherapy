@@ -11,6 +11,8 @@
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
   import { getUserStats, getWeeklyProgress } from '$firebase/services/statService';
   import { achievementsMap } from '$lib/achievements';
+  import { goto } from '$app/navigation';
+  import { currentMonth } from '$stores/monthlyrecap';
 
   let stats;
   let monthlyProgress;
@@ -110,6 +112,12 @@
       if (chosenAchievement) {
         console.log('Chosen achievement:', chosenAchievement);
       }
+    }
+
+    if (month <= completedMonths.length) {
+      $currentMonth = month;
+      // Fixed string interpolation syntax - use backticks
+      goto(`/recaps`);
     }
   }
 
