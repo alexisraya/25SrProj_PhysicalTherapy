@@ -234,7 +234,13 @@
     {@const month = index + 1}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="month-selector" on:click={() => selectMonth(month)}>
+    <div
+      class="month-selector"
+      on:click={() => {
+        if (month > completedMonths.length) return;
+        selectMonth(month);
+      }}
+    >
       <MilestoneMonths
         {month}
         isComplete={month <= completedMonths.length}
