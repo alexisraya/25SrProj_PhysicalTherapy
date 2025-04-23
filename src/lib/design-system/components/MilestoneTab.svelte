@@ -310,6 +310,7 @@
               goalName={goalItem.goalName}
               isLocked={!goalItem.unlocked}
               extraInfo={goalItem.timeframe}
+              goalId={goalItem.goalId}
             />
           {/each}
         {:else}
