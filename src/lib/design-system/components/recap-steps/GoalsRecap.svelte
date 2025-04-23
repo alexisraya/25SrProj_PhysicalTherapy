@@ -71,7 +71,7 @@
         ? 'less-achivements'
         : ''}"
     >
-      {#each goalData.unlocked.slice(0, 3) as goal}
+      {#each goalData.unlocked.slice(0, 5) as goal}
         <RecapGoal goalId={goal.id} title={goal.name} ammount={goalData.unlocked.length} />
       {/each}
     </div>
