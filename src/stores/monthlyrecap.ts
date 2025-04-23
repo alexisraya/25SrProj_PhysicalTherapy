@@ -15,9 +15,6 @@ export const recapSteps: MonthlyRecapStep[] = [
     id: 'mood'
   },
   {
-    id: 'programs'
-  },
-  {
     id: 'exercises'
   },
   {

@@ -11,10 +11,10 @@
   };
 
   const moodColors = {
-    motivated: '#8FD2EC20',
+    motivated: '#3FAF6C20',
     hopeful: '#8FD2EC20',
-    indifferent: '#D4663520',
-    uncertain: '#D4663520',
+    indifferent: '#9E80C520',
+    uncertain: '#8FD2EC20',
     discouraged: '#D4663520',
     default: '#8FD2EC20'
   };
@@ -42,7 +42,7 @@
     justify-content: center;
     width: 136px;
     aspect-ratio: 1;
-    padding: 9px 0;
+    padding: 16px 16px;
     row-gap: 9px;
   }
 </style>

@@ -42,6 +42,14 @@
       return 'default-bg';
     }
   }
+  $: console.log(
+    'Current step:',
+    $currentRecapStep,
+    'Total steps:',
+    recapSteps.length,
+    'Is last step:',
+    $currentRecapStep === recapSteps.length - 1
+  );
 </script>
 
 <div class="recap-container {bgClass}">
