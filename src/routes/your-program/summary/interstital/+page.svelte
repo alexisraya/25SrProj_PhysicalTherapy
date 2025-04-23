@@ -80,7 +80,7 @@
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .small}; font-weight: {typography.fontWeights.regular};"
       >
-        Nice work on your progreams this week. Keep it up!
+        Nice work on your programs this week. Keep it up!
       </p>
     </div>
     <div class="streaks-container">
