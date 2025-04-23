@@ -38,9 +38,9 @@
   }
 
   const { text } = getTone();
-  const descreaseText = $text(`recap_rom_decrease`);
-  const increaseText = $text(`rom_increase`);
-  const steadyText = $text(`rom_steady`);
+  const descreaseText = $text(`strength_decrease`);
+  const increaseText = $text(`strength_increase`);
+  const steadyText = $text(`strength_steady`);
 
   onMount(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
