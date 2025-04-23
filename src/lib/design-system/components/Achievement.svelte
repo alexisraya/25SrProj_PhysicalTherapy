@@ -76,9 +76,8 @@
         {achievementDescription}!
       </p>
     </div>
-    <div class="achievement-body {type}-body {type}-large">
+    <!-- <div class="achievement-body {type}-body {type}-large">
       <div class="achievement-image-container">
-        <!-- Check if we have a mapping for this achievement ID -->
         {#if iconName}
           <Icon name={iconName} size="small" />
         {:else if achievementsMap[achievmentId]}
@@ -94,7 +93,7 @@
         You've {action}
         {achievementDescription}!
       </p>
-    </div>
+    </div> -->
   </div>
 </button>
 

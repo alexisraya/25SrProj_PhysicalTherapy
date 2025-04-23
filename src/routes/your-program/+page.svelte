@@ -126,7 +126,7 @@
     if (firstIncomplete) {
       goto(`/your-program/${firstIncomplete.exerciseId}`);
     } else {
-      goto('/your-program/summary');
+      goto('/your-program/summary/interstital');
     }
   }
 
@@ -259,7 +259,7 @@
 
       // Check if all exercises are completed
       if (programData?.exercises.every((ex) => ex.completed || ex.skipped)) {
-        goto('/your-program/summary');
+        goto('/your-program/summary/interstital');
         return; // Exit early if navigating away
       }
 
