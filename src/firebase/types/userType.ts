@@ -55,19 +55,19 @@ export interface UserStats {
   weeklyProgress: {
     weekStartDate: string; // ISO date string (Sunday)
     daysCompleted: number;
-    exercisesCompleted: number;
+    exercisesCompleted: number; //EXERCISES COMPLETED WITHIN THE WEEK
   };
   monthlyProgress: {
     [key: string]: {
       // key format: 'YYYY-MM'
       month: number;
-      exercisesCompleted: number;
+      exercisesCompleted: number; // EXERCISES COMPELTED WITHIN THE MONTH
       programsCompleted: number;
     };
   };
 
   // OVERALL STATS
-  completedExercises: number;
+  completedExercises: number; //OF ALL TIME
   completedPrograms: number;
   totalSets: number;
   totalReps: number;

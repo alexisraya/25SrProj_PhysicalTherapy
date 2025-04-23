@@ -3,7 +3,8 @@ import { getCurrentProgram, updateProgram } from './programService';
 import {
   initializeUserStats,
   checkAndResetProgress,
-  updateStreakOnCompletion
+  updateStreakOnCompletion,
+  updateUserStats
 } from './statService';
 import { logTooPainful } from './tooPainfulLogService';
 
@@ -53,42 +54,18 @@ export async function completeExercise(
     stats.completedExercises++;
     stats.weeklyProgress.exercisesCompleted++;
 
-    // Get exercise values, using adjusted values if available
-    const sets = adjustedValues?.sets ?? exercise.sets ?? 0;
-    const reps = adjustedValues?.reps ?? exercise.reps ?? 0;
-    const steps = adjustedValues?.steps ?? exercise.steps ?? 0;
-    const seconds = adjustedValues?.seconds ?? exercise.seconds ?? 0;
-    const weight = adjustedValues?.weight ?? exercise.weight ?? 0;
+        // Create an exercise object for stat updates with adjusted values
+    const exerciseForStats = {
+      ...exercise,
+      sets: adjustedValues?.sets ?? exercise.sets,
+      reps: adjustedValues?.reps ?? exercise.reps,
+      steps: adjustedValues?.steps ?? exercise.steps,
+      seconds: adjustedValues?.seconds ?? exercise.seconds,
+      weight: adjustedValues?.weight ?? exercise.weight
+    };
 
-    if (exercise.exerciseType === 'distance') {
-      stats.totalSets += sets;
-      stats.totalReps += steps;
-      stats.totalDistance += sets * steps;
-    } else if (exercise.exerciseType === 'weight') {
-      stats.totalSets += sets;
-      stats.totalReps += sets * reps;
-      stats.totalWeight += sets * reps * weight;
-    } else if (exercise.exerciseType === 'time') {
-      stats.totalSets += sets;
-      stats.totalReps += reps;
-      stats.totalTime += sets * reps * seconds;
-    }
-    if (exercise.exerciseType === 'distance') {
-      stats.totalSets += sets;
-      stats.totalReps += steps;
-      stats.totalDistance += sets * steps;
-    } else if (exercise.exerciseType === 'weight') {
-      stats.totalSets += sets;
-      stats.totalReps += sets * reps;
-      stats.totalWeight += sets * reps * weight;
-    } else if (exercise.exerciseType === 'time') {
-      stats.totalSets += sets;
-      stats.totalReps += reps;
-      stats.totalTime += sets * reps * seconds;
-    }
-
+    // Update monthly progress tracking
     const monthKey = today.toISOString().substring(0, 7); // Format: YYYY-MM
-
     const creationDate = new Date(user.createdAt);
     const monthsPassed = Math.ceil(
       (today.getTime() - creationDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
@@ -108,6 +85,7 @@ export async function completeExercise(
 
     stats.monthlyProgress[monthKey].exercisesCompleted++;
 
+    // Check if all exercises are completed
     const allCompleted = updatedExercises.every((ex) => ex.completed || ex.skipped);
 
     if (allCompleted) {
@@ -116,16 +94,27 @@ export async function completeExercise(
         exercises: updatedExercises,
         completed: true
       });
+      
+      // Update user with base stats (don't include exercise stats yet)
       await updateUser(userId, { stats });
+      
+      // Use updateUserStats to update exercise-specific stats
+      await updateUserStats(userId, exerciseForStats);
+      
+      // Update streak on completion
       await updateStreakOnCompletion(userId);
     } else {
-      await Promise.all([
-        updateProgram(userId, {
-          exercises: updatedExercises,
-          completed: false
-        }),
-        updateUser(userId, { stats })
-      ]);
+      // Update program first
+      await updateProgram(userId, {
+        exercises: updatedExercises,
+        completed: false
+      });
+      
+      // Then update user stats
+      await updateUser(userId, { stats });
+      
+      // Use updateUserStats to update exercise-specific stats
+      await updateUserStats(userId, exerciseForStats);
     }
   } catch (error) {
     console.error('Error completing exercise:', error);
