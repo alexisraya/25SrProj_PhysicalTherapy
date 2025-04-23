@@ -5,22 +5,54 @@
   // Only require two coordinates
   export let coordinates: { month: string; degrees: number }[] = [];
 
+  // New prop to determine chart type
+  export let chartType: 'ROM' | 'Strength' = 'ROM';
+
   // Chart dimensions and labels
   export let width = 200;
   export let height = 200;
   export let marginTop = 20;
   export let marginRight = 30;
-  export let marginBottom = 60; // Increased to make room for x-axis title
-  export let marginLeft = 70; // Increased to make room for y-axis title
+  export let marginBottom = 60;
+  export let marginLeft = 70;
   export let xAxisTitle = 'Months';
-  export let yAxisTitle = 'Degrees';
-  export let yAxisMax = 100;
-  export let yAxisTicks = [20, 40, 60, 80, 100]; // Customizable ticks
+  export let yAxisTitle = chartType === 'ROM' ? 'Degrees' : 'Pounds';
+  export let yAxisMax = chartType === 'ROM' ? 180 : 100;
+  export let yAxisTicks = chartType === 'ROM' ? [0, 45, 90, 135, 180] : [0, 20, 40, 60, 80, 100];
 
-  // Styling options
-  export let barColor = 'var(--text-primary)';
-  export let xAxisColor = 'var(--text-primary)';
-  export let yAxisColor = 'var(--color-blue-1100)';
+  // Color schemes
+  const colorSchemes = {
+    ROM: {
+      barColor: 'var(--text-primary)',
+      xAxisLineColor: 'var(--text-primary)',
+      xAxisTextColor: 'var(--background)',
+      xAxisTitleColor: 'var(--background)', // Separate color for x-axis title
+      yAxisLineColor: 'var(--color-blue-1100)',
+      yAxisTextColor: 'var(--color-blue-1100)',
+      yAxisTitleColor: 'var(--color-blue-1100)' // Separate color for y-axis title
+    },
+    Strength: {
+      barColor: 'var(--color-blue-525)',
+      xAxisLineColor: 'var(--color-blue-525)',
+      xAxisTextColor: 'var(--color-blue-1100)',
+      xAxisTitleColor: 'var(--olor-blue-1100)', // Separate color for x-axis title
+      yAxisLineColor: 'var(--text-primary)',
+      yAxisTextColor: 'var(--text-primary)',
+      yAxisTitleColor: 'var(--text-primary)' // Separate color for y-axis title
+    }
+  };
+
+  // Apply color scheme based on chart type
+  $: activeColorScheme = colorSchemes[chartType];
+
+  // Styling options with reactive values
+  $: barColor = activeColorScheme.barColor;
+  $: xAxisLineColor = activeColorScheme.xAxisLineColor;
+  $: xAxisTextColor = activeColorScheme.xAxisTextColor;
+  $: xAxisTitleColor = activeColorScheme.xAxisTitleColor;
+  $: yAxisLineColor = activeColorScheme.yAxisLineColor;
+  $: yAxisTextColor = activeColorScheme.yAxisTextColor;
+  $: yAxisTitleColor = activeColorScheme.yAxisTitleColor;
   export let showAxes = true;
 
   let svgElement;
@@ -69,41 +101,45 @@
       .attr('height', (d) => height - marginBottom - yScale(d.degrees))
       .attr('fill', barColor);
 
-    // Always show axes
     // X-axis
     const xAxis = d3.axisBottom(xScale).tickSize(0).tickPadding(10);
 
-    svg
+    const xAxisGroup = svg
       .append('g')
       .attr('transform', `translate(0,${height - marginBottom})`)
-      .call(xAxis)
-      .attr('color', xAxisColor); // Apply x-axis color
+      .call(xAxis);
+
+    // Style x-axis line (domain) and text separately
+    xAxisGroup.select('.domain').attr('stroke', xAxisLineColor).attr('stroke-width', 2);
+
+    xAxisGroup.selectAll('.tick text').attr('fill', xAxisTextColor);
 
     // Y-axis with customizable ticks
     const yAxis = d3
       .axisLeft(yScale)
       .tickValues(yAxisTicks)
-      .tickFormat(d3.format('d')) // Use integer format
+      .tickFormat(d3.format('d'))
       .tickSize(0)
       .tickPadding(10);
 
-    svg
-      .append('g')
-      .attr('transform', `translate(${marginLeft},0)`)
-      .call(yAxis)
-      .attr('color', yAxisColor); // Apply y-axis color
+    const yAxisGroup = svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(yAxis);
 
-    // Add x-axis title
+    // Style y-axis line (domain) and text separately
+    yAxisGroup.select('.domain').attr('stroke', yAxisLineColor).attr('stroke-width', 2);
+
+    yAxisGroup.selectAll('.tick text').attr('fill', yAxisTextColor);
+
+    // Add x-axis title with its own color
     svg
       .append('text')
       .attr('class', 'x-axis-title')
       .attr('text-anchor', 'middle')
       .attr('x', marginLeft + (width - marginLeft - marginRight) / 2)
       .attr('y', height - 10)
-      .attr('fill', xAxisColor)
+      .attr('fill', xAxisTitleColor)
       .text(xAxisTitle);
 
-    // Add y-axis title
+    // Add y-axis title with its own color
     svg
       .append('text')
       .attr('class', 'y-axis-title')
@@ -111,7 +147,7 @@
       .attr('transform', 'rotate(-90)')
       .attr('x', -(marginTop + (height - marginTop - marginBottom) / 2))
       .attr('y', 15)
-      .attr('fill', yAxisColor)
+      .attr('fill', yAxisTitleColor)
       .text(yAxisTitle);
   }
 
@@ -121,7 +157,7 @@
     }
   });
 
-  // Update chart when data or dimensions change
+  // Update chart when data, dimensions, or chartType changes
   $: if (svgElement && coordinates && coordinates.length > 0) {
     updateChart();
   }

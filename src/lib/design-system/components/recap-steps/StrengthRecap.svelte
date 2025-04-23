@@ -74,7 +74,7 @@
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.strength}
-  <div class="pain-recap-container">
+  <div class="strength-recap-container">
     {#if $currentMonth === 1 || !metricsData.strength.change}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -96,20 +96,24 @@
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
       >
-        Your strength has increased
+        You’ve gotten stronger
       </h3>
       <p>{increaseText}</p>
     {/if}
 
     {#if data && data.length === 2}
-      <RecapBarChart
-        coordinates={data}
-        xAxisColor="var(--color-blue-1100)"
-        yAxisColor="var(--text-primary)"
-        yAxisMax={5}
-        yAxisTicks={[1, 2, 3, 4, 5]}
-        yAxisTitle="Rating"
-      />
+      <div class="graph-container">
+        <div class="graph">
+          <RecapBarChart
+            coordinates={data}
+            chartType="Strength"
+            yAxisMax={5}
+            yAxisTicks={[1, 2, 3, 4, 5]}
+            yAxisTitle="Rating"
+          />
+        </div>
+        <div class="bottom-screen"></div>
+      </div>
     {:else}
       <p>Insufficient data to display chart</p>
     {/if}
@@ -117,3 +121,34 @@
 {:else}
   <p>No strength data available</p>
 {/if}
+
+<style>
+  .strength-recap-container {
+    margin: 16px auto;
+  }
+  h3,
+  p {
+    text-align: center;
+  }
+  .graph-container {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    display: grid;
+    justify-self: center;
+    height: 100%;
+  }
+  .graph {
+    margin: auto;
+    position: relative;
+    top: 64px;
+    z-index: 1;
+  }
+  .bottom-screen {
+    background-color: var(--color-blue-525);
+    height: 160px;
+    margin: 0 16px;
+    border-radius: 24px;
+    z-index: 0;
+  }
+</style>

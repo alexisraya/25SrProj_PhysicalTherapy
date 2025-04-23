@@ -74,7 +74,7 @@
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.rangeOfMotion}
-  <div class="pain-recap-container">
+  <div class="rom-recap-container">
     {#if $currentMonth === 1 || !metricsData.rangeOfMotion.change}
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -102,7 +102,12 @@
     {/if}
 
     {#if data && data.length === 2}
-      <RecapBarChart coordinates={data} />
+      <div class="graph-container">
+        <div class="graph">
+          <RecapBarChart chartType="ROM" coordinates={data} />
+        </div>
+        <div class="bottom-screen"></div>
+      </div>
     {:else}
       <p>Insufficient data to display chart</p>
     {/if}
@@ -110,3 +115,38 @@
 {:else}
   <p>No range of motion data available</p>
 {/if}
+
+<style>
+  .rom-recap-container {
+    margin: 16px auto;
+  }
+  h3,
+  p {
+    text-align: center;
+    color: var(--color-blue-1100);
+  }
+  .graph-container {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    display: grid;
+    justify-self: center;
+    height: 100%;
+  }
+  .graph {
+    margin: auto;
+    position: relative;
+    top: 64px;
+    z-index: 1;
+  }
+  .bottom-screen {
+    background-color: var(--text-primary);
+    height: 160px;
+    margin: 0 16px;
+    border-radius: 24px;
+    z-index: 0;
+  }
+  :global(.recap-page-container):has(.rom-recap-container) {
+    background-color: var(--color-blue-525);
+  }
+</style>

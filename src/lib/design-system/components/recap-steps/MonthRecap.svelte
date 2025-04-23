@@ -6,9 +6,9 @@
 </script>
 
 <div class="month-recap-container">
-  <img src={MonthRecapBackground} class="month-recap-background" />
+  <img src={MonthRecapBackground} class="month-recap-background" alt="bg" />
   <div class="month-recap-header">
-    <img src={MonthRecapIcon} class="month-recap-icon" />
+    <img src={MonthRecapIcon} class="month-recap-icon" alt="icon" />
   </div>
   <div class="month-recap-copy-container">
     <h1
@@ -37,12 +37,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: visible;
   }
   .month-recap-background {
-    position: absolute;
-    top: -400px;
+    position: fixed;
+    top: -300px;
     left: -52px;
-    z-index: 900;
+    z-index: 1;
   }
   .month-recap-icon {
     position: relative;
@@ -62,5 +63,13 @@
     text-align: center;
     row-gap: 16px;
     max-width: 265px;
+  }
+  @media screen and (min-width: 800px) {
+    .month-recap-background {
+      position: absolute;
+      left: 0;
+      top: -40px;
+      width: 400px;
+    }
   }
 </style>

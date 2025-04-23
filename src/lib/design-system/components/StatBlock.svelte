@@ -52,7 +52,7 @@
     background-color: var(--text-primary);
   }
   .second-recap {
-    background-color: var(--color-blue-110);
+    background-color: var(--color-blue-1100);
   }
   .recap {
     display: flex;

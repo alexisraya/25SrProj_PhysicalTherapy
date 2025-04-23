@@ -83,6 +83,7 @@
 
 <style>
   .month-recap-container {
+    margin: 16px 0 24px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

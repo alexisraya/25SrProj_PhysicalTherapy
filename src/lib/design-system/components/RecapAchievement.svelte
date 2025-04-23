@@ -24,7 +24,7 @@
   if (achievementIdStr.includes('time')) {
     action = 'exercised as long as it takes for';
   } else if (achievementIdStr.includes('weight')) {
-    action = 'listed the weight of a';
+    action = 'lifted the weight of a';
   }
 </script>
 
@@ -35,6 +35,7 @@
   <p
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
       .regular}; font-weight: {typography.fontWeights.medium}"
+    class="achievement-subtitle"
   >
     You've {action}
     {title}
@@ -74,5 +75,11 @@
   }
   .medium-icon-container {
     height: 115px;
+  }
+  .achievement-subtitle {
+    text-transform: lowercase;
+  }
+  .achievement-subtitle::first-letter {
+    text-transform: uppercase;
   }
 </style>
