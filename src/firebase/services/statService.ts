@@ -255,7 +255,10 @@ export async function updateStreakOnCompletion(userId: string): Promise<void> {
     if (!user?.stats) return;
 
     // Only update streak if we haven't already completed today
-    if (await hasCompletedToday(userId)) return;
+    if (await hasCompletedToday(userId)) {
+      console.log("Already completed today, not updating streak");
+      return;
+    }
 
     const today = new Date();
     const stats = { ...user.stats };
@@ -275,23 +278,35 @@ export async function updateStreakOnCompletion(userId: string): Promise<void> {
       };
     }
 
+    console.log("Before update - Days completed:", stats.weeklyProgress.daysCompleted);
+    console.log("Before update - Current streak:", stats.currentStreak);
+    
     // Create the weekly progress if it doesn't exist or reset if it's a new week
     if (stats.weeklyProgress.weekStartDate !== personalWeekStart) {
+      console.log("New week detected, resetting progress");
       // If we're in a new week, reset the weekly progress
       stats.weeklyProgress = {
         weekStartDate: personalWeekStart,
         daysCompleted: 1, // Set to 1 since we completed today
-        exercisesCompleted: stats.weeklyProgress.exercisesCompleted || 0
+        exercisesCompleted: 1
       };
     } else {
       // Same week, increment days completed (cap at 5)
-      stats.weeklyProgress.daysCompleted = Math.min(
-        5,
-        (stats.weeklyProgress.daysCompleted || 0) + 1
-      );
+      console.log("Same week, incrementing days completed");
+      const newDaysCompleted = Math.min(5, (stats.weeklyProgress.daysCompleted || 0) + 1);
+      
+      // Check if we hit 5 days with this completion
+      if (newDaysCompleted === 5 && stats.weeklyProgress.daysCompleted < 5) {
+        console.log("Reached 5 days! Incrementing streak");
+        stats.currentStreak += 1;
+        stats.longestStreak = Math.max(stats.currentStreak, stats.longestStreak);
+      }
+      
+      stats.weeklyProgress.daysCompleted = newDaysCompleted;
     }
 
-    console.log(`Updated days completed: ${stats.weeklyProgress.daysCompleted}`);
+    console.log(`Updated days completed to: ${stats.weeklyProgress.daysCompleted}`);
+    console.log(`Current streak: ${stats.currentStreak}, Longest streak: ${stats.longestStreak}`);
 
     await updateUser(userId, { stats });
     await checkAchievements(userId);
@@ -314,11 +329,19 @@ async function hasCompletedToday(userId: string): Promise<boolean> {
     if (!userSnap.exists()) return false;
 
     const userData = userSnap.data() as User;
-    const today = new Date().toISOString().split('T')[0];
-
-    return userData.stats.streakHistory.some(
-      (entry) => entry.date.startsWith(today) && entry.completed
-    );
+    if (!userData.stats || !userData.stats.streakHistory) return false;
+    
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0]; // Get YYYY-MM-DD
+    
+    // Check for today's completion by exact date match
+    const completedToday = userData.stats.streakHistory.some(entry => {
+      const entryDate = entry.date.split('T')[0]; // Get YYYY-MM-DD from ISO string
+      return entryDate === todayStr && entry.completed;
+    });
+    
+    console.log(`Checked if completed today: ${completedToday}`);
+    return completedToday;
   } catch (error) {
     console.error(`Error checking completion status for user ${userId}:`, error);
     return false;
