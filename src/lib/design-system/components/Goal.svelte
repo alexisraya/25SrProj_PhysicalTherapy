@@ -9,6 +9,7 @@
   export let hasExtraInfo: boolean = false;
   export let extraInfo: string;
   export let goalId: string;
+  export let isInModal: boolean = false;
 
   export const defaultGoals = [
     { goalName: 'Unlocked Goal', isLocked: false, hasExtraInfo: false },
@@ -50,7 +51,7 @@
 </script>
 
 <div class="goal-container">
-  <div class="goal-icon {isLocked ? 'locked' : 'unlocked'}">
+  <div class="goal-icon {isLocked ? 'locked' : 'unlocked'} {isInModal ? 'inModal' : ''}">
     <div class="floating-icon">
       {#if isLocked}
         {#if currentTheme == 'light'}
@@ -59,7 +60,7 @@
           <Icon name="lock-dark" size="small" />
         {/if}
       {:else}
-        <Icon name={goalsMap[goalId]} size="small" />
+        <Icon name={goalsMap[goalId]} size={isInModal ? 'large' : 'small'} />
       {/if}
     </div>
   </div>
@@ -103,6 +104,11 @@
     border-radius: 1000px;
     width: 92px;
     height: 92px;
+  }
+
+  .inModal {
+    width: 225px;
+    height: 225px;
   }
 
   @keyframes floatUpDown {

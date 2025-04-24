@@ -152,6 +152,11 @@ async function applyRun1Scenario(userId: string, user: User): Promise<void> {
 
   // Reset all goals to locked
   await resetAllGoals(userId);
+
+  await updateDoc(doc(db, 'users', userId), {
+    showGoalModal: false,
+    showGoalModalId: null
+  });
 }
 
 /**
@@ -288,6 +293,11 @@ async function applyRun2Scenario(userId: string, user: User): Promise<void> {
 
   await resetAllGoals(userId);
   await unlockGoal(userId, 'goal-1');
+
+  await updateDoc(doc(db, 'users', userId), {
+    showGoalModal: false,
+    showGoalModalId: null
+  });
   
   console.log("Run2 setup complete with days completed:", stats.weeklyProgress.daysCompleted);
 }
@@ -457,11 +467,18 @@ async function applyRun3Scenario(userId: string, user: User): Promise<void> {
 
   // Reset goals and unlock the specified ones
   await resetAllGoals(userId);
-  const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-7', 'goal-8', 'goal-9', 'goal-10'];
+  const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-7', 'goal-8', 'goal-9'];
   
   for (const goalId of goalsToUnlock) {
     await unlockGoal(userId, goalId);
   }
+  
+  await unlockGoal(userId, 'goal-10');
+
+  await updateDoc(doc(db, 'users', userId), {
+    showGoalModal: true,
+    showGoalModalId: 'goal-10'
+  });
 
   await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
   await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);
