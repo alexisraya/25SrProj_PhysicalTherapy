@@ -15,6 +15,13 @@
   import { goto } from '$app/navigation';
   // Import your goal component
   import Goal from '$lib/design-system/components/Goal.svelte';
+  import { typography } from '$lib/design-system';
+  import Button from '$lib/design-system/components/Button.svelte';
+  import { goalsMap } from '$lib/goals';
+  import Icon from '$lib/design-system/components/Icon.svelte';
+  import GoalModalBackgroundLight from '$lib/assets/background-images/GoalModalBackground-Light.svg';
+  import GoalModalBackgroundDark from '$lib/assets/background-images/GoalModalBackground-Dark.svg';
+  import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
   let currentUserId: string | null = null;
   let initialTone: ToneType = 'kind';
@@ -24,6 +31,8 @@
   let goalModalId = 'goal-10'; // Default to goal-10 (laundry)
   let goalModalName = 'Lift a Basket of Laundry';
   let goalModalExtraInfo = '';
+
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
 
   function checkOnboardingStatus() {
     // Get current path
@@ -111,13 +120,13 @@
           const userRef = doc(db, 'users', $userStore.user.userId);
           const userDoc = await getDoc(userRef);
           const userData = userDoc.data();
-          
+
           if (userData?.showGoalModal && userData?.showGoalModalId === 'goal-10') {
             // Hardcode the goal data instead of trying to find it
             goalModalId = 'goal-10';
             goalModalName = 'Lift a Basket of Laundry';
             showGoalModal = true;
-            
+
             // Reset the flag so it doesn't show again
             await updateDoc(userRef, {
               showGoalModal: false,
@@ -149,6 +158,14 @@
 
     return false;
   }
+
+  function goToGoals() {
+    goto('/your-progress/goals');
+  }
+
+  function goToHome() {
+    showGoalModal = false;
+  }
 </script>
 
 {#if shouldShowNav($page.url.pathname)}
@@ -168,39 +185,65 @@
 
 {#if showGoalModal}
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="goal-modal-overlay" on:click|self={() => showGoalModal = false}>
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
+  <div class="goal-modal-overlay" on:click|self={() => (showGoalModal = false)}>
     <div class="modal">
+      <button class="modal-close-button" on:click={goToHome}>
+        <RemixIcon name="close-line" size="40px" />
+      </button>
+
       <div class="modal-content">
-        <h2>You've unlocked a new goal!</h2>
-        <div class="goal-container">
-          <Goal 
-            goalId="goal-10"
-            goalName="Lift a Basket of Laundry"
-            isLocked={false}
-            hasExtraInfo={false}
-            extraInfo=""
-          />
+        <div class="goal-title">
+          <h3
+            style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
+              .h3}; font-weight: {typography.fontWeights.regular}"
+          >
+            Goal completed!
+          </h3>
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .small}; font-weight: {typography.fontWeights.regular}"
+          >
+            Nice job hitting this goal—keep it up!
+          </p>
         </div>
-        <p>Congratulations! You can safely lift and carry items up to 10 pounds.</p>
-        <button class="primary-button" on:click={() => showGoalModal = false}>Continue</button>
+        <div class="goal-container">
+          <img
+            class="goal-modal-background"
+            src={savedTheme == 'light' ? GoalModalBackgroundLight : GoalModalBackgroundDark}
+            alt="goal modal background"
+          />
+          <div class="goal-icon">
+            <div class="floating-icon">
+              <Icon name={goalsMap['goal-10']} size="medium" />
+            </div>
+          </div>
+
+          <div class="goal-description">
+            <p
+              class="goal-name"
+              style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                .h5}; font-weight: {typography.fontWeights.bold};"
+            >
+              Lift a Basket of Laundry
+            </p>
+            <p>You can salfely lift and carry items up to 10 pounds.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <Button cta="View all goals" buttonType="secondary" onClickFunc={goToGoals} />
+        <Button cta="Continue to home" buttonType="primary" onClickFunc={goToHome} />
       </div>
     </div>
   </div>
 {/if}
 
 <style>
-  @media (min-width: 800px) {
-    .main-container-nav {
-      padding: 0;
-      display: grid;
-      grid-template-columns: 324px 1fr;
-    }
-    .main-content {
-      width: 100%;
-      padding: 0;
-    }
+  p,
+  h3 {
+    margin: 0;
   }
-
   .goal-modal-overlay {
     position: fixed;
     top: 0;
@@ -213,35 +256,121 @@
     justify-content: center;
     z-index: 1000;
   }
-  
+
   .modal {
-    background-color: var(--color-white, white);
-    border-radius: 16px;
-    width: 90%;
-    max-width: 320px;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    background-color: var(--background);
+    width: 100vw;
+    height: 100vh;
+    padding: 46px 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
   }
-  
+
   .modal-content {
+    box-sizing: border-box;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    row-gap: 55px;
   }
-  
+
+  .modal-actions {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 16px;
+  }
+
   .goal-container {
-    margin: 16px 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    row-gap: 18px;
   }
-  
-  .primary-button {
-    margin-top: 16px;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    background-color: var(--color-primary, #3b82f6);
-    color: white;
-    font-weight: 500;
+
+  .goal-modal-background {
+    position: absolute;
+    z-index: 0;
+    top: -25px;
+  }
+
+  .goal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1000px;
+    width: 175px;
+    height: 175px;
+    background-color: var(--unlocked-goal-background);
+    z-index: 1;
+  }
+
+  .goal-description {
+    max-width: 225px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+  }
+
+  .modal-close-button {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    position: absolute;
+    right: 32px;
+    top: 32px;
     cursor: pointer;
+  }
+
+  @keyframes floatUpDown {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(4px);
+    } /* Moves slightly up */
+    100% {
+      transform: translateY(0px);
+    } /* Moves back down */
+  }
+
+  .goal-name {
+    color: var(--text-primary);
+    margin-top: 18px;
+  }
+
+  .goal-icon .floating-icon {
+    animation: floatUpDown 2s ease-in-out infinite; /* Apply animation */
+  }
+
+  @media (min-width: 800px) {
+    .main-container-nav {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 324px 1fr;
+    }
+    .main-content {
+      width: 100%;
+      padding: 0;
+    }
+    .modal {
+      position: relative;
+      max-width: 768px;
+      height: auto;
+      padding: 72px 32px 32px 32px;
+      border-radius: 16px;
+      row-gap: 48px;
+    }
   }
 </style>
