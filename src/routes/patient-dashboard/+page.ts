@@ -19,12 +19,30 @@ export const load: PageLoad = async () => {
   if (browser) {
     // Wait for authentication to be ready before proceeding
     return new Promise((resolve) => {
+      const timeout = setTimeout(() => {
+        // Timeout safety to prevent infinite loading
+        console.warn('Auth subscription timed out - proceeding with null data');
+        
+        if (window.location.pathname === '/patient-dashboard') {
+          window.location.reload();
+        }
+        
+        resolve({
+          program: null,
+          stats: null,
+          weeklyProgress: null,
+          userData: null,
+          error: 'Authentication timed out'
+        });
+      }, 5000); // 5 second timeout
+      
       let unsubscribe: (() => void) | undefined;
 
       // Define a safe cleanup function that can be called anytime
       const cleanup = () => {
         if (unsubscribe) {
           unsubscribe();
+          clearTimeout(timeout);
         }
       };
 
@@ -41,8 +59,15 @@ export const load: PageLoad = async () => {
 
         // Check if user is authenticated
         if (!auth.currentUser) {
-          // Redirect to login if not authenticated
-          throw redirect(302, '/login');
+          // Return an object instead of redirecting to prevent race conditions
+          resolve({
+            program: null,
+            stats: null,
+            weeklyProgress: null,
+            userData: null,
+            error: 'Not authenticated'
+          });
+          return;
         }
 
         // User is authenticated, proceed with data loading
@@ -59,6 +84,21 @@ export const load: PageLoad = async () => {
               getWeeklyProgress(userId),
               (await getDoc(doc(db, 'users', userId))).data()
             ]);
+
+            // If we're on the patient dashboard, ensure the nav is visible
+            if (window.location.pathname === '/patient-dashboard') {
+              // Force render with minimal data if program is missing
+              if (!program || !stats || !weeklyProgress) {
+                resolve({
+                  program: program || { completed: false, exercises: [] },
+                  stats: stats || { longestStreak: 0 },
+                  weeklyProgress: weeklyProgress || { daysCompleted: 0, daysNeededForStreak: 5 },
+                  userData: userData || { firstName: 'User' },
+                  error: null
+                });
+                return;
+              }
+            }
 
             resolve({
               program,

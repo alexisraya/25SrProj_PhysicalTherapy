@@ -47,78 +47,87 @@ export const isTherapist = derived(authStore, ($state) => $state.isTherapist);
 export const authError = derived(authStore, ($state) => $state.error);
 
 export const authHandlers = {
-    login: async (email: string, password: string) => {
-        try {
-            authStore.update(state => ({ ...state, isLoading: true, error: null }));
-            console.log("Login started, waiting for authentication...");
-            
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("Login successful, checking user role...");
-            
-            await checkUserRole(userCredential.user.uid);
-        } catch (error) {
-            console.error("Login error:", error);
-            const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-            authStore.update(state => ({ ...state, error: errorMessage, isLoading: false }));
-        }
-    },
-
-  signup: async (email: string, password: string, firstName: string, lastName: string) => {
-    try {
-      authStore.update((state) => ({ ...state, isLoading: true, error: null }));
-
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log('Created Firebase auth user:', user.uid);
-
-      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-      console.log('Updated user profile');
-
-      await createUser(user.uid, firstName, lastName, email);
-      console.log('Created user document in Firestore');
-
+  login: async (email: string, password: string) => {
       try {
-        await initializeUserAchievements(user.uid);
-        console.log('Initialized achievements for new user');
-      } catch (achieveError) {
-        console.error('Error initializing achievements for new user:', achieveError);
-      }
+          authStore.update(state => ({ ...state, isLoading: true, error: null }));
+          
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-      const therapistId = 'mY8JFfhiJvdFm54wG57ALJmVYit2';
-      try {
-        await assignPatientToTherapist(user.uid, therapistId);
-        console.log(`Assigned patient ${user.uid} to therapist ${therapistId}`);
-      } catch (err) {
-        console.error('Error assigning patient to therapist:', err);
+          console.log("Login successful, auth state change will handle redirection");
+          
+          // Return success without redirecting
+          return { success: true };
+      } catch (error) {
+          console.error("Login error:", error);
+          const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+          authStore.update(state => ({ ...state, error: errorMessage, isLoading: false }));
+          return { success: false, error: errorMessage };
       }
-
-      try {
-        setTimeout(async () => {
-          try {
-            await assignGoalsToUser(user.uid);
-            console.log(`Assigned goals to user ${user.uid}`);
-          } catch (goalErr) {
-            console.error('Error in delayed goal assignment:', goalErr);
-          }
-        }, 1000);
-      } catch (goalError) {
-        console.error('Error assigning goals:', goalError);
-      }
-
-      goto('/patient-dashboard');
-    } catch (error) {
-      console.error('Signup error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
-    }
   },
+
+// In authStore.ts - signup function
+signup: async (email: string, password: string, firstName: string, lastName: string) => {
+  try {
+    authStore.update((state) => ({ ...state, isLoading: true, error: null }));
+
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log('Created Firebase auth user:', user.uid);
+
+    await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+    console.log('Updated user profile');
+
+    await createUser(user.uid, firstName, lastName, email);
+    console.log('Created user document in Firestore');
+
+    try {
+      await initializeUserAchievements(user.uid);
+      console.log('Initialized achievements for new user');
+    } catch (achieveError) {
+      console.error('Error initializing achievements for new user:', achieveError);
+    }
+
+    const therapistId = 'mY8JFfhiJvdFm54wG57ALJmVYit2';
+    try {
+      await assignPatientToTherapist(user.uid, therapistId);
+      console.log(`Assigned patient ${user.uid} to therapist ${therapistId}`);
+    } catch (err) {
+      console.error('Error assigning patient to therapist:', err);
+    }
+
+    // Set loading to false before redirecting
+    authStore.update((state) => ({ ...state, isLoading: false }));
+    
+    console.log('Signup complete, redirecting to dashboard');
+    window.location.href = '/patient-dashboard?noLoading=true';
+    
+    // Start goal assignment in the background
+    setTimeout(async () => {
+      try {
+        await assignGoalsToUser(user.uid);
+        console.log(`Assigned goals to user ${user.uid}`);
+      } catch (goalErr) {
+        console.error('Error in delayed goal assignment:', goalErr);
+      }
+    }, 1000);
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Signup error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
+    return { success: false, error: errorMessage };
+  }
+},
 
   logout: async () => {
     try {
       await signOut(auth);
       console.log('User logged out');
       authStore.set({ ...initialState, isLoading: false });
-      goto('/login');
+      
+      // Use window.location.href instead of goto to avoid the redirect error
+      window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -162,17 +171,27 @@ onAuthStateChanged(auth, async (user) => {
         error: null,
         isTherapist: isUserTherapist
       });
+      
+      // Check if we need to redirect
+      if (window.location.pathname === '/login' || window.location.pathname === '/') {
+        if (isUserTherapist) {
+          goto('/therapist-dashboard');
+        } else {
+          goto('/patient-dashboard');
+        }
+      }
     } else {
       console.warn('User document not found in Firestore.');
       authStore.set({ ...initialState, isLoading: false });
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
     authStore.set({ ...initialState, isLoading: false, error: errorMessage });
   }
 });
 
+// Fix the checkUserRole function in authStore.ts
 async function checkUserRole(userId: string) {
   if (window.location.pathname.includes('/exploration/')) {
     console.log('Test route detected - skipping redirection');
@@ -195,7 +214,9 @@ async function checkUserRole(userId: string) {
       }
 
       authStore.update((state) => ({ ...state, isTherapist: false }));
-      goto('/patient-dashboard');
+      
+      // Use window.location.href instead of goto to avoid redirect errors
+      window.location.href = '/patient-dashboard';
       return;
     }
 
@@ -205,7 +226,9 @@ async function checkUserRole(userId: string) {
     if (therapistSnap.exists()) {
       console.log('Therapist logged in:', userId);
       authStore.update((state) => ({ ...state, isTherapist: true }));
-      goto('/therapist-dashboard');
+      
+      // Use window.location.href instead of goto to avoid redirect errors
+      window.location.href = '/therapist-dashboard';
       return;
     }
 
@@ -217,13 +240,17 @@ async function checkUserRole(userId: string) {
     }));
 
     await signOut(auth);
-    goto('/login');
+    
+    // Use window.location.href instead of goto to avoid redirect errors
+    window.location.href = '/login';
   } catch (error) {
     console.error('Error checking user role:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
     await signOut(auth);
-    goto('/login');
+    
+    // Use window.location.href instead of goto to avoid redirect errors
+    window.location.href = '/login';
   }
 }
 

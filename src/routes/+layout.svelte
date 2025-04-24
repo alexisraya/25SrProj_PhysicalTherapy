@@ -16,6 +16,8 @@
   let currentUserId: string | null = null;
   let initialTone: ToneType = 'kind';
 
+  $: isEverythingLoaded = !$userStore.isLoading && !$authStore.isLoading;
+
   function checkOnboardingStatus() {
     // Get current path
     const currentPath = $page.url.pathname;
@@ -35,6 +37,11 @@
     if (!hasCompleted && $authStore.currentUser) {
       goto('/onboarding');
     }
+  }
+
+  // Force nav to show on dashboard pages
+  function shouldForceShowNav(path: string): boolean {
+    return path === '/patient-dashboard' && $authStore.currentUser !== null;
   }
 
   if (browser) {
@@ -115,7 +122,11 @@
   }
 </script>
 
-{#if shouldShowNav($page.url.pathname)}
+{#if !isEverythingLoaded && $page.url.pathname !== '/login' && $page.url.pathname !== '/logout' && $page.url.pathname !== '/register' && $page.url.pathname !== '/'}
+  <div class="loading-container">
+    <p>Loading...</p>
+  </div>
+{:else if shouldShowNav($page.url.pathname) || shouldForceShowNav($page.url.pathname)}
   <div class="main-container-nav">
     <div>
       <Nav />
@@ -142,4 +153,12 @@
       padding: 0;
     }
   }
+
+  /* .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+  } */
 </style>
