@@ -32,7 +32,7 @@
   let goalModalName = 'Lift a Basket of Laundry';
   let goalModalExtraInfo = '';
 
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+  let savedTheme: 'light' | 'dark' | null = null;
 
   function checkOnboardingStatus() {
     // Get current path
@@ -57,6 +57,8 @@
 
   if (browser) {
     try {
+      savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
       const savedTone = localStorage.getItem('userTonePreference');
       if (savedTone === 'tough' || savedTone === 'kind') {
         initialTone = savedTone as ToneType;
