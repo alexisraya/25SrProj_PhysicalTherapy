@@ -43,6 +43,10 @@
       return;
     }
 
+    if ($authStore.isTherapist) {
+      return;
+    }
+
     // Get onboarding completion status
     let hasCompleted = false;
     hasCompletedOnboarding.subscribe((value) => {
