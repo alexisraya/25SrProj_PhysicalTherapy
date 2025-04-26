@@ -32,7 +32,7 @@
   let goalModalName = 'Lift a Basket of Laundry';
   let goalModalExtraInfo = '';
 
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+  let savedTheme: 'light' | 'dark' | null = null;
 
   function checkOnboardingStatus() {
     // Get current path
@@ -40,6 +40,10 @@
 
     // Skip check if user is already on onboarding or login pages
     if (currentPath === '/onboarding' || currentPath === '/login' || currentPath === '/register') {
+      return;
+    }
+
+    if ($authStore.isTherapist) {
       return;
     }
 
@@ -57,6 +61,8 @@
 
   if (browser) {
     try {
+      savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
       const savedTone = localStorage.getItem('userTonePreference');
       if (savedTone === 'tough' || savedTone === 'kind') {
         initialTone = savedTone as ToneType;
