@@ -55,16 +55,17 @@
         <div class="modal-title-container">
           <h4
             style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-              .h4}; margin: 0; text-align: center;"
+              .h4}; margin: 0; text-align: center; font-weight: 100;"
           >
             Pain levels explained
           </h4>
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .small}; font-weight: {typography.fontWeights.light}; margin: 0; text-align: center;"
+              .small}; font-weight: {typography.fontWeights
+              .light}; margin: 0; text-align: center; font-weight: 100;"
           >
-            This is based on a <strong>clinical pain scale</strong> with descriptions to help accurately
-            describe your pain
+            This is based on a <strong style="font-weight: 500;">clinical pain scale</strong> with descriptions
+            to help accurately describe your pain
           </p>
         </div>
         <div class="modal-body-container">
@@ -302,9 +303,11 @@
   .modal-body-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: center;
     row-gap: 16px;
+    max-width: 550px;
+    margin: auto;
   }
 
   .divider {

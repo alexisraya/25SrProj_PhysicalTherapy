@@ -38,7 +38,7 @@
           in:fly={{ y: 20, duration: 300, delay: 50 }}
           out:fade={{ duration: 0 }}
           style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-            .special};"
+            .special}; font-weight: 100;"
         >
           {selectedRating ?? '_'}
         </h1>

@@ -31,7 +31,7 @@
     <div class="step-copy">
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-          .h3}; margin: 0; text-align: center;"
+          .h3}; margin: 0; text-align: center; font-weight: 100;"
       >
         {steps[$currentStep].title}
       </h3>
