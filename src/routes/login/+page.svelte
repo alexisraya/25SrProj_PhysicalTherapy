@@ -4,6 +4,8 @@
   import Button from '$lib/design-system/components/Button.svelte';
   import { authHandlers, authStore } from '../../stores/authStore';
   import LoginBlob from '$lib/assets/background-images/LoginBlob.svg';
+  import LoginBlobLarge from '$lib/assets/background-images/LoginBgLarge.svg';
+  import LoginBlobLargeDark from '$lib/assets/background-images/LoginBgLargeDark.svg';
   import MendLogo from '$lib/assets/iconography/MendLogo.svg';
   import { onMount } from 'svelte';
 
@@ -181,6 +183,13 @@
   }
 </script>
 
+<div class="blob-container">
+  {#if theme == 'light'}
+    <img src={LoginBlobLarge} alt="blob" class="blob-large" />
+  {:else}
+    <img src={LoginBlobLargeDark} alt="blob" class="blob-large" />
+  {/if}
+</div>
 <div class="container">
   <div class="banner">
     <img src={LoginBlob} alt="blob" class="blob" />
@@ -338,6 +347,8 @@
     justify-content: center;
     row-gap: 16px;
     margin-bottom: 52px;
+    max-width: 500px;
+    margin: auto;
   }
 
   .banner {
@@ -347,7 +358,7 @@
     left: 0;
     width: 100%;
     overflow-x: hidden;
-    overflow-y: visible;
+    overflow-y: hidden;
     z-index: 0;
   }
 
@@ -467,5 +478,39 @@
     border: 0;
     padding: 0;
     cursor: pointer;
+  }
+
+  .blob-container {
+    position: fixed;
+    width: 100vw;
+    z-index: -1;
+  }
+  .blob-large {
+    display: none;
+  }
+
+  @media screen and (min-width: 500px) {
+    .blob {
+      position: absolute;
+      top: 40px;
+      left: 90px;
+      width: 220px;
+      z-index: 0;
+      transform: rotate(180deg);
+    }
+    .blob-container {
+      position: fixed;
+      width: 100vw;
+      z-index: -1;
+    }
+    .blob-large {
+      display: block;
+      min-width: 100vw;
+      min-height: 100vh;
+    }
+    .container {
+      padding-top: 100px;
+      max-width: 400px;
+    }
   }
 </style>
