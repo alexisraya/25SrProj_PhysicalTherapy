@@ -31,6 +31,8 @@
       ctaTwo={isLastStep ? 'Start check in' : 'Next'}
       ctaTwoOnClickFunc={isLastStep ? handleLastStepAction : onNext}
       isCTATwoDisabled={!isStepComplete}
+      ctaOneButtonType="primary"
+      ctaTwoButtonType="secondary"
     />
   {/if}
 </div>

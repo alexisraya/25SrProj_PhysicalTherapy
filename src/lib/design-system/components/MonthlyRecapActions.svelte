@@ -26,8 +26,8 @@
       ctaOneOnClickFunc={onPrevious}
       ctaTwo={isLastStep ? 'Finish' : 'Next'}
       ctaTwoOnClickFunc={isLastStep ? handleFinish : onNext}
-      ctaOneButtonType={useInvertedStyle ? 'secondary-inverted' : 'secondary'}
-      ctaTwoButtonType={useInvertedStyle ? 'primary-inverted' : 'primary'}
+      ctaOneButtonType={useInvertedStyle ? 'primary-inverted' : 'primary'}
+      ctaTwoButtonType={useInvertedStyle ? 'secondary-inverted' : 'secondary'}
     />
   {/if}
 </div>

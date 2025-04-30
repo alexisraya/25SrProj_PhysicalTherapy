@@ -68,7 +68,7 @@
     .month-recap-background {
       position: absolute;
       left: 0;
-      top: -40px;
+      top: -10px;
       width: 400px;
     }
   }
