@@ -22,6 +22,7 @@
   import { browser } from '$app/environment';
   import SkipModal from '$lib/design-system/components/SkipModal.svelte';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
+  import { exerciseMap } from '$lib/exercises';
 
   let currentExercise: AssignedExercise | null = null;
   let program: Program | null = null;
@@ -33,6 +34,7 @@
   let error: string | null = null;
   let showInterstitial = false;
   let interstitialType: string | null = null;
+  let exerciseModelSrc: string | null = null;
 
   let adjustedValues = {
     sets: 0,
@@ -97,6 +99,8 @@
       completedExercises = program?.exercises?.filter((ex) => ex.completed).length ?? 0;
 
       currentExercise = program?.exercises?.find((ex) => ex.exerciseId === exerciseId) ?? null;
+      exerciseModelSrc = exerciseMap[exerciseId];
+      console.log(exerciseModelSrc);
 
       if (!currentExercise) {
         error = 'Exercise not found in your program';
@@ -288,7 +292,9 @@
         </a>
         <ProgressBar totalExercises={program.exercises.length} {completedExercises} />
       </div>
-      <ExerciseModel modelPath="/models/SmallTest2.glb" />
+      {#if exerciseModelSrc}
+        <ExerciseModel modelPath={exerciseModelSrc} />
+      {/if}
       <div class="exercise-info-container">
         <ExerciseInfoBlock
           exerciseName={currentExercise.exerciseName}
