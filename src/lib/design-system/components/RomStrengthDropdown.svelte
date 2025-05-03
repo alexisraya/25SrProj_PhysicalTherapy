@@ -57,7 +57,7 @@
     aria-expanded={isOpen}
     id="custom-dropdown"
   >
-    <span class:placeholder={!value}>
+    <span class="center" class:placeholder={!value}>
       <p
         style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
           .xsmall}; font-weight: {typography.fontWeights.regular};"
@@ -107,6 +107,7 @@
 
   .dropdown-header {
     display: inline-flex;
+    justify-content: right;
     align-items: center;
     column-gap: 8px;
     padding: 4px 4px 4px 8px;
@@ -122,6 +123,10 @@
 
   .placeholder {
     color: #999;
+  }
+
+  .center {
+    margin: auto;
   }
 
   .dropdown-arrow {
@@ -144,6 +149,7 @@
     background-color: var(--background-secondary);
     border-radius: 4px;
     z-index: 1000;
+    min-width: 120px;
   }
 
   .dropdown-option {
