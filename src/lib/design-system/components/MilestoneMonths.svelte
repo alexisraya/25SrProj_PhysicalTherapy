@@ -44,6 +44,13 @@
 <div class="milestone-month-container {isActive ? 'active-container' : ''}">
   {#if isActive}
     <!-- Active state always takes precedence -->
+    <p
+      class="month-label"
+      style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+        .small}; font-weight: {typography.fontWeights.medium};"
+    >
+      Month
+    </p>
     {#if currentTheme == 'light'}
       <img src={ActiveMilestoneLight} alt="active milestone background" />
     {:else}
@@ -57,7 +64,7 @@
     </svg>
   {:else}
     <!-- Upcoming state if neither active nor complete -->
-    <svg width="60" height="60">
+    <svg width="60" height="60" style="cursor: default;">
       <circle cx="30" cy="30" r="30" />
     </svg>
   {/if}
@@ -84,6 +91,7 @@
     width: 119px;
     height: 70px;
     margin: 0 -29px;
+    cursor: default;
   }
   .milestone-month {
     position: absolute;
@@ -94,12 +102,20 @@
   }
   .upcoming {
     color: var(--upcoming-milestone);
+    cursor: default;
   }
 
   /* Make sure active state overrides upcoming */
   .active {
     top: 50%;
     transform: translate(-50%, -57%);
-    color: var(--text-primary); /* Or whatever your default text color is */
+    color: var(--text-primary);
+    cursor: default; /* Or whatever your default text color is */
+  }
+
+  .month-label {
+    position: absolute;
+    bottom: 60px;
+    left: 36px;
   }
 </style>

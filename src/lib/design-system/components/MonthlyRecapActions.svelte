@@ -2,6 +2,20 @@
   import Button from '$lib/design-system/components/Button.svelte';
   import DoubleButton from '$lib/design-system/components/DoubleButton.svelte';
   import { goto } from '$app/navigation';
+  import { currentRecapStep } from '$stores/monthlyrecap';
+
+  $: bgClass = getBackgroundClass($currentRecapStep);
+
+  function getBackgroundClass(step: number): string {
+    // Check if current step is ROMRecap (index 1) or StrengthRecap (index 2)
+    if (step === 1) {
+      return 'rom-bg';
+    } else if (step === 2) {
+      return 'strength-bg';
+    } else {
+      return 'default-bg';
+    }
+  }
 
   export let onNext: () => void;
   export let onPrevious: () => void;
@@ -17,7 +31,7 @@
   }
 </script>
 
-<div class="actions-container">
+<div class="actions-container {bgClass}">
   {#if isFirstStep}
     <Button cta="Begin" onClickFunc={onNext} />
   {:else}
@@ -41,5 +55,11 @@
     max-width: 448px;
     padding: 0 24px 16px;
     overflow: visible;
+    position: absolute;
+    bottom: 0;
+  }
+  .rom-bg {
+    position: absolute;
+    bottom: 0;
   }
 </style>

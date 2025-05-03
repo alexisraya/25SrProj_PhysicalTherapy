@@ -290,7 +290,7 @@
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
               .regular}; font-weight: {typography.fontWeights.medium};"
           >
-            Check In
+            Check in
           </p>
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
@@ -375,12 +375,13 @@
     background-color: var(--background-secondary);
   }
   .background-wave {
-    position: fixed;
-    top: -17%;
+    position: absolute;
+    top: calc(300px - 100vw);
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
-    width: 562px;
+    height: 100vw;
+    /* width: 562px; */
   }
   .header-container {
     position: relative;
@@ -436,7 +437,7 @@
     line-height: 150%;
     color: var(--color-grey-400);
   }
-  .wave-container {
+  /* .wave-container {
     position: relative;
     width: 100%;
     overflow-x: hidden;
@@ -446,14 +447,14 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-  }
+  } */
 
   .checkin-cta-container {
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 8px 0px;
     width: 100%;
   }
 
@@ -467,8 +468,13 @@
     .break {
       display: none;
     }
-    .break-small {
-      display: none;
+    .checkin-cta-container {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0px;
+      width: 100%;
     }
     .body-container {
       margin: 16px auto 0 auto;
@@ -506,16 +512,33 @@
       content: url('/src/lib/assets/background-images/HomeBackgroundCompleteLarge.svg');
     }
     .background-wave {
-      width: 1500px;
-      top: -450px;
-      left: 100%;
+      position: absolute;
+      top: calc(400px - 100vw);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+      height: 100vw;
     }
   }
-  @media (min-width: 1000px) {
+  @media (min-width: 1200px) {
     .background-wave {
-      width: 1500px;
-      top: -450px;
-      left: 75%;
+      position: absolute;
+      top: calc(600px - 100vw);
+      left: calc(50% + 500px);
+      transform: translateX(-50%) rotate(15deg);
+      z-index: -1;
+      height: 100vw;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .background-wave {
+      position: absolute;
+      top: calc(700px - 100vw);
+      left: calc(50% + 500px);
+      transform: translateX(-50%) rotate(15deg);
+      z-index: -1;
+      height: 100vw;
     }
   }
 </style>

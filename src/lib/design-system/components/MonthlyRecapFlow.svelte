@@ -75,8 +75,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    /* margin: 0 24px; */
+    margin: 0;
     padding-bottom: 34px;
     width: 100%;
     height: 100%;
@@ -86,11 +85,11 @@
   .default-bg {
     background-color: var(--background);
   }
-  .rom-bg {
+  /* .rom-bg {
     background-color: var(--color-blue-525);
-  }
+  } */
   .strength-bg {
-    background-color: var(--background);
+    background-color: none;
   }
   .step-content {
     width: 100%;

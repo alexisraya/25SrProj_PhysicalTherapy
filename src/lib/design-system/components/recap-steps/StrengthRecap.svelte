@@ -6,6 +6,8 @@
   import { currentMonth } from '$stores/monthlyrecap';
   import { getTone } from '$lib/helpers/toneContext';
   import RecapBarChart from '../RecapBarChart.svelte';
+  import RecapArrow from '$lib/assets/iconography/RecapArrow.svg';
+  import RecapCheck from '$lib/assets/iconography/RecapCheck.svg';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
@@ -74,6 +76,7 @@
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.strength}
+  <div class="blue-top"></div>
   <div class="strength-recap-container">
     {#if $currentMonth === 1 || !metricsData.strength.change}
       <h3
@@ -84,6 +87,7 @@
       </h3>
       <p>{steadyText}</p>
     {:else if metricsData.strength.change < 0}
+      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -92,6 +96,7 @@
       </h3>
       <p>{descreaseText}</p>
     {:else}
+      <img class="icon" src={RecapArrow} alt="Recap Arrow" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -109,10 +114,9 @@
             chartType="Strength"
             yAxisMax={5}
             yAxisTicks={[1, 2, 3, 4, 5]}
-            yAxisTitle="Rating"
+            yAxisTitle="Strength Scale"
           />
         </div>
-        <div class="bottom-screen"></div>
       </div>
     {:else}
       <p>Insufficient data to display chart</p>
@@ -124,11 +128,14 @@
 
 <style>
   .strength-recap-container {
+    position: relative;
     margin: 16px auto;
+    z-index: 5;
   }
   h3,
   p {
     text-align: center;
+    color: var(--text-primary);
   }
   .graph-container {
     position: relative;
@@ -140,15 +147,45 @@
   }
   .graph {
     margin: auto;
-    position: relative;
-    top: 64px;
+    position: fixed;
+    top: calc(70vh - 239px);
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1;
   }
-  .bottom-screen {
-    background-color: var(--color-blue-525);
-    height: 160px;
-    margin: 0 16px;
-    border-radius: 24px;
+  @media screen and (max-width: 500px) {
+    .graph {
+      top: calc(70vh - 239px);
+    }
+  }
+  .blue-top {
+    background-color: var(--background);
+    border-radius: 0 0 60px 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 70vh;
     z-index: 0;
+  }
+  :global(.recap-page-container):has(.strength-recap-container) {
+    background-color: var(--color-blue-525);
+  }
+
+  .icon {
+    width: 70px;
+    display: flex;
+    margin: auto;
+  }
+
+  @media screen and (max-height: 740px) {
+    .icon {
+      display: none;
+    }
+  }
+  @media screen and (min-width: 800px) {
+    .icon {
+      width: 100px;
+    }
   }
 </style>

@@ -138,12 +138,19 @@
     fill: var(--text-primary);
   }
   .pain {
+    position: fixed;
+    top: 40%;
     z-index: 5;
   }
   @media screen and (min-width: 1400px) {
     .bg {
       height: 70vh;
       bottom: -50px;
+    }
+    .pain {
+      position: fixed;
+      top: 30%;
+      z-index: 5;
     }
   }
 </style>
