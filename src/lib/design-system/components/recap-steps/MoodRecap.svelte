@@ -85,6 +85,8 @@
     text-align: center;
   }
   .pain {
+    position: fixed;
+    top: 40%;
     z-index: 5;
   }
 </style>
