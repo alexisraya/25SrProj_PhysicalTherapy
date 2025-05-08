@@ -20,7 +20,7 @@
         {#if checkInSteps[$currentCheckInStep].title}
           <h4
             style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-              .h4}; margin: 0; text-align: center;"
+              .h4}; margin: 0; text-align: center; font-weight: 100;"
           >
             {checkInSteps[$currentCheckInStep].title}
           </h4>

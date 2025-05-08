@@ -352,7 +352,7 @@
     background-color: var(--background-secondary);
     column-gap: 16px;
     align-items: flex-start;
-    padding: 0px 24px;
+    padding: 24px 24px 0px;
     overflow-x: scroll;
     overflow-y: hidden;
     &::-webkit-scrollbar {

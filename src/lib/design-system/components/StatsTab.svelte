@@ -436,7 +436,7 @@
   @media (min-width: 800px) {
     .stats-container {
       max-width: 100%;
-      margin: 48px auto 32px; /* Add horizontal auto margins */
+      margin: 48px auto 16px; /* Add horizontal auto margins */
     }
   }
 
@@ -444,15 +444,15 @@
     .recovery-metrics {
       grid-area: recovery;
       border-bottom: 8px solid var(--background-secondary);
-      min-height: 400px;
-      max-width: 600px;
+      /* min-height: 400px; */
+      /* max-width: 600px; */
     }
 
     .check-in-metrics {
       grid-area: check-in;
       min-height: 400px;
       max-width: 600px;
-      border-bottom: 0px solid var(--background-secondary);
+      border-top: 8px solid var(--background-secondary);
     }
 
     .stats {

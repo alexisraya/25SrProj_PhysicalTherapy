@@ -67,9 +67,19 @@
   @media screen and (min-width: 800px) {
     .month-recap-background {
       position: absolute;
-      left: 0;
-      top: -40px;
-      width: 400px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-15deg);
+      top: calc(350px - 100vw);
+      height: 100vw;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    .month-recap-background {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) rotate(-15deg);
+      top: calc(500px - 100vw);
+      height: 100vw;
     }
   }
 </style>

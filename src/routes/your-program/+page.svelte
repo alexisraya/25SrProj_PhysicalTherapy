@@ -386,7 +386,7 @@
               .small}; font-weight: {typography.fontWeights.regular};"
             class="time"
           >
-            ~{$program?.estimatedTime} Min
+            ~{$program?.estimatedTime} min
           </p>
           {#each equipment as eq}
             <p

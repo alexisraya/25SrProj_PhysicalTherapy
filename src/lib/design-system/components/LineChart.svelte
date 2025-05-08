@@ -33,6 +33,24 @@
   export let axisTitleBgColor = 'var(--background)'; // Background color for axis titles
   export let axisTitlePadding = 5; // Padding around axis titles in pixels
 
+  // Add mood labels for text-based y-axis
+  export let moodLabels = {
+    1: 'Discouraged',
+    2: 'Uncertain',
+    3: 'Indifferent',
+    4: 'Hopeful',
+    5: 'Motivated'
+  };
+
+  // Add mood colors if needed
+  export let moodColorMap = {
+    1: 'var(--color-orange-550)',
+    2: 'var(--color-blue-700)',
+    3: 'var(--color-purple-550)',
+    4: 'var(--color-blue-525)',
+    5: 'var(--color-green-550)'
+  };
+
   let xLimit = 7;
   let xSteps = 1;
   let yLimit = 10;
@@ -100,15 +118,15 @@
 
   // Props for conditional coloring - using CSS variable references
   export let colorMap = {
-    1: 'var(--color-blue-525)',
-    2: 'var(--color-blue-525)',
-    3: 'var(--color-blue-525)',
-    4: 'var(--color-blue-525)',
-    5: 'var(--color-yellow-550)',
+    1: 'var(--color-green-500)',
+    2: '#70DEB0',
+    3: '#73D7C3',
+    4: '#76D0D6',
+    5: 'var(--color-blue-525)',
     6: 'var(--color-yellow-550)',
-    7: 'var(--color-yellow-550)',
-    8: 'var(--color-orange-550)',
-    9: 'var(--color-orange-550)',
+    7: '#FED25E',
+    8: '#FEB554',
+    9: '#FF984B',
     10: 'var(--color-orange-550)'
   };
   export let defaultColor = 'var(--color-default)';
@@ -191,16 +209,20 @@
   }
 
   function updateChart() {
-    if (type == 'mood') {
+    // Set y-axis limits based on chart type
+    if (type === 'mood') {
       console.log('mood');
       yLimit = 5;
       ySteps = 1;
-    }
-    if (type == 'pain') {
+
+      // For mood charts, we might need more margin for text labels
+      if (marginLeft < 85) marginLeft = 85; // Adjust margin for text labels
+    } else if (type === 'pain') {
       console.log('pain');
       yLimit = 10;
       ySteps = 2;
     }
+
     // Clear previous chart
     if (svgElement) {
       d3.select(svgElement).selectAll('*').remove();
@@ -208,7 +230,11 @@
 
     // Get aggregated data
     const aggregatedData = aggregateDataByTimeframe(dataArr, timeframe);
-    const data = aggregatedData.map((y, index) => ({ x: index + 1, y }));
+
+    // IMPORTANT FIX: Limit data points to xLimit
+    const data = aggregatedData
+      .map((y, index) => ({ x: index + 1, y }))
+      .filter((d) => d.x <= xLimit); // This ensures we only plot points within our axis range
 
     console.log('Aggregated data for timeframe', timeframe, data);
 
@@ -225,10 +251,6 @@
     // Compute values for x and y scales
     const X = data.map((d) => d.x);
     const Y = data.map((d) => d.y);
-
-    // Find max values for x and y (needed for domain)
-    const maxX = Math.max(...X);
-    const maxY = Math.max(...Y);
 
     // Create scales that start at 0 and go to max+1 for padding
     const xScale = d3
@@ -269,15 +291,26 @@
       .tickSize(tickSize)
       .tickPadding(15);
 
-    const yAxis = d3
-      .axisLeft(yScale)
-      .tickFormat(d3.format('d'))
-      .tickValues(d3.range(0, yLimit + 1, ySteps))
-      .tickSize(tickSize)
-      .tickPadding(15);
-
-    // Rest of your chart rendering code (unchanged)
-    // ...
+    // Create y-axis with different formatting based on chart type
+    let yAxis;
+    if (type === 'mood') {
+      yAxis = d3
+        .axisLeft(yScale)
+        .tickFormat((d) => {
+          const value = Number(d);
+          return value >= 1 && value <= 5 ? moodLabels[value] : '';
+        })
+        .tickValues(d3.range(1, yLimit + 1, ySteps))
+        .tickSize(tickSize)
+        .tickPadding(15);
+    } else {
+      yAxis = d3
+        .axisLeft(yScale)
+        .tickFormat(d3.format('d'))
+        .tickValues(d3.range(0, yLimit + 1, ySteps))
+        .tickSize(tickSize)
+        .tickPadding(15);
+    }
 
     // Add the x-axis with custom styling
     const xAxisGroup = svg
@@ -319,6 +352,11 @@
       .selectAll('.tick text') // The tick labels
       .attr('fill', axisColor)
       .attr('font-size', '12px');
+
+    // If it's a mood chart, give more space for text labels
+    if (type === 'mood') {
+      yAxisGroup.selectAll('.tick text').attr('transform', 'translate(0,0)'); // Shift labels to the left for more space
+    }
 
     // Add x-axis label with background
     // We calculate the center point of the x-axis
@@ -408,8 +446,47 @@
       .attr('fill', (d) => {
         // Round the y value to nearest integer for color mapping
         const roundedValue = Math.round(d.y);
-        // Use color from colorMap if rounded y value exists there, otherwise use defaultColor
-        return colorMap[roundedValue] || defaultColor;
+        // Use appropriate color map based on chart type
+        if (type === 'mood') {
+          return moodColorMap[roundedValue] || defaultColor;
+        } else {
+          return colorMap[roundedValue] || defaultColor;
+        }
+      });
+
+    // Optional: Add tooltips for more information when hovering over points
+    const tooltip = svg.append('g').attr('class', 'tooltip').style('display', 'none');
+
+    tooltip
+      .append('rect')
+      .attr('width', 60)
+      .attr('height', 20)
+      .attr('fill', 'white')
+      .attr('stroke', 'black')
+      .attr('rx', 3)
+      .attr('ry', 3);
+
+    tooltip
+      .append('text')
+      .attr('x', 30)
+      .attr('y', 15)
+      .attr('text-anchor', 'middle')
+      .style('font-size', '12px');
+
+    // Add hover events to show tooltip
+    svg
+      .selectAll('circle')
+      .on('mouseover', function (event, d) {
+        const tooltipText = type === 'mood' ? `${d.y} - ${moodLabels[Math.round(d.y)]}` : `${d.y}`;
+
+        tooltip.select('text').text(tooltipText);
+        tooltip.style('display', null);
+
+        const [x, y] = d3.pointer(event);
+        tooltip.attr('transform', `translate(${x - 30},${y - 30})`);
+      })
+      .on('mouseout', function () {
+        tooltip.style('display', 'none');
       });
   }
 

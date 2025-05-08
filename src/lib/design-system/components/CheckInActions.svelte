@@ -77,6 +77,8 @@
       ctaTwo={'Next'}
       ctaTwoOnClickFunc={onNext}
       isCTATwoDisabled={!isStepComplete}
+      ctaOneButtonType="primary"
+      ctaTwoButtonType="secondary"
     />
   {/if}
 </div>

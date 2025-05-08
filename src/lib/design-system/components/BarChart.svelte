@@ -94,8 +94,10 @@
       .attr('width', xScale.bandwidth())
       .attr('height', (d) => {
         const value = getYValue(d);
-        return height - marginBottom - yScale(value);
+        return height - marginBottom - yScale(value) - 8; // Subtract 4px from height for bottom margin
       })
+      .attr('rx', 5) // Add rounded corners with x-radius of 5
+      .attr('ry', 5) // Add rounded corners with y-radius of 5
       .attr('fill', colorMap[type] || barColor);
 
     // Create axis generators

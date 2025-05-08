@@ -106,7 +106,7 @@
     flex-direction: column;
     justify-content: center;
     z-index: 5;
-    padding: 0 16px;
+    padding: 32px 16px 16px;
   }
   :global(.program-stat-container) {
     z-index: 80;

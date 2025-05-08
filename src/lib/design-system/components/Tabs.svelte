@@ -45,6 +45,7 @@
     display: flex;
     max-width: fit-content;
     padding: 8px;
+    gap: 4px;
     justify-content: space-between;
     align-items: center;
     border-radius: 23px;

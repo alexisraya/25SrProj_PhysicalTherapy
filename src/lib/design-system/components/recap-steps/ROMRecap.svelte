@@ -6,6 +6,9 @@
   import { currentMonth } from '$stores/monthlyrecap';
   import { getTone } from '$lib/helpers/toneContext';
   import RecapBarChart from '../RecapBarChart.svelte';
+  import RecapArrow from '$lib/assets/iconography/RecapArrow.svg';
+  import RecapArrowWhiteBg from '$lib/assets/iconography/RecapArrowLightBg.svg';
+  import RecapCheck from '$lib/assets/iconography/RecapCheck.svg';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
@@ -74,8 +77,10 @@
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.rangeOfMotion}
+  <div class="blue-top"></div>
   <div class="rom-recap-container">
     {#if $currentMonth === 1 || !metricsData.rangeOfMotion.change}
+      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -92,6 +97,7 @@
       </h3>
       <p>{descreaseText}</p>
     {:else}
+      <img class="icon" src={RecapArrow} alt="Recap Arrow" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -106,7 +112,6 @@
         <div class="graph">
           <RecapBarChart chartType="ROM" coordinates={data} />
         </div>
-        <div class="bottom-screen"></div>
       </div>
     {:else}
       <p>Insufficient data to display chart</p>
@@ -135,18 +140,44 @@
   }
   .graph {
     margin: auto;
-    position: relative;
-    top: 64px;
+    position: fixed;
+    top: calc(70vh - 239px);
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1;
   }
-  .bottom-screen {
-    background-color: var(--text-primary);
-    height: 160px;
-    margin: 0 16px;
-    border-radius: 24px;
-    z-index: 0;
+  @media screen and (max-width: 500px) {
+    .graph {
+      top: calc(70vh - 239px);
+    }
   }
-  :global(.recap-page-container):has(.rom-recap-container) {
+  .blue-top {
     background-color: var(--color-blue-525);
+    border-radius: 0 0 60px 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 70vh;
+    z-index: -2;
   }
+  .icon {
+    width: 70px;
+    display: flex;
+    margin: auto;
+  }
+
+  @media screen and (max-height: 740px) {
+    .icon {
+      display: none;
+    }
+  }
+  @media screen and (min-width: 800px) {
+    .icon {
+      width: 100px;
+    }
+  }
+  /* :global(.recap-page-container):has(.rom-recap-container) {
+    background-color: var(--color-blue-525);
+  } */
 </style>

@@ -15,7 +15,7 @@
   if (achievmentId.includes('time')) {
     action = 'exercised as long as it takes for';
   } else if (achievmentId.includes('weight')) {
-    action = 'listed the weight of a';
+    action = 'lifted the weight of a';
   }
 
   const onClick = () => {
@@ -73,7 +73,9 @@
           .xsmall}; font-weight: {typography.fontWeights.regular};"
       >
         You've {action}
-        {achievementDescription}!
+        <span class="lowercase-first-letter">
+          {achievementDescription}!
+        </span>
       </p>
     </div>
     <!-- <div class="achievement-body {type}-body {type}-large">
@@ -190,6 +192,10 @@
 
   .summary .large-screen {
     display: none; /* Hide large screen header by default */
+  }
+
+  .lowercase-first-letter::first-letter {
+    text-transform: lowercase;
   }
   @media (min-width: 1000px) {
     .small-screen {

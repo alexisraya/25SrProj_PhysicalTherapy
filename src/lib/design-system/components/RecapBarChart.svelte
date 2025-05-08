@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy, afterUpdate } from 'svelte';
   import * as d3 from 'd3';
 
   // Only require two coordinates
@@ -9,36 +9,35 @@
   export let chartType: 'ROM' | 'Strength' = 'ROM';
 
   // Chart dimensions and labels
-  export let width = 200;
-  export let height = 200;
+  export let height = 300; // Fixed height that won't change
   export let marginTop = 20;
   export let marginRight = 30;
   export let marginBottom = 60;
   export let marginLeft = 70;
   export let xAxisTitle = 'Months';
   export let yAxisTitle = chartType === 'ROM' ? 'Degrees' : 'Pounds';
-  export let yAxisMax = chartType === 'ROM' ? 180 : 100;
-  export let yAxisTicks = chartType === 'ROM' ? [0, 45, 90, 135, 180] : [0, 20, 40, 60, 80, 100];
+  export let yAxisMax = chartType === 'ROM' ? 100 : 100;
+  export let yAxisTicks = chartType === 'ROM' ? [0, 20, 40, 60, 80, 100] : [0, 20, 40, 60, 80, 100];
 
   // Color schemes
   const colorSchemes = {
     ROM: {
-      barColor: 'var(--text-primary)',
-      xAxisLineColor: 'var(--text-primary)',
-      xAxisTextColor: 'var(--background)',
-      xAxisTitleColor: 'var(--background)', // Separate color for x-axis title
+      barColor: 'var(--background)',
+      xAxisLineColor: 'var(--background)',
+      xAxisTextColor: 'var(--text-primary)',
+      xAxisTitleColor: 'var(--text-primary)',
       yAxisLineColor: 'var(--color-blue-1100)',
       yAxisTextColor: 'var(--color-blue-1100)',
-      yAxisTitleColor: 'var(--color-blue-1100)' // Separate color for y-axis title
+      yAxisTitleColor: 'var(--color-blue-1100)'
     },
     Strength: {
       barColor: 'var(--color-blue-525)',
       xAxisLineColor: 'var(--color-blue-525)',
       xAxisTextColor: 'var(--color-blue-1100)',
-      xAxisTitleColor: 'var(--olor-blue-1100)', // Separate color for x-axis title
+      xAxisTitleColor: 'var(--color-blue-1100)',
       yAxisLineColor: 'var(--text-primary)',
       yAxisTextColor: 'var(--text-primary)',
-      yAxisTitleColor: 'var(--text-primary)' // Separate color for y-axis title
+      yAxisTitleColor: 'var(--text-primary)'
     }
   };
 
@@ -56,6 +55,9 @@
   export let showAxes = true;
 
   let svgElement;
+  let containerElement;
+  let containerWidth = 500; // Default starting width
+  let resizeObserver;
 
   function updateChart() {
     // Clear previous chart
@@ -65,25 +67,22 @@
 
     if (!coordinates || coordinates.length === 0) return;
 
-    // Create the SVG container
-    const svg = d3
-      .select(svgElement)
-      .attr('width', width)
-      .attr('height', height)
-      .attr('viewBox', [0, 0, width, height])
-      .attr('style', 'max-width: 100%; height: auto;');
+    // Get the current container width for responsive scaling
+    const currentWidth = containerWidth;
+
+    // Create the SVG with current dimensions
+    const svg = d3.select(svgElement).attr('width', currentWidth).attr('height', height);
 
     // Set up the months as our x-axis labels
     const months = coordinates.map((d) => d.month);
 
-    // Create scales
+    // Create scales that adapt to the current width
     const xScale = d3
       .scaleBand()
       .domain(months)
-      .range([marginLeft, width - marginRight])
+      .range([marginLeft, currentWidth - marginRight])
       .padding(0.3);
 
-    // Set up y scale with customizable max value
     const yScale = d3
       .scaleLinear()
       .domain([0, yAxisMax])
@@ -109,9 +108,8 @@
       .attr('transform', `translate(0,${height - marginBottom})`)
       .call(xAxis);
 
-    // Style x-axis line (domain) and text separately
+    // Style x-axis line and text
     xAxisGroup.select('.domain').attr('stroke', xAxisLineColor).attr('stroke-width', 2);
-
     xAxisGroup.selectAll('.tick text').attr('fill', xAxisTextColor);
 
     // Y-axis with customizable ticks
@@ -124,22 +122,21 @@
 
     const yAxisGroup = svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(yAxis);
 
-    // Style y-axis line (domain) and text separately
+    // Style y-axis line and text
     yAxisGroup.select('.domain').attr('stroke', yAxisLineColor).attr('stroke-width', 2);
-
     yAxisGroup.selectAll('.tick text').attr('fill', yAxisTextColor);
 
-    // Add x-axis title with its own color
+    // Add x-axis title
     svg
       .append('text')
       .attr('class', 'x-axis-title')
       .attr('text-anchor', 'middle')
-      .attr('x', marginLeft + (width - marginLeft - marginRight) / 2)
+      .attr('x', marginLeft + (currentWidth - marginLeft - marginRight) / 2)
       .attr('y', height - 10)
       .attr('fill', xAxisTitleColor)
       .text(xAxisTitle);
 
-    // Add y-axis title with its own color
+    // Add y-axis title
     svg
       .append('text')
       .attr('class', 'y-axis-title')
@@ -151,16 +148,61 @@
       .text(yAxisTitle);
   }
 
-  onMount(() => {
-    if (coordinates && coordinates.length > 0) {
+  // Function to measure container and update chart size
+  function updateSize() {
+    if (containerElement) {
+      containerWidth = containerElement.getBoundingClientRect().width;
       updateChart();
+    }
+  }
+
+  onMount(() => {
+    // Set up resize observer to track container width changes
+    resizeObserver = new ResizeObserver((entries) => {
+      updateSize();
+    });
+
+    if (containerElement) {
+      resizeObserver.observe(containerElement);
+      updateSize(); // Initial rendering
     }
   });
 
-  // Update chart when data, dimensions, or chartType changes
-  $: if (svgElement && coordinates && coordinates.length > 0) {
+  onDestroy(() => {
+    // Clean up the observer when the component is destroyed
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+    }
+  });
+
+  // Re-render when data or chart type changes
+  $: if (coordinates && coordinates.length > 0 && containerElement) {
+    updateChart();
+  }
+
+  $: if (chartType && containerElement) {
     updateChart();
   }
 </script>
 
-<svg bind:this={svgElement}></svg>
+<div class="chart-container" bind:this={containerElement}>
+  <svg bind:this={svgElement}></svg>
+</div>
+
+<style>
+  .chart-container {
+    width: 100%;
+    height: 300px;
+  }
+
+  svg {
+    height: 300px;
+    display: block;
+  }
+
+  /* @media screen and (max-width: 500px) {
+    svg {
+      height: 200px;
+    }
+  } */
+</style>
