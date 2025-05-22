@@ -38,6 +38,10 @@
     row-gap: 16px;
     width: 100%;
   }
+  .onboarding-nav-container a {
+    position: absolute;
+    top: 45px;
+  }
   .first {
     padding-top: 24px;
   }
