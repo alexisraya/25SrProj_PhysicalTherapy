@@ -8,10 +8,12 @@
 
 <style>
   .onboarding-page-container {
+    box-sizing: border-boxß;
     background-color: var(--background);
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    max-height: 100vh;
   }
 </style>
