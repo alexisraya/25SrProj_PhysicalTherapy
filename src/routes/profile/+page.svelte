@@ -75,7 +75,7 @@
       <div class="program-summary">
         <h5
           style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .h5}; font-weight: {typography.fontWeights.medium};"
+            .regular}; font-weight: {typography.fontWeights.medium};"
         >
           Your details
         </h5>
@@ -127,9 +127,9 @@
       </div>
     </div>
   </div>
-</div>
-<div class="logout-container">
-  <Button buttonType="secondary" cta="Log out" onClickFunc={logout}></Button>
+  <div class="logout-container">
+    <Button buttonType="secondary" cta="Log out" onClickFunc={logout}></Button>
+  </div>
 </div>
 
 <style>
@@ -139,14 +139,23 @@
   }
 
   .summary-page-wrapper {
+    box-sizing: border-box;
     position: relative;
     width: 100%;
+    height: 100vh;
     overflow-x: hidden; /* Main overflow control at the wrapper level */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
   }
 
   .summary-page-container {
+    box-sizing: border-box;
     padding: 32px 24px;
     position: relative;
+    width: 100%;
     max-width: 552px;
     margin: auto;
   }
@@ -225,6 +234,9 @@
     box-sizing: border-box;
   }
   @media (min-width: 500px) {
+    .summary-page-wrapper {
+      padding-bottom: 90px;
+    }
     .complete-icon {
       width: 124px;
       height: 124px;
