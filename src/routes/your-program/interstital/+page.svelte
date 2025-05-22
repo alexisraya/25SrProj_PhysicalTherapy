@@ -64,7 +64,12 @@
 </script>
 
 <div class="interstital-container">
-  <Icon name={interstitialIconOption} />
+  <div class="intersitial-icon-container">
+    <Icon name={interstitialIconOption} />
+    <svg width="266" height="266" class="interstitial-circle">
+      <circle cx="133" cy="133" r="133" />
+    </svg>
+  </div>
   <div class="interstital-text">
     <h1
       style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
@@ -99,8 +104,25 @@
   }
   .interstital-text h1 {
     text-align: center;
+    color: var(--color-blue-1100) !important;
   }
   .interstital-text p {
     text-align: center;
+    color: var(--color-blue-1100) !important;
+  }
+  .intersitial-icon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    aspect-ratio: 1;
+  }
+  .interstitial-circle {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 </style>
