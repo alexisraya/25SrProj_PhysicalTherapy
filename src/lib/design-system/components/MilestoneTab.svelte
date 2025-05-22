@@ -39,7 +39,7 @@
   // In MilestoneTab.svelte, add these changes to the script section
 
   // Add state for active month
-  let activeMonth = 2; // Set your default active month (seems to be month 2 based on your code)
+  let activeMonth; // Set your default active month (seems to be month 2 based on your code)
   let totalMonths = 5; // Total number of months to display
   let goals = [];
   let achievements = [];
