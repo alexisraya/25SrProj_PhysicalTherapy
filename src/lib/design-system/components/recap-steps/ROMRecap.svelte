@@ -22,7 +22,16 @@
   $: {
     if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
-      if ($currentMonth > 1) {
+      
+      // For Month 1, we need to manually set the baseline data
+      if ($currentMonth === 1 && metricsData?.rangeOfMotion?.value !== undefined) {
+        // Month 1 should show Month 0 (30°) vs Month 1 (45°)
+        data = [
+          { month: '0', degrees: 30 }, // Month 0 baseline from your demo data
+          { month: '1', degrees: metricsData.rangeOfMotion.value }
+        ];
+        console.log('Month 1 Chart data:', data);
+      } else if ($currentMonth > 1) {
         lastMonthMetricsData = recaps[$currentMonth - 2]?.metrics;
 
         // Only create data array if both values exist

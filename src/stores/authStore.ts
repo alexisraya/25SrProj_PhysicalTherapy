@@ -16,6 +16,7 @@ import {
   initializeUserAchievements,
   checkAchievements
 } from '$firebase/services/milestoneService';
+import { initializeUserWithDemoData } from '$firebase/services/demoUserService';
 
 const db = getFirestore();
 
@@ -63,55 +64,54 @@ export const authHandlers = {
         }
     },
 
-  signup: async (email: string, password: string, firstName: string, lastName: string) => {
-    try {
-      authStore.update((state) => ({ ...state, isLoading: true, error: null }));
-
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log('Created Firebase auth user:', user.uid);
-
-      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-      console.log('Updated user profile');
-
-      await createUser(user.uid, firstName, lastName, email);
-      console.log('Created user document in Firestore');
-
+    signup: async (email: string, password: string, firstName: string, lastName: string) => {
       try {
-        await initializeUserAchievements(user.uid);
-        console.log('Initialized achievements for new user');
-      } catch (achieveError) {
-        console.error('Error initializing achievements for new user:', achieveError);
+        authStore.update((state) => ({ ...state, isLoading: true, error: null }));
+    
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log('Created Firebase auth user:', user.uid);
+    
+        await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+        console.log('Updated user profile');
+    
+        await createUser(user.uid, firstName, lastName, email);
+        console.log('Created user document in Firestore');
+    
+        try {
+          await initializeUserAchievements(user.uid);
+          console.log('Initialized achievements for new user');
+        } catch (achieveError) {
+          console.error('Error initializing achievements for new user:', achieveError);
+        }
+    
+        const therapistId = 'mY8JFfhiJvdFm54wG57ALJmVYit2';
+        try {
+          await assignPatientToTherapist(user.uid, therapistId);
+          console.log(`Assigned patient ${user.uid} to therapist ${therapistId}`);
+        } catch (err) {
+          console.error('Error assigning patient to therapist:', err);
+        }
+    
+        // Make the initialization synchronous instead of using setTimeout
+        try {
+          await assignGoalsToUser(user.uid);
+          console.log(`Assigned goals to user ${user.uid}`);
+          
+          await initializeUserWithDemoData(user.uid);
+          console.log(`Initialized user ${user.uid} with demo data`);
+        } catch (goalErr) {
+          console.error('Error in goal assignment or demo data initialization:', goalErr);
+        }
+    
+        // Go to onboarding instead of dashboard
+        goto('/onboarding');
+      } catch (error) {
+        console.error('Signup error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
       }
-
-      const therapistId = 'mY8JFfhiJvdFm54wG57ALJmVYit2';
-      try {
-        await assignPatientToTherapist(user.uid, therapistId);
-        console.log(`Assigned patient ${user.uid} to therapist ${therapistId}`);
-      } catch (err) {
-        console.error('Error assigning patient to therapist:', err);
-      }
-
-      try {
-        setTimeout(async () => {
-          try {
-            await assignGoalsToUser(user.uid);
-            console.log(`Assigned goals to user ${user.uid}`);
-          } catch (goalErr) {
-            console.error('Error in delayed goal assignment:', goalErr);
-          }
-        }, 1000);
-      } catch (goalError) {
-        console.error('Error assigning goals:', goalError);
-      }
-
-      goto('/patient-dashboard');
-    } catch (error) {
-      console.error('Signup error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      authStore.update((state) => ({ ...state, error: errorMessage, isLoading: false }));
-    }
-  },
+    },
 
   logout: async () => {
     try {
