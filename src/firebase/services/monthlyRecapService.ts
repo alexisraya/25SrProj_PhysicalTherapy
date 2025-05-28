@@ -317,14 +317,27 @@ async function getMetricsData(userId: string, month: number): Promise<MonthlyRec
       };
     }
 
+    // Get current month data
     const currentROM = metrics.rangeOfMotion.find((rom) => rom.month === month);
-    const prevROM = month > 1 ? metrics.rangeOfMotion.find((rom) => rom.month === month - 1) : null;
+    const currentStrength = metrics.strength.find((str) => str.month === month);
+
+    // For Month 1, compare against Month 0 (baseline)
+    // For other months, compare against previous month
+    let prevROM = null;
+    let prevStrength = null;
+    
+    if (month === 1) {
+      // For Month 1, look for Month 0 baseline data
+      prevROM = metrics.rangeOfMotion.find((rom) => rom.month === 0);
+      prevStrength = metrics.strength.find((str) => str.month === 0);
+    } else if (month > 1) {
+      // For other months, look for previous month
+      prevROM = metrics.rangeOfMotion.find((rom) => rom.month === month - 1);
+      prevStrength = metrics.strength.find((str) => str.month === month - 1);
+    }
 
     const romValue = currentROM ? currentROM.degrees : null;
     const romChange = currentROM && prevROM ? currentROM.degrees - prevROM.degrees : null;
-
-    const currentStrength = metrics.strength.find((str) => str.month === month);
-    const prevStrength = month > 1 ? metrics.strength.find((str) => str.month === month - 1) : null;
 
     const strengthValue = currentStrength ? currentStrength.strengthScale : null;
     const strengthChange =

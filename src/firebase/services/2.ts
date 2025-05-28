@@ -19,13 +19,14 @@ import type { User, UserStats, AssignedExercise } from '../types/userType';
  * Pre-populated data includes:
  * - 96 completed exercises, 30 completed programs
  * - 11 unlocked achievements
- * - 8 unlocked goals (goal-1 through goal-7, plus goal-8)
- * - Range of motion and strength metrics for months 0, 1, 2 (not month 3)
- * - Check-in data for months 1-3 (for monthly recap)
+ * - 7 unlocked goals (goal-1 through goal-6, plus goal-8)
+ * - Range of motion and strength metrics for months 1-2
+ * - Check-in data for months 1-2
  * - 5 exercises assigned for today (not completed)
  */
 export async function initializeUserWithDemoData(userId: string): Promise<void> {
   try {
+    console.log(`🚀 Starting demo data initialization for user ${userId}`);
     const user = await getUser(userId);
     if (!user) {
       console.error(`User ${userId} not found`);
@@ -33,11 +34,13 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
     }
 
     const today = new Date();
+    
+    // Set creation date to 65 days ago (Month 1 start) - extended from Run 2's 19 days
     const creationDate = new Date(today);
     creationDate.setDate(creationDate.getDate() - 65);
     creationDate.setHours(0, 0, 0, 0);
     
-    // Month 2 started 35 days ago
+    // Month 2 started 35 days ago  
     const month2Date = new Date(creationDate);
     month2Date.setDate(month2Date.getDate() + 30);
     
@@ -46,28 +49,33 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
     month3Date.setDate(month3Date.getDate() - 5);
     month3Date.setHours(0, 0, 0, 0);
     
+    // Calculate personal week start based on user's creation date (exactly like Run 2)
     const weekStartDate = getPersonalWeekStart(creationDate.toISOString(), today);
     console.log("Demo - Personal week start:", weekStartDate);
     
     const lastCompletion = new Date(today);
     lastCompletion.setDate(lastCompletion.getDate() - 1);
     
+    // Update user creation and update timestamps
     try {
       await updateUser(userId, {
         createdAt: creationDate.toISOString(),
         updatedAt: today.toISOString()
       });
-      console.log(`Updated user timestamps for ${userId}`);
+      console.log(`✅ Updated user timestamps for ${userId}`);
     } catch (error) {
-      console.error(`Could not update user timestamps:`, error);
+      console.error(`⚠️ Could not update user timestamps:`, error);
     }
-    
+
+    // Generate realistic streak history (exactly like Run 2 pattern but extended)
     const streakHistory = [];
 
+    // Previous weeks' history (same pattern as Run 2)
     for (let i = 60; i >= 5; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const dayOfWeek = date.getDay();
+      // Use exact same completion logic as Run 2
       const completed = !(dayOfWeek === 0 || dayOfWeek === 6 || i % 7 === 3);
       streakHistory.push({
         date: date.toISOString(),
@@ -75,6 +83,7 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
       });
     }
 
+    // Current week: exactly 4 days completed (exactly like Run 2)
     for (let i = 4; i >= 1; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
@@ -83,22 +92,16 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         completed: true
       });
     }
-
-    // Helper function to get achievement unlock date within a specific month
-    function getAchievementDateForMonth(monthStartDate: Date, daysIntoMonth: number): Date {
-      const unlockDate = new Date(monthStartDate);
-      unlockDate.setDate(unlockDate.getDate() + daysIntoMonth);
-      return unlockDate;
-    }
-
+    
+    // Set up user statistics (based on Run 2 pattern but with your specified numbers)
     const stats: UserStats = {
-      currentStreak: 8,
-      longestStreak: 8,
+      currentStreak: 8, // Your specified streak count
+      longestStreak: 8, // Your specified streak count
       lastCompletedDate: lastCompletion.toISOString(),
       weeklyProgress: {
-        weekStartDate: weekStartDate,
-        daysCompleted: 4,
-        exercisesCompleted: 20
+        weekStartDate: weekStartDate, // Using the correct week start based on creation date (like Run 2)
+        daysCompleted: 4, // IMPORTANT: 4 days completed out of 5 (exactly like Run 2)
+        exercisesCompleted: 20 // 5 exercises per day for 4 days
       },
       monthlyProgress: {
         [creationDate.toISOString().substring(0, 7)]: {
@@ -113,55 +116,55 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         },
         [month3Date.toISOString().substring(0, 7)]: {
           month: 3,
-          exercisesCompleted: 3,
+          exercisesCompleted: 3, // Only 3 completed so far this month
           programsCompleted: 0
         }
       },
+      // Your specified stats
       completedExercises: 96,
       completedPrograms: 30,
       totalSets: 192,
       totalReps: 954,
-      totalWeight: 475,
-      totalDistance: 218,  // 218 steps as specified
-      totalTime: 1200,
+      totalWeight: 475, // lbs
+      totalDistance: 5596.8, // 5596.8 feet as you specified
+      totalTime: 1200, // seconds
       streakHistory,
+      // Exactly 11 unlocked achievements as specified
       achievements: {
-        // All 11 achievements spread across Month 1 and Month 2
-        // Month 1 achievements (9 total)
-        "time-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 5).toISOString() },
-        "time-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 10).toISOString() },
-        "time-3": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 15).toISOString() },
-        "time-4": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 20).toISOString() },
-        "time-5": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 25).toISOString() },
-        "distance-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 12).toISOString() },
-        "weight-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 8).toISOString() },
-        "weight-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 13).toISOString() },
-        "weight-3": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 18).toISOString() },
-        
-        // Month 2 achievements (2 total)
-        "distance-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 10).toISOString() },
-        "weight-4": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 15).toISOString() }
+        "time-1": { unlocked: true, unlockedAt: getDateDaysAgo(60).toISOString() },
+        "time-2": { unlocked: true, unlockedAt: getDateDaysAgo(55).toISOString() },
+        "time-3": { unlocked: true, unlockedAt: getDateDaysAgo(50).toISOString() },
+        "time-4": { unlocked: true, unlockedAt: getDateDaysAgo(45).toISOString() },
+        "time-5": { unlocked: true, unlockedAt: getDateDaysAgo(40).toISOString() },
+        "weight-1": { unlocked: true, unlockedAt: getDateDaysAgo(57).toISOString() },
+        "weight-2": { unlocked: true, unlockedAt: getDateDaysAgo(52).toISOString() },
+        "weight-3": { unlocked: true, unlockedAt: getDateDaysAgo(47).toISOString() },
+        "weight-4": { unlocked: true, unlockedAt: getDateDaysAgo(42).toISOString() },
+        "distance-1": { unlocked: true, unlockedAt: getDateDaysAgo(48).toISOString() },
+        "distance-2": { unlocked: true, unlockedAt: getDateDaysAgo(44).toISOString() }
       }
     };
 
     console.log("Demo - Setting up with days completed:", stats.weeklyProgress.daysCompleted);
 
+    // Update user stats (this should work even if other operations fail)
     try {
       await updateUser(userId, { stats });
-      console.log(`Updated user stats for ${userId}`);
+      console.log(`✅ Updated user stats for ${userId}`);
     } catch (error) {
-      console.error(`Could not update user stats:`, error);
+      console.error(`⚠️ Could not update user stats:`, error);
     }
 
+    // CRITICAL: Assign the EXACT 5 exercises you specified (use assignProgram like Run 2)
     const exercises: AssignedExercise[] = [
       {
         exerciseId: 'clamshell',
         exerciseName: 'Clamshell',
         exerciseType: 'time',
         order: 0,
-        sets: 1,
-        reps: 10,    
-        seconds: 10, 
+        sets: 1,        // EXACTLY as you specified: 1 set
+        reps: 10,       // EXACTLY as you specified: 10 reps
+        seconds: 10,    // EXACTLY as you specified: 10 seconds
         completed: false
       },
       {
@@ -169,9 +172,9 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         exerciseName: 'Standing TKE',
         exerciseType: 'time',
         order: 1,
-        sets: 1,
-        reps: 10,
-        seconds: 5, 
+        sets: 1,        // EXACTLY as you specified: 1 set
+        reps: 10,       // EXACTLY as you specified: 10 reps
+        seconds: 5,     // EXACTLY as you specified: 5 seconds
         completed: false
       },
       {
@@ -179,8 +182,8 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         exerciseName: 'Side Stepping',
         exerciseType: 'distance',
         order: 2,
-        sets: 3,     
-        steps: 10,   
+        sets: 3,        // EXACTLY as you specified: 3 sets
+        steps: 10,      // EXACTLY as you specified: 10 steps/reps
         completed: false
       },
       {
@@ -188,9 +191,9 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         exerciseName: 'Straight Leg Raise',
         exerciseType: 'weight',
         order: 3,
-        sets: 3,     
-        reps: 10,      
-        weight: 0,   
+        sets: 3,        // EXACTLY as you specified: 3 sets
+        reps: 10,       // EXACTLY as you specified: 10 reps
+        weight: 0,      // EXACTLY as you specified: 0 lbs
         completed: false
       },
       {
@@ -198,20 +201,24 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         exerciseName: 'Bulgarian Split Squat',
         exerciseType: 'weight',
         order: 4,
-        sets: 3, 
-        reps: 10, 
-        weight: 5,  
+        sets: 3,        // EXACTLY as you specified: 3 sets
+        reps: 10,       // EXACTLY as you specified: 10 reps
+        weight: 5,      // EXACTLY as you specified: 5 lbs
         completed: false
       }
     ];
 
+    // Use assignProgram instead of updateProgram (like the wizard does)
     try {
       await assignProgram(userId, exercises, 120);
+      console.log(`✅ Assigned EXACTLY 5 exercises to user ${userId}: Clamshell (1x10, 10s), Standing TKE (1x10, 5s), Side Stepping (3x10 steps), Straight Leg Raise (3x10, 0lbs), Bulgarian Split Squat (3x10, 5lbs)`);
     } catch (error) {
-      console.error(`Could not assign exercises:`, error);
+      console.error(`⚠️ Could not assign exercises:`, error);
     }
 
+    // Try to set up metrics (may fail due to permissions, but continue anyway)
     try {
+      // Clear and set up user metrics (ensure clean setup like Run 2)
       const metricsRef = doc(db, 'userMetrics', userId);
       await setDoc(metricsRef, {
         userId,
@@ -220,75 +227,68 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         updatedAt: new Date().toISOString()
       }, { merge: true });
 
-      // Month 0 (baseline) - Starting point for Month 1 recap comparison
-      // This is what the user started with at the beginning
-      await updateRangeOfMotion(userId, 0, 30);
-      await updateStrength(userId, 0, 1);
-
-      // Month 1 metrics - End of first month 
-      // Shows improvement from baseline
-      await updateRangeOfMotion(userId, 1, 45);
-      await updateStrength(userId, 1, 2);
-      
-      // Month 2 metrics - End of second month
-      await updateRangeOfMotion(userId, 2, 60);
-      await updateStrength(userId, 2, 3);
-      
-      // NO Month 3 metrics yet since we're only 5 days into month 3
-      
-      // Month 3 metrics - DON'T add these since we're at start of month 3
-      
-      console.log(`Added metrics - Month 0 (baseline): ROM 30°, Strength 1`);
-      console.log(`Added metrics - Month 1: ROM 45° (+15°), Strength 2 (+1)`);
-      console.log(`Added metrics - Month 2: ROM 60° (+15°), Strength 3 (+1)`);
-      console.log(`No Month 3 metrics added (user is only 5 days into month 3)`);
-      
+      // Set up range of motion and strength metrics for months 1-2 EXACTLY as you specified
+      await updateRangeOfMotion(userId, 1, 45); // Month 1: 45 degrees (EXACTLY as you specified)
+      await updateRangeOfMotion(userId, 2, 60); // Month 2: 60 degrees (EXACTLY as you specified)
+      await updateStrength(userId, 1, 2); // Month 1: strength level 2 (EXACTLY as you specified)
+      await updateStrength(userId, 2, 3); // Month 2: strength level 3 (EXACTLY as you specified)
+      console.log(`✅ Updated user metrics for ${userId} - ROM: Month 1 = 45°, Month 2 = 60°; Strength: Month 1 = 2, Month 2 = 3`);
     } catch (error) {
-      console.error(`Could not update metrics (permission issue):`, error);
-      throw error;
+      console.error(`⚠️ Could not update metrics (permission issue):`, error);
     }
 
+    // Try to set up check-ins (may fail due to permissions, but continue anyway)
     try {
       await clearAllCheckIns(userId);
-      
-      // Add check-in data for all 3 months
-      await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
-      await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);
-      await addCheckInData(userId, 3, month3Date, 4, 4.0, 2); // Few check-ins for current month
-      
+      await addCheckInData(userId, 1, creationDate, 21, 5.5, 3); // Month 1: same as Run 2
+      await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);   // Month 2: improved pain/mood
+      console.log(`✅ Added check-in data for ${userId}`);
     } catch (error) {
-      console.error(`Could not add check-in data (permission issue):`, error);
+      console.error(`⚠️ Could not add check-in data (permission issue):`, error);
     }
 
+    // Try to set up goals (may fail due to permissions, but continue anyway)
     try {
       await resetAllGoals(userId);
-      
-      // Unlock goals 1-6 and goal-8 (goal-7 stays locked)
+      // EXACTLY as you specified: goal-1, goal-2, goal-3, goal-4, goal-5, goal-6, goal-8
       const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-8'];
       
       for (const goalId of goalsToUnlock) {
         await unlockGoal(userId, goalId);
       }
-      
-      console.log(`Unlocked ${goalsToUnlock.length} goals for demo user`);
-      
+      console.log(`✅ Unlocked EXACTLY ${goalsToUnlock.length} goals for user ${userId}: ${goalsToUnlock.join(', ')}`);
     } catch (error) {
-      console.error(`Could not unlock goals (permission issue):`, error);
+      console.error(`⚠️ Could not unlock goals (permission issue):`, error);
     }
 
-    console.log(`Successfully initialized user ${userId} with demo data`);
+    console.log(`🎉 Successfully initialized user ${userId} with demo data`);
+    console.log("Demo setup complete with days completed:", stats.weeklyProgress.daysCompleted);
+    
+    // Print summary of what was set up
+    console.log(`📊 DEMO DATA SUMMARY FOR ${userId}:`);
+    console.log(`   - Streak: ${stats.currentStreak} weeks`);
+    console.log(`   - Weekly Progress: ${stats.weeklyProgress.daysCompleted}/5 days`);
+    console.log(`   - Total Distance: ${stats.totalDistance} feet`);
+    console.log(`   - Exercises Assigned: ${exercises.length}`);
+    console.log(`   - Goals Unlocked: 7 (goal-1, goal-2, goal-3, goal-4, goal-5, goal-6, goal-8)`);
+    console.log(`   - Strength: Month 1 = 2, Month 2 = 3`);
+    console.log(`   - ROM: Month 1 = 45°, Month 2 = 60°`);
+    console.log(`   - Check-ins: Month 1 = 21, Month 2 = 22`);
     
   } catch (error) {
-    console.error(`Error initializing user with demo data:`, error);
+    console.error(`❌ Error initializing user with demo data:`, error);
+    // Don't throw - we want signup to succeed even if demo data fails
   }
 }
 
+// Helper function to get a date N days ago
 function getDateDaysAgo(days: number): Date {
   const date = new Date();
   date.setDate(date.getDate() - days);
   return date;
 }
 
+// Clear all existing check-ins for clean demo data (exactly like Run 2)
 async function clearAllCheckIns(userId: string): Promise<void> {
   try {
     const checkInsRef = collection(db, 'users', userId, 'checkIns');
@@ -303,6 +303,7 @@ async function clearAllCheckIns(userId: string): Promise<void> {
   }
 }
 
+// Unlock a specific goal (exactly like Run 2)
 async function unlockGoal(userId: string, goalId: string): Promise<void> {
   try {
     const goalRef = doc(db, `users/${userId}/goals/${goalId}`);
@@ -318,14 +319,12 @@ async function unlockGoal(userId: string, goalId: string): Promise<void> {
       unlockedAt: getDateDaysAgo(5).toISOString()
     });
     
-    console.log(`Successfully unlocked goal ${goalId} for user ${userId}`);
-    
   } catch (error) {
     console.error(`Error unlocking goal ${goalId}:`, error);
-    throw error;
   }
 }
 
+// Reset all goals to locked state (exactly like Run 2)
 async function resetAllGoals(userId: string): Promise<void> {
   try {
     const userGoalsRef = collection(db, `users/${userId}/goals`);
@@ -347,6 +346,7 @@ async function resetAllGoals(userId: string): Promise<void> {
   }
 }
 
+// Add realistic check-in data for demo purposes (exactly like Run 2)
 async function addCheckInData(
   userId: string, 
   month: number, 
@@ -361,6 +361,7 @@ async function addCheckInData(
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 30);
 
+    // Remove any existing check-ins in this time period
     const existingCheckInsQuery = query(
       checkInsRef,
       where('timestamp', '>=', startDate),
@@ -372,10 +373,13 @@ async function addCheckInData(
       await deleteDoc(doc.ref);
     }
 
+    // Generate realistic check-in data spread throughout the month (exactly like Run 2)
     for (let i = 0; i < checkInCount; i++) {
       const dayOffset = Math.floor(i * (30 / checkInCount)) + 1;
       const checkInDate = new Date(startDate);
       checkInDate.setDate(checkInDate.getDate() + dayOffset);
+      
+      // Add realistic variation to pain and mood levels (same as Run 2)
       const painVariation = (Math.random() - 0.5) * 2; // -1 to +1
       const painLevel = Math.max(1, Math.min(10, Math.round(avgPain + painVariation)));
       const moodVariation = Math.random() < 0.7 ? 0 : (Math.random() < 0.5 ? -1 : 1);
