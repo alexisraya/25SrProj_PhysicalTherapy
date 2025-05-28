@@ -8,21 +8,6 @@ import type { User, UserStats, AssignedExercise } from '../types/userType';
 
 /**
  * Initializes a new user with pre-populated demo data based on Run 2 pattern
- * This sets up the user to be in Month 3, Week 1, Day 5 with 4 days already completed
- * 
- * Timeline (based on Run 2 but extended):
- * - Account created: 65 days ago (Month 1)
- * - Month 2: Started 35 days ago
- * - Month 3: Started 5 days ago
- * - Current week: 4 days completed, today is day 5
- * 
- * Pre-populated data includes:
- * - 96 completed exercises, 30 completed programs
- * - 11 unlocked achievements
- * - 8 unlocked goals (goal-1 through goal-7, plus goal-8)
- * - Range of motion and strength metrics for months 0, 1, 2 (not month 3)
- * - Check-in data for months 1-3 (for monthly recap)
- * - 5 exercises assigned for today (not completed)
  */
 export async function initializeUserWithDemoData(userId: string): Promise<void> {
   try {
@@ -37,11 +22,9 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
     creationDate.setDate(creationDate.getDate() - 65);
     creationDate.setHours(0, 0, 0, 0);
     
-    // Month 2 started 35 days ago
     const month2Date = new Date(creationDate);
     month2Date.setDate(month2Date.getDate() + 30);
     
-    // Month 3 started 5 days ago
     const month3Date = new Date(today);
     month3Date.setDate(month3Date.getDate() - 5);
     month3Date.setHours(0, 0, 0, 0);
@@ -84,7 +67,6 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
       });
     }
 
-    // Helper function to get achievement unlock date within a specific month
     function getAchievementDateForMonth(monthStartDate: Date, daysIntoMonth: number): Date {
       const unlockDate = new Date(monthStartDate);
       unlockDate.setDate(unlockDate.getDate() + daysIntoMonth);
@@ -122,25 +104,21 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
       totalSets: 192,
       totalReps: 954,
       totalWeight: 475,
-      totalDistance: 218,  // 218 steps as specified
+      totalDistance: 218,
       totalTime: 1200,
       streakHistory,
       achievements: {
-        // All 11 achievements spread across Month 1 and Month 2
-        // Month 1 achievements (9 total)
         "time-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 5).toISOString() },
         "time-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 10).toISOString() },
         "time-3": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 15).toISOString() },
         "time-4": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 20).toISOString() },
         "time-5": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 25).toISOString() },
-        "distance-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 12).toISOString() },
         "weight-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 8).toISOString() },
         "weight-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 13).toISOString() },
         "weight-3": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 18).toISOString() },
-        
-        // Month 2 achievements (2 total)
-        "distance-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 10).toISOString() },
-        "weight-4": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 15).toISOString() }
+        "weight-4": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 15).toISOString() },
+        "distance-1": { unlocked: true, unlockedAt: getAchievementDateForMonth(creationDate, 12).toISOString() },
+        "distance-2": { unlocked: true, unlockedAt: getAchievementDateForMonth(month2Date, 10).toISOString() }
       }
     };
 
@@ -220,23 +198,17 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
         updatedAt: new Date().toISOString()
       }, { merge: true });
 
-      // Month 0 (baseline) - Starting point for Month 1 recap comparison
-      // This is what the user started with at the beginning
+      // Month 0 (baseline)
       await updateRangeOfMotion(userId, 0, 30);
       await updateStrength(userId, 0, 1);
 
-      // Month 1 metrics - End of first month 
-      // Shows improvement from baseline
+      // Month 1 metrics
       await updateRangeOfMotion(userId, 1, 45);
       await updateStrength(userId, 1, 2);
       
-      // Month 2 metrics - End of second month
+      // Month 2 metrics
       await updateRangeOfMotion(userId, 2, 60);
       await updateStrength(userId, 2, 3);
-      
-      // NO Month 3 metrics yet since we're only 5 days into month 3
-      
-      // Month 3 metrics - DON'T add these since we're at start of month 3
       
       console.log(`Added metrics - Month 0 (baseline): ROM 30°, Strength 1`);
       console.log(`Added metrics - Month 1: ROM 45° (+15°), Strength 2 (+1)`);
@@ -250,11 +222,9 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
 
     try {
       await clearAllCheckIns(userId);
-      
-      // Add check-in data for all 3 months
       await addCheckInData(userId, 1, creationDate, 21, 5.5, 3);
       await addCheckInData(userId, 2, month2Date, 22, 4.5, 2);
-      await addCheckInData(userId, 3, month3Date, 4, 4.0, 2); // Few check-ins for current month
+      await addCheckInData(userId, 3, month3Date, 4, 4.0, 2);
       
     } catch (error) {
       console.error(`Could not add check-in data (permission issue):`, error);
@@ -262,8 +232,6 @@ export async function initializeUserWithDemoData(userId: string): Promise<void> 
 
     try {
       await resetAllGoals(userId);
-      
-      // Unlock goals 1-6 and goal-8 (goal-7 stays locked)
       const goalsToUnlock = ['goal-1', 'goal-2', 'goal-3', 'goal-4', 'goal-5', 'goal-6', 'goal-8'];
       
       for (const goalId of goalsToUnlock) {
