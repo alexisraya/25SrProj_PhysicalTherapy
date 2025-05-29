@@ -6,9 +6,19 @@
   import { typography } from '$lib/design-system';
   import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
 
+  let backUrl = './';
+
   onMount(() => {
     if ($authStore.currentUser) {
       goalStore.loadGoals($authStore.currentUser.uid);
+    }
+    if (typeof window !== 'undefined') {
+      const lastTab = window.sessionStorage.getItem('lastProgressTab');
+      if (lastTab === '1') {
+        backUrl = './?tab=milestones';
+      } else {
+        backUrl = './?tab=stats';
+      }
     }
   });
 
@@ -18,7 +28,7 @@
 </script>
 
 <div class="back-arrow-container">
-  <a href="./" class="back-arrow">
+  <a href={backUrl} class="back-arrow">
     <RemixIcon name="arrow-left-s-line" size="32px" />
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes

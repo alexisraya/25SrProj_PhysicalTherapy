@@ -1,12 +1,19 @@
 <!-- Tabs.svelte -->
 <script>
+  import { createEventDispatcher } from 'svelte';
   import { typography } from '../typography';
 
   export let activeTab = 0;
   export let tabs = [];
 
+  const dispatch = createEventDispatcher();
+
   function setActiveTab(index) {
-    activeTab = index;
+    if (activeTab !== index) {
+      activeTab = index;
+      // Dispatch the tab change event to the parent
+      dispatch('tabChange', index);
+    }
   }
 </script>
 

@@ -7,16 +7,25 @@
 
   import { typography } from '$lib/design-system';
 
+  let backUrl = './';
+
   onMount(() => {
     if ($authStore.currentUser) {
       achievementStore.loadAchievements($authStore.currentUser.uid);
     }
-    console.log($achievementStore);
+    if (typeof window !== 'undefined') {
+      const lastTab = window.sessionStorage.getItem('lastProgressTab');
+      if (lastTab === '1') {
+        backUrl = './?tab=milestones';
+      } else {
+        backUrl = './?tab=stats';
+      }
+    }
   });
 </script>
 
 <div class="back-arrow-container">
-  <a href="./" class="back-arrow">
+  <a href={backUrl} class="back-arrow">
     <RemixIcon name="arrow-left-s-line" size="32px" />
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
