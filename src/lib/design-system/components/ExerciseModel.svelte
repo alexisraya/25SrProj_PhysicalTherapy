@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import * as THREE from 'three';
   import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
   import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -7,6 +7,13 @@
   export let modelPath = ''; // Path to the 3D model
   let container;
   let mixer; // Animation mixer
+  let scene, camera, renderer, controls, loader;
+  let currentModel = null; // Track the current model
+  let animationId; // Track animation frame
+  let isLoadingModel = false; // Track loading state
+
+  console.log('MODEL PATH');
+  console.log(modelPath);
 
   function handleResize() {
     if (!container) return;
@@ -25,10 +32,12 @@
       container.style.height = '50vh'; // Or another value
     }
   }
-  // limit zoom in and out, x axis, y axis. intial camera view
-  onMount(() => {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
+
+  function setupScene() {
+    if (!container) return;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(
       50,
       container.clientWidth / container.clientHeight,
       1,
@@ -36,7 +45,7 @@
     );
     camera.position.set(0, 0, 100);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: false });
+    renderer = new THREE.WebGLRenderer({ alpha: false });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setClearColor(0x000000, 0); // Transparent background
     container.appendChild(renderer.domElement);
@@ -48,30 +57,8 @@
     frontLight.position.set(0, 0, 1);
     scene.add(frontLight);
 
-    // Load the 3D model with animations
-    const loader = new GLTFLoader();
-    loader.load(
-      modelPath,
-      (glb) => {
-        const model = glb.scene;
-        model.scale.set(30, 30, 30);
-        model.position.set(-2, -20, 0);
-        scene.add(model);
-
-        // Handle animations
-        if (glb.animations.length > 0) {
-          mixer = new THREE.AnimationMixer(model);
-          const action = mixer.clipAction(glb.animations[0]); // Play the first animation
-          action.loop = THREE.LoopRepeat; // Make it loop
-          action.play();
-        }
-      },
-      undefined,
-      (error) => console.error('An error occurred while loading the model:', error)
-    );
-
     // OrbitControls setup
-    const controls = new OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     // Prevent looking up by setting minimum polar angle to 90 degrees (horizontal)
@@ -80,20 +67,150 @@
     controls.minDistance = 50;
     controls.maxDistance = 500;
 
-    // Animation loop
+    loader = new GLTFLoader();
+  }
+
+  function clearCurrentModel() {
+    if (currentModel) {
+      console.log('Clearing current model');
+      scene.remove(currentModel);
+
+      // Dispose of geometries and materials to free memory
+      currentModel.traverse((child) => {
+        if (child.geometry) {
+          child.geometry.dispose();
+        }
+        if (child.material) {
+          if (Array.isArray(child.material)) {
+            child.material.forEach((material) => material.dispose());
+          } else {
+            child.material.dispose();
+          }
+        }
+      });
+
+      currentModel = null;
+    }
+
+    // Stop current animation mixer
+    if (mixer) {
+      mixer.stopAllAction();
+      mixer.uncacheRoot(mixer.getRoot());
+      mixer = null;
+    }
+
+    // Extra safety: remove any remaining objects from scene
+    const objectsToRemove = [];
+    scene.traverse((child) => {
+      if (child.type === 'Group' || child.type === 'Object3D') {
+        if (child !== scene && child.parent === scene) {
+          // Only remove direct children that aren't lights
+          if (!child.isLight) {
+            objectsToRemove.push(child);
+          }
+        }
+      }
+    });
+
+    objectsToRemove.forEach((obj) => {
+      scene.remove(obj);
+    });
+  }
+
+  function loadModel(path) {
+    if (!path || !loader || !scene) {
+      console.log('Cannot load model - missing path, loader, or scene');
+      return;
+    }
+
+    // Prevent multiple simultaneous loads
+    if (isLoadingModel) {
+      console.log('Already loading a model, skipping...');
+      return;
+    }
+
+    console.log('Loading new model:', path);
+    isLoadingModel = true;
+
+    // Load the new model first, BEFORE clearing the old one
+    loader.load(
+      path,
+      (glb) => {
+        console.log('Model loaded successfully:', path);
+
+        // Now that the new model is ready, clear the old one
+        clearCurrentModel();
+
+        // Add the new model
+        currentModel = glb.scene;
+        currentModel.scale.set(30, 30, 30);
+        currentModel.position.set(-2, -20, 0);
+        scene.add(currentModel);
+
+        // Handle animations
+        if (glb.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(currentModel);
+          const action = mixer.clipAction(glb.animations[0]);
+          action.loop = THREE.LoopRepeat;
+          action.play();
+          console.log('Animation started for model:', path);
+        }
+
+        isLoadingModel = false;
+      },
+      (progress) => {
+        // Optional: you could show loading progress here if needed
+        // console.log('Loading progress:', (progress.loaded / progress.total * 100) + '%');
+      },
+      (error) => {
+        console.error('An error occurred while loading the model:', path, error);
+        isLoadingModel = false;
+      }
+    );
+  }
+
+  function startAnimation() {
     const clock = new THREE.Clock();
+
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta); // Update animation
-      controls.update();
-      renderer.render(scene, camera);
+      if (controls) controls.update();
+      if (renderer && scene && camera) renderer.render(scene, camera);
     };
+
     animate();
+  }
+
+  function stopAnimation() {
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  }
+
+  // Reactive statement to handle modelPath changes
+  $: {
+    if (modelPath && scene) {
+      console.log('Reactive: modelPath changed to', modelPath);
+      loadModel(modelPath);
+    }
+  }
+
+  onMount(() => {
+    setupScene();
+
+    // Load initial model if path is provided
+    if (modelPath) {
+      loadModel(modelPath);
+    }
+
+    startAnimation();
 
     // Handle window resize
     const onWindowResize = () => {
-      if (!container) return;
+      if (!container || !camera || !renderer) return;
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
@@ -106,10 +223,27 @@
       onWindowResize();
     });
 
-    // Cleanup
+    // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  });
+
+  onDestroy(() => {
+    console.log('ExerciseModel component destroyed');
+    stopAnimation();
+    clearCurrentModel();
+
+    // Clean up Three.js resources
+    if (controls) {
+      controls.dispose();
+    }
+    if (renderer) {
+      if (container && renderer.domElement) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    }
   });
 </script>
 

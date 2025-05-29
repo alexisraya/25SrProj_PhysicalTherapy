@@ -74,6 +74,7 @@
   }
 
   async function loadExercise(exerciseId: string | undefined) {
+    console.log('loadExercise called with:', exerciseId);
     if (!exerciseId) {
       console.error('No exercise ID provided.');
       return;
@@ -118,18 +119,14 @@
       console.log(adjustedValues);
       loading = false;
     }
+
+    exerciseModelSrc = exerciseMap[exerciseId];
+    console.log('Updated exerciseModelSrc:', exerciseModelSrc); // This should now log again
   }
 
-  // Fix: Reactively update exercise when navigating
-  const pageSubscription = derived(page, ($page) => {
-    if ($page.params && $page.params.exerciseId) {
-      loadExercise($page.params.exerciseId);
-    }
-  }).subscribe(() => {}); // Add this subscription
-
-  onDestroy(() => {
-    if (pageSubscription) pageSubscription(); // Cleanup subscription
-  });
+  $: if ($page.params?.exerciseId) {
+    loadExercise($page.params.exerciseId);
+  }
 
   onMount(() => {
     const $currentPage = get(page) as Page;
