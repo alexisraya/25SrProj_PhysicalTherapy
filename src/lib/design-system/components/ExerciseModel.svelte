@@ -11,7 +11,6 @@
   let currentModel = null; // Track the current model
   let animationId; // Track animation frame
   let isLoadingModel = false; // Track loading state
-
   console.log('MODEL PATH');
   console.log(modelPath);
 

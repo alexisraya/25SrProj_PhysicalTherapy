@@ -7,7 +7,7 @@
   import ProgressBar from '$lib/design-system/components/ProgressBar.svelte';
   import CharacterSelect from '$lib/design-system/components/CharacterSelect.svelte';
   import ExerciseInfoBlock from '$lib/design-system/components/ExerciseInfoBlock.svelte';
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { authStore } from '$stores/authStore';
