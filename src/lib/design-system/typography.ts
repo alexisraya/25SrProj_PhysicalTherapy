@@ -1,7 +1,7 @@
 export const typography = {
   fontFamily: {
-    heading: '"DM Serif Display", serif',
-    body: '"Albert Sans", sans-serif'
+    heading: 'DM Serif Display, serif',
+    body: 'Albert Sans, sans-serif'
   },
   fontSizes: {
     special: '6.75rem',

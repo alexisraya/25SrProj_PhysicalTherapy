@@ -235,8 +235,18 @@
         src={homeBackgroundSmallLight}
         alt="background wave"
       />
+      <img
+        class="background-wave-2 wave-light"
+        src={homeBackgroundSmallLight}
+        alt="background wave"
+      />
     {:else}
       <img class="background-wave wave-dark" src={homeBackgroundSmallDark} alt="background wave" />
+      <img
+        class="background-wave-2 wave-dark"
+        src={homeBackgroundSmallDark}
+        alt="background wave"
+      />
     {/if}
   </div>
   <div class="header-container">
@@ -352,6 +362,9 @@
 {/if}
 
 <style>
+  :global(body) {
+    overflow-x: hidden;
+  }
   p {
     margin: 0;
   }
@@ -376,11 +389,22 @@
   }
   .background-wave {
     position: absolute;
-    top: calc(300px - 100vw);
+    top: calc(280px - 100vw);
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
     height: 100vw;
+    overflow-x: hidden;
+    /* width: 562px; */
+  }
+  .background-wave-2 {
+    position: absolute;
+    top: calc(200px - 100vw);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+    height: 100vw;
+    overflow-x: hidden;
     /* width: 562px; */
   }
   .header-container {
@@ -437,18 +461,9 @@
     line-height: 150%;
     color: var(--color-grey-400);
   }
-  /* .wave-container {
-    position: relative;
-    width: 100%;
+  .wave-container {
     overflow-x: hidden;
-    overflow-y: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  } */
-
+  }
   .checkin-cta-container {
     box-sizing: border-box;
     display: flex;
