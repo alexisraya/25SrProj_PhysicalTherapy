@@ -25,6 +25,9 @@
     </button>
   </div>
 
+  <!-- Backdrop overlay for mobile -->
+  <div class="backdrop" class:show={$isOpen} on:click={closeMenu}></div>
+
   <!-- Side column for desktop and menu for mobile -->
   <div class="menu-container" class:show={$isOpen}>
     <div class="menu">
@@ -81,6 +84,26 @@
     align-items: center;
   }
 
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease-out,
+      visibility 0.3s ease-out;
+    z-index: 98;
+  }
+
+  .backdrop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
   .menu-container {
     position: fixed;
     top: 0;
@@ -90,6 +113,7 @@
     overflow: hidden;
     transform: translateX(100%);
     transition: transform 0.3s ease-out;
+    z-index: 99;
   }
 
   .menu-container.show {
@@ -181,6 +205,10 @@
     }
 
     .nav-container {
+      display: none;
+    }
+
+    .backdrop {
       display: none;
     }
 

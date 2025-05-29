@@ -33,6 +33,7 @@
   p {
     margin: 0;
     color: var(--text-primary);
+    white-space: nowrap;
   }
 
   .time-frame-container {
@@ -45,6 +46,9 @@
     border: 1px solid var(--background-secondary);
     padding: 4px 10px;
     cursor: pointer;
+    flex-shrink: 0;
+    min-width: 60px;
+    width: 15%;
   }
 
   .selected {
@@ -54,17 +58,28 @@
   .x-axis-container {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
     gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
   }
 
-  @media (max-width: 600px) {
-    .x-axis-container {
-      justify-content: flex-start;
-    }
+  /* Optional: Style the scrollbar */
+  .x-axis-container::-webkit-scrollbar {
+    height: 4px;
+  }
 
-    .time-frame-container {
-      margin-bottom: 8px;
-    }
+  .x-axis-container::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+    border-radius: 2px;
+  }
+
+  .x-axis-container::-webkit-scrollbar-thumb {
+    background: var(--text-secondary);
+    border-radius: 2px;
+  }
+
+  .x-axis-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-primary);
   }
 </style>
