@@ -1,8 +1,5 @@
-// MISSING BRIDGE
-// models/default.glb is split squat
-
 export const exerciseMap: Record<string, string> = {
-  bridge: '/models/default.glb',
+  bridge: '/models/bridge.glb',
   'bulgarian-split-squat': '/models/default.glb',
   clamshell: '/models/clamshell.glb',
   'heel-slide': '/models/heel_slide.glb',

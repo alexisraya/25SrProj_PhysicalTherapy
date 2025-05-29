@@ -92,20 +92,22 @@
         >
       </div>
       <div class="line"></div>
-      <div class="edit-field">
-        <input
-          type="number"
-          bind:value={editedReps}
-          class="edit-input"
-          on:keypress={handleKeyPress}
-          min="1"
-        />
-        <span
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .small}; font-weight: {typography.fontWeights.regular};">reps</span
-        >
-      </div>
-      <div class="line"></div>
+      {#if reps && reps != 0}
+        <div class="edit-field">
+          <input
+            type="number"
+            bind:value={editedReps}
+            class="edit-input"
+            on:keypress={handleKeyPress}
+            min="1"
+          />
+          <span
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .small}; font-weight: {typography.fontWeights.regular};">reps</span
+          >
+        </div>
+        <div class="line"></div>
+      {/if}
       {#if weight && weight != 0}
         <div class="edit-field">
           <input
@@ -169,13 +171,15 @@
         {sets} sets
       </p>
       <div class="line"></div>
-      <p
-        style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-          .small}; font-weight: {typography.fontWeights.regular};"
-      >
-        {reps} reps
-      </p>
-      <div class="line"></div>
+      {#if reps && reps != 0}
+        <p
+          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+            .small}; font-weight: {typography.fontWeights.regular};"
+        >
+          {reps} reps
+        </p>
+        <div class="line"></div>
+      {/if}
       {#if weight && weight != 0}
         <p
           style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes

@@ -200,7 +200,7 @@
       style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
         .h3}; font-weight: {typography.fontWeights.regular}; text-align: center;"
     >
-      Log in to Mend
+      {register ? 'Sign up for Mend' : 'Log in to Mend'}
     </h3>
     <p
       style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes

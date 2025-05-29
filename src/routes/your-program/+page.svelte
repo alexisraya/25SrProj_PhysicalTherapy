@@ -77,6 +77,9 @@
           weeklyProgress.set(weeklyData);
 
           if (programData) {
+            if (programData.completed) {
+              goto('your-program/summary');
+            }
             resetSelections();
 
             // Extract equipment list

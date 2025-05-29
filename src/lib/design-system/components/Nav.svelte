@@ -47,7 +47,7 @@
             <RemixIcon name="line-chart-line" />
             <a href="/your-progress" on:click={closeMenu}>Progress</a>
           </div>
-          <div class="menu-item" class:active={$page.url.pathname === '/your-program'}>
+          <div class="menu-item" class:active={$page.url.pathname.includes('/your-program')}>
             <RemixIcon name="list-check-2" />
             <a href="/your-program" on:click={closeMenu}>Program</a>
           </div>
