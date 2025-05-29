@@ -6,17 +6,23 @@
 
   export let achievementTitle: string;
   export let achievementMark: string;
-  export let achievementValue: number;
+  export let achievementValue: any;
   export let achievmentId: string;
   export let isLocked = false;
 
-  let valueLabel = `${achievementValue} ${achievementMark}`;
+  $: valueLabel = `${achievementValue} ${achievementMark}`;
 
   if (achievementMark == 'seconds' && achievementValue >= 60) {
     const minutes = Math.floor(achievementValue / 60);
     const seconds = achievementValue % 60;
 
     seconds > 0 ? (valueLabel = `${minutes}m ${seconds}s`) : (valueLabel = `${minutes} minutes`);
+  }
+
+  if (achievementMark == 'steps') {
+    achievementMark = 'feet';
+    const totalFeet = achievementValue * 0.413;
+    achievementValue = Math.round(totalFeet);
   }
 
   let currentTheme: 'light' | 'dark' = 'light';

@@ -18,6 +18,10 @@
     goto('/check-in');
   };
 
+  const goHome = () => {
+    goto('/patient-dashboard');
+  };
+
   $: isStepComplete = $stepCompletionStatus[currentStepIndex];
 </script>
 
@@ -26,8 +30,8 @@
     <Button cta="Begin" onClickFunc={onNext} />
   {:else}
     <DoubleButton
-      ctaOne="Back"
-      ctaOneOnClickFunc={onPrevious}
+      ctaOne={isLastStep ? 'Go to home' : 'Back'}
+      ctaOneOnClickFunc={isLastStep ? goHome : onPrevious}
       ctaTwo={isLastStep ? 'Start check in' : 'Next'}
       ctaTwoOnClickFunc={isLastStep ? handleLastStepAction : onNext}
       isCTATwoDisabled={!isStepComplete}
