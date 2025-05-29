@@ -59,9 +59,8 @@
 
       completedMonths = Object.keys(monthlyProgress);
 
-      // Set active month to the NEXT month after completed ones
-      // or to 1 if no months are completed yet
-      activeMonth = completedMonths.length > 0 ? completedMonths.length : 1;
+      // Set active month to the current month (next after completed ones)
+      activeMonth = getCurrentMonth();
       unlockedAchievements = getUnlockedAchievements();
 
       // Wait until the next tick to ensure the store is populated
@@ -89,8 +88,12 @@
     }
   });
 
-  // In MilestoneTab.svelte
-  // In your selectMonth function in MilestoneTab.svelte
+  function getCurrentMonth() {
+    // If user is on month 3, completedMonths = [1, 2], so current month = 3
+    // If no months completed, user is on month 1
+    return completedMonths.length > 0 ? completedMonths.length : 1;
+  }
+
   function selectMonth(month) {
     // Always update the activeMonth regardless of current state
     activeMonth = month;
@@ -106,7 +109,6 @@
         chosenAchievement = null;
       }
 
-      // Add these debug logs
       console.log('Active month:', month);
       console.log('Achievements for this month:', monthAchievements);
       if (chosenAchievement) {
@@ -114,11 +116,19 @@
       }
     }
 
-    if (month <= completedMonths.length) {
+    const currentMonth = getCurrentMonth();
+
+    // Only navigate to recap if the month is completed (less than current month)
+    if (month < currentMonth) {
       $currentMonth = month;
-      // Fixed string interpolation syntax - use backticks
       goto(`/recaps`);
     }
+    // If month === currentMonth, it's the active month - just update the view, don't navigate
+    // If month > currentMonth, it's a future month - the click is already prevented by the template
+
+    console.log(
+      `Selected month: ${month}, Current month: ${currentMonth}, Completed months: ${completedMonths.length}`
+    );
   }
 
   // Function to update goals based on the active month
