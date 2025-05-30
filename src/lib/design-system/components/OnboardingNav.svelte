@@ -9,7 +9,7 @@
   const handleSkip = () => {
     // Mark onboarding as completed before navigation
     completeOnboarding();
-    goto('/patient-dashboard');
+    goto('./patient-dashboard');
   };
 </script>
 
