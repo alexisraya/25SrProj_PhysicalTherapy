@@ -64,8 +64,8 @@ export async function createUser(
   userId: string,
   firstName: string,
   lastName: string,
-  email: string,
-  therapistId: string = 'mY8JFfhiJvdFm54wG57ALJmVYit2'
+  email: string
+  // therapistId: string = 'mY8JFfhiJvdFm54wG57ALJmVYit2'
 ): Promise<void> {
   try {
     const userRef = doc(db, 'users', userId);
@@ -82,7 +82,7 @@ export async function createUser(
       isTherapist: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      therapistId,
+      // therapistId,
       assignedExercises: [],
       stats
     });

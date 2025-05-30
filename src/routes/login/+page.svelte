@@ -9,6 +9,7 @@
   import MendLogo from '$lib/assets/iconography/MendLogo.svg';
   import { onMount } from 'svelte';
 
+  let isLoading = false;
   let register = false;
   let firstName = '';
   let lastName = '';
@@ -135,6 +136,9 @@
   }
 
   async function handleSubmit() {
+    // Set loading to true at the start
+    isLoading = true;
+
     // Clear previous auth errors
     authError = false;
 
@@ -154,6 +158,8 @@
       !password ||
       (register && (!confirmPassword || !passwordsMatch))
     ) {
+      // Set loading to false if validation fails
+      isLoading = false;
       return;
     }
 
@@ -164,6 +170,9 @@
       } catch (err) {
         console.error('Signup failed:', err);
         authError = true;
+      } finally {
+        // Always set loading to false when done
+        isLoading = false;
       }
     } else {
       try {
@@ -178,6 +187,9 @@
       } catch (err) {
         console.error('Login failed with exception:', err);
         authError = true;
+      } finally {
+        // Always set loading to false when done
+        isLoading = false;
       }
     }
   }
@@ -286,9 +298,16 @@
     {/if}
     <div class="cta-container">
       <Button
-        cta={register ? 'Sign Up' : 'Log in'}
+        cta={isLoading
+          ? register
+            ? 'Signing Up...'
+            : 'Logging in...'
+          : register
+            ? 'Sign Up'
+            : 'Log in'}
         buttonType="primary"
         onClickFunc={handleSubmit}
+        isDisabled={isLoading}
       />
     </div>
   </form>
