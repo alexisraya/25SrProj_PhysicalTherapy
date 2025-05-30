@@ -104,9 +104,10 @@
   .exercise-recap-body {
     display: flex;
     flex-direction: column;
+    gap: 48px;
     justify-content: center;
     z-index: 5;
-    padding: 32px 16px 16px;
+    padding: 64px 16px 16px;
   }
   :global(.program-stat-container) {
     z-index: 80;

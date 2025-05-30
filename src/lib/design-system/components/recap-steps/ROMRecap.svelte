@@ -22,7 +22,7 @@
   $: {
     if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
-      
+
       // For Month 1, we need to manually set the baseline data
       if ($currentMonth === 1 && metricsData?.rangeOfMotion?.value !== undefined) {
         // Month 1 should show Month 0 (30°) vs Month 1 (45°)
@@ -138,6 +138,7 @@
   p {
     text-align: center;
     color: var(--color-blue-1100);
+    padding: 0 0.5rem;
   }
   .graph-container {
     position: relative;

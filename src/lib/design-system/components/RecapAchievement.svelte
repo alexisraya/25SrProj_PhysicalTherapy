@@ -34,7 +34,7 @@
   </div>
   <p
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-      .regular}; font-weight: {typography.fontWeights.medium}"
+      .small}; font-weight: {typography.fontWeights.medium}"
     class="achievement-subtitle"
   >
     You've {action}

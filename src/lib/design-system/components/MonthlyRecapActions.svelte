@@ -55,11 +55,12 @@
     max-width: 448px;
     padding: 0 24px 16px;
     overflow: visible;
-    position: absolute;
-    bottom: 0;
+    /* position: absolute; */
+    position: fixed;
+    bottom: 0rem;
   }
-  .rom-bg {
+  /* .rom-bg {
     position: absolute;
-    bottom: 0;
-  }
+    bottom: 1rem;
+  } */
 </style>

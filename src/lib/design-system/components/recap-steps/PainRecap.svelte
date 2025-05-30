@@ -110,6 +110,10 @@
 {/if}
 
 <style>
+  :global(button) {
+    display: hidden;
+  }
+
   .pain-recap-container {
     margin: 16px auto;
     display: grid;
@@ -118,6 +122,7 @@
   p,
   h3 {
     text-align: center;
+    padding: 0 0.5rem;
   }
   .bg {
     position: fixed;
@@ -138,9 +143,14 @@
     fill: var(--text-primary);
   }
   .pain {
-    position: fixed;
+    /* position: fixed;
     top: 40%;
+    z-index: 5; */
+    display: flex;
+    padding-top: 13vh;
     z-index: 5;
+    /* min-height: 100%; */
+    align-self: center;
   }
   @media screen and (min-width: 1400px) {
     .bg {
