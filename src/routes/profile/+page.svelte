@@ -155,6 +155,7 @@
     box-sizing: border-box;
     padding: 32px 24px;
     position: relative;
+    top: -15vh;
     width: 100%;
     max-width: 552px;
     margin: auto;
@@ -172,6 +173,7 @@
   .blob {
     position: absolute;
     top: -135px;
+    /* top: -35vh; */
     left: 50%;
     transform: translateX(-50%);
     width: auto;
@@ -228,6 +230,7 @@
     left: 0;
     right: 0;
     padding: 0 24px;
+    margin: 24px;
     max-width: 552px;
     margin: 0 auto;
     width: 100%;
@@ -248,9 +251,6 @@
       transform: translateX(-50%);
       width: calc(100vw);
       z-index: 0;
-    }
-    .logout-container {
-      padding: 0;
     }
   }
   @media (min-width: 1000px) {
