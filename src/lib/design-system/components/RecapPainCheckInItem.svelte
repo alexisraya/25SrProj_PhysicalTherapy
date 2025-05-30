@@ -63,6 +63,9 @@
     -moz-appearance: none;
     cursor: pointer;
   }
+  button:visited p {
+    color: var(--color-blue-1100);
+  }
   p {
     margin: 0;
   }

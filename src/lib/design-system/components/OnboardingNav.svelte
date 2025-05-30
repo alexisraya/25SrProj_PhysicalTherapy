@@ -52,8 +52,8 @@
     width: 100%;
   }
   .onboarding-nav-container button {
-    position: absolute;
-    top: 45px;
+    position: relative;
+    top: 0px;
   }
   .first {
     padding-top: 24px;
