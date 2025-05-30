@@ -122,7 +122,7 @@
   }
   .bg {
     position: fixed;
-    bottom: 0;
+    bottom: -10vh;
     left: 50%;
     transform: translateX(-50%);
     width: auto;

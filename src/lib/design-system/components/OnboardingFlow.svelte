@@ -110,9 +110,11 @@
   }
   .actions-container {
     width: calc(100vw - 48px);
+    padding: 24px;
     position: fixed;
-    bottom: 24px;
+    bottom: 0px;
     display: flex;
+    background: linear-gradient(to top, var(--background), transparent);
   }
 
   @media screen and (min-width: 500px) {

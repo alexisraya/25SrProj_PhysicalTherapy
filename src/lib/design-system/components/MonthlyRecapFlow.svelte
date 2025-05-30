@@ -82,6 +82,10 @@
     max-height: 785px;
     max-width: 808px;
   }
+  :global(body) {
+    overflow: hidden;
+    max-height: 100vh;
+  }
   .default-bg {
     background-color: var(--background);
   }
