@@ -20,10 +20,10 @@
       {statTitle}
     </p>
     <h1
-      style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-        .h0}; font-weight: {typography.fontWeights.medium}; color: {position == 'second'
-        ? 'var(--color-blue-1100)'
-        : 'var(--text-primary)'};"
+      style="font-family: {typography.fontFamily.heading}; font-size: {type === 'recap'
+        ? typography.fontSizes.special03
+        : typography.fontSizes.h0}; font-weight: {typography.fontWeights
+        .medium}; color: {position == 'second' ? 'var(--color-blue-1100)' : 'var(--text-primary)'};"
     >
       {stat}<span style="font-size: {typography.fontSizes.regular};">{unit}</span>
     </h1>
@@ -47,6 +47,7 @@
     height: 100%;
     border-radius: 30px;
     background-color: var(--color-purple-550); /* Light mode dark mode exception */
+    flex-shrink: 0;
   }
   .first-recap {
     background-color: var(--text-primary);
@@ -54,9 +55,15 @@
   .second-recap {
     background-color: var(--color-blue-1100);
   }
+  .second-recap h1 {
+    text-align: right;
+  }
   .recap {
     display: flex;
     flex-direction: column-reverse;
+  }
+  .recap h1 {
+    line-height: 70%;
   }
   .second {
     flex-direction: row-reverse;

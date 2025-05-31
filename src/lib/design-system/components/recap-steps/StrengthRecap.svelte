@@ -91,6 +91,7 @@
   <div class="blue-top"></div>
   <div class="strength-recap-container">
     {#if $currentMonth === 1 || !metricsData.strength.change}
+      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -99,7 +100,6 @@
       </h3>
       <p>{steadyText}</p>
     {:else if metricsData.strength.change < 0}
-      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -155,6 +155,7 @@
   p {
     text-align: center;
     color: var(--text-primary);
+    padding: 0 0.5rem;
   }
   .graph-container {
     position: relative;

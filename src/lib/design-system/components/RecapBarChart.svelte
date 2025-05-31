@@ -126,6 +126,16 @@
     yAxisGroup.select('.domain').attr('stroke', yAxisLineColor).attr('stroke-width', 2);
     yAxisGroup.selectAll('.tick text').attr('fill', yAxisTextColor);
 
+    // Hide the "0" tick text for ROM charts
+    if (chartType === 'ROM') {
+      yAxisGroup
+        .selectAll('.tick text')
+        .filter(function (d) {
+          return d === 0;
+        })
+        .style('opacity', 0);
+    }
+
     // Add x-axis title
     svg
       .append('text')
@@ -194,12 +204,10 @@
     width: 100%;
     height: 300px;
   }
-
   svg {
     height: 300px;
     display: block;
   }
-
   /* @media screen and (max-width: 500px) {
     svg {
       height: 200px;

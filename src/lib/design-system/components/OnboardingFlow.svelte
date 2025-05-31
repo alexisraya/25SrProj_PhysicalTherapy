@@ -54,6 +54,19 @@
       {/if}
     </div>
   </div>
+  <!-- <div class="button-area"></div> -->
+  <div class="actions-container">
+    <OnboardingActions
+      isFirstStep={$currentStep === 0}
+      isLastStep={$currentStep === steps.length - 1}
+      onNext={goToNext}
+      onPrevious={goToPrevious}
+      currentStepIndex={$currentStep}
+    />
+  </div>
+</div>
+
+<!-- <div class="actions-container">
   <OnboardingActions
     isFirstStep={$currentStep === 0}
     isLastStep={$currentStep === steps.length - 1}
@@ -61,7 +74,7 @@
     onPrevious={goToPrevious}
     currentStepIndex={$currentStep}
   />
-</div>
+</div> -->
 
 <style>
   /* add media query and align-self: flex start */
@@ -70,13 +83,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    gap: 10vh;
     margin: 0 24px;
     padding: 20px 0 34px 0;
     background-color: var(--background);
     width: 100%;
     height: 100%;
-    max-height: 785px;
+    max-height: 985px;
     max-width: 808px;
     overflow-x: hidden;
   }
@@ -93,5 +107,24 @@
     margin: 30px 0 48px 0;
     row-gap: 12px;
     line-height: 150%;
+  }
+  .actions-container {
+    width: calc(100vw - 48px);
+    padding: 24px;
+    position: fixed;
+    bottom: 0px;
+    display: flex;
+    background: linear-gradient(to top, var(--background), transparent);
+  }
+
+  @media screen and (min-width: 500px) {
+    .actions-container {
+      width: calc(100vw - 48px);
+      max-width: 452px;
+
+      position: relative;
+      margin: auto;
+      bottom: 2px;
+    }
   }
 </style>

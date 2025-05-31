@@ -149,6 +149,7 @@
   p {
     text-align: center;
     color: var(--color-blue-1100);
+    padding: 0 0.5rem;
   }
   .graph-container {
     position: relative;

@@ -162,6 +162,9 @@
   p {
     margin: 0;
   }
+  h2 {
+    line-height: 120%;
+  }
   .bg {
     position: absolute;
     top: calc(275px - (100vw * 0.7333));
