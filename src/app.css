@@ -136,6 +136,8 @@
 
   --program-edit-text: var(--color-grey-400);
   --program-bg-wave: var(--color-blue-100);
+
+  --spinner-color: var(--color-blue-100);
 }
 
 [data-theme='dark'] {
@@ -193,6 +195,8 @@
 
   --program-edit-text: var(--color-grey-200);
   --program-bg-wave: var(--color-blue-1000);
+
+  --spinner-color: var(--color-blue-900);
 }
 
 @font-face {

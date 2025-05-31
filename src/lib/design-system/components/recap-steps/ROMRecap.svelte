@@ -9,6 +9,7 @@
   import RecapArrow from '$lib/assets/iconography/RecapArrow.svg';
   import RecapArrowWhiteBg from '$lib/assets/iconography/RecapArrowLightBg.svg';
   import RecapCheck from '$lib/assets/iconography/RecapCheck.svg';
+  import LoadingSpinner from '../LoadingSpinner.svelte';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
@@ -82,7 +83,9 @@
 </script>
 
 {#if loading}
-  <p>Loading...</p>
+  <div class="loading-container">
+    <LoadingSpinner />
+  </div>
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.rangeOfMotion}
@@ -131,6 +134,14 @@
 {/if}
 
 <style>
+  .loading-container {
+    box-sizing: border-box;
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .rom-recap-container {
     margin: 16px auto;
   }

@@ -8,8 +8,9 @@
 
   const handleSkip = () => {
     // Mark onboarding as completed before navigation
+    console.log('I CLICKED ONBOARDING');
     completeOnboarding();
-    goto('./patient-dashboard');
+    goto('/patient-dashboard');
   };
 </script>
 

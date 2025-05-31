@@ -7,6 +7,7 @@
   import LoginBlobLarge from '$lib/assets/background-images/LoginBgLarge.svg';
   import LoginBlobLargeDark from '$lib/assets/background-images/LoginBgLargeDark.svg';
   import MendLogo from '$lib/assets/iconography/MendLogo.svg';
+  import RemixIcon from '$lib/design-system/components/RemixIcon.svelte';
   import { onMount } from 'svelte';
 
   let isLoading = false;
@@ -26,6 +27,9 @@
   let passwordsMatch = true;
   let confirmPasswordTouched = false;
   let confirmPasswordFocused = false;
+
+  let showPassword = false;
+  let showConfirmPassword = false;
 
   // Authentication error state
   let authError = false;
@@ -70,6 +74,14 @@
   function validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  }
+
+  function togglePasswordVisibility() {
+    showPassword = !showPassword;
+  }
+
+  function toggleConfirmPasswordVisibility() {
+    showConfirmPassword = !showConfirmPassword;
   }
 
   // Function to handle email input changes
@@ -264,33 +276,81 @@
       {/if}
     </div>
     <div class="input-container">
-      <label>
-        <input
-          bind:value={password}
-          type="password"
-          placeholder="Password"
-          required
-          on:input={handlePasswordChange}
-        />
-      </label>
+      <div class="password-input-wrapper">
+        {#if showPassword}
+          <input
+            bind:value={password}
+            type="text"
+            placeholder="Password"
+            required
+            on:input={handlePasswordChange}
+          />
+        {:else}
+          <input
+            bind:value={password}
+            type="password"
+            placeholder="Password"
+            required
+            on:input={handlePasswordChange}
+          />
+        {/if}
+        <button
+          type="button"
+          class="password-toggle"
+          on:click={togglePasswordVisibility}
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+        >
+          <RemixIcon
+            name={showPassword ? 'eye-off-line' : 'eye-line'}
+            color="var(--text-secondary)"
+          />
+        </button>
+      </div>
     </div>
     {#if register}
       <div class="input-container">
-        <label>
-          <input
-            bind:value={confirmPassword}
-            type="password"
-            placeholder="Confirm Password"
-            required
-            on:input={validatePasswordMatch}
-            on:focus={handleConfirmFocus}
-            on:blur={handleConfirmBlur}
-            class:error={!passwordsMatch && confirmPasswordTouched}
-            class:error-background={!passwordsMatch &&
-              confirmPasswordTouched &&
-              !confirmPasswordFocused}
-          />
-        </label>
+        <div class="password-input-wrapper">
+          {#if showConfirmPassword}
+            <input
+              bind:value={confirmPassword}
+              type="text"
+              placeholder="Confirm Password"
+              required
+              on:input={validatePasswordMatch}
+              on:focus={handleConfirmFocus}
+              on:blur={handleConfirmBlur}
+              class:error={!passwordsMatch && confirmPasswordTouched}
+              class:error-background={!passwordsMatch &&
+                confirmPasswordTouched &&
+                !confirmPasswordFocused}
+            />
+          {:else}
+            <input
+              bind:value={confirmPassword}
+              type="password"
+              placeholder="Confirm Password"
+              required
+              on:input={validatePasswordMatch}
+              on:focus={handleConfirmFocus}
+              on:blur={handleConfirmBlur}
+              class:error={!passwordsMatch && confirmPasswordTouched}
+              class:error-background={!passwordsMatch &&
+                confirmPasswordTouched &&
+                !confirmPasswordFocused}
+            />
+          {/if}
+          <button
+            type="button"
+            class="password-toggle"
+            on:click={toggleConfirmPasswordVisibility}
+            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+          >
+            <RemixIcon
+              name={showConfirmPassword ? 'eye-off-line' : 'eye-line'}
+              color="var(--text-secondary)"
+            />
+          </button>
+        </div>
         {#if !passwordsMatch && confirmPasswordTouched}
           <p class="error-message">Passwords do not match</p>
         {/if}
@@ -506,6 +566,44 @@
   }
   .blob-large {
     display: none;
+  }
+
+  /* Password input wrapper for positioning the toggle button */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .password-input-wrapper input {
+    padding-right: 40px; /* Make space for the toggle button */
+  }
+
+  /* Password toggle button styling */
+  .password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .password-toggle:hover {
+    background-color: var(--background-secondary);
+  }
+
+  .password-toggle:focus {
+    outline: 2px solid var(--color-blue-525);
+    outline-offset: 2px;
   }
 
   @media screen and (min-width: 500px) {
