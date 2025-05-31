@@ -76,11 +76,20 @@
     flex-direction: column;
     align-items: center;
     margin: 0;
-    padding-bottom: 34px;
+    padding-bottom: 80px;
     width: 100%;
-    height: 100%;
-    max-height: 785px;
+    height: 100svh; /* Safe viewport height for mobile */
+    max-height: 100svh;
     max-width: 808px;
+  }
+  @media screen and (max-width: 500px) {
+    .recap-container {
+      overflow: hidden;
+    }
+  }
+  :global(body:has(.recap-container)) {
+    overflow: hidden;
+    max-height: 100vh;
   }
   .default-bg {
     background-color: var(--background);

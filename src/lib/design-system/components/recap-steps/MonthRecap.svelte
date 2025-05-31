@@ -47,6 +47,7 @@
   }
   .month-recap-icon {
     position: relative;
+    padding-top: 64px;
     z-index: 1000;
   }
   .month-recap-header {

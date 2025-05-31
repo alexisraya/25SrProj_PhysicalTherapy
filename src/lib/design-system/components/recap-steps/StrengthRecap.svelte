@@ -21,7 +21,7 @@
   $: {
     if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
-      
+
       // For Month 1, we need to manually set the baseline data
       if ($currentMonth === 1 && metricsData?.strength?.value !== undefined) {
         // Month 1 should show Month 0 (1) vs Month 1 (2)
@@ -88,6 +88,7 @@
   <div class="blue-top"></div>
   <div class="strength-recap-container">
     {#if $currentMonth === 1 || !metricsData.strength.change}
+      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -96,7 +97,6 @@
       </h3>
       <p>{steadyText}</p>
     {:else if metricsData.strength.change < 0}
-      <img class="icon" src={RecapCheck} alt="Recap Check" />
       <h3
         style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
           .h3}; font-weight: {typography.fontWeights.regular}"
@@ -145,6 +145,7 @@
   p {
     text-align: center;
     color: var(--text-primary);
+    padding: 0 0.5rem;
   }
   .graph-container {
     position: relative;

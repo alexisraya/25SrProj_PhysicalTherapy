@@ -8,9 +8,11 @@
 
 <style>
   .recap-page-container {
+    margin-top: 0.5rem;
     display: flex;
-    align-items: center;
+    align-items: space-between;
     justify-content: center;
-    height: 100vh;
+    height: calc(100vh - 0.5rem);
+    overflow-x: hidden;
   }
 </style>

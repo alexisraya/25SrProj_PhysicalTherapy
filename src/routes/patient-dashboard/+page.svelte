@@ -222,138 +222,145 @@
 </script>
 
 {#if program && stats && weeklyProgress}
-  <div class="wave-container">
-    {#if program.completed}
-      <img
-        class="background-wave wave-complete"
-        src={homeBackgroundComplete}
-        alt="background wave"
-      />
-    {:else if currentTheme == 'light'}
-      <img
-        class="background-wave wave-light"
-        src={homeBackgroundSmallLight}
-        alt="background wave"
-      />
-      <img
-        class="background-wave-2 wave-light"
-        src={homeBackgroundSmallLight}
-        alt="background wave"
-      />
-    {:else}
-      <img class="background-wave wave-dark" src={homeBackgroundSmallDark} alt="background wave" />
-      <img
-        class="background-wave-2 wave-dark"
-        src={homeBackgroundSmallDark}
-        alt="background wave"
-      />
-    {/if}
-  </div>
-  <div class="header-container">
-    <div class="cta-container">
-      <div class="cta-container-text">
-        <h2
-          style="font-family: {typography.fontFamily.heading}; font-size: {window.innerWidth >= 800
-            ? typography.fontSizes.h1
-            : typography.fontSizes.h2}; font-weight: {typography.fontWeights
-            .regular}; margin-bottom: 4px;"
-          on:resize={() => window.innerWidth}
-        >
-          Hi {userData.firstName}!
-        </h2>
-        <p
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .regular}; font-weight: {typography.fontWeights.light}; margin-bottom: 12px;"
-        >
-          {program.completed ? $text(programCompleteText) : $text(programCTAText)}
-        </p>
-      </div>
+  <div class="page-container">
+    <div class="wave-container">
       {#if program.completed}
-        {#if currentTheme == 'light'}
-          <img src={ProgramCompletePlayButtonLightLarge} alt="play button" />
-        {:else}
-          <img src={ProgramCompletePlayButtonDarkLarge} alt="play button" />
-        {/if}
+        <img
+          class="background-wave wave-complete"
+          src={homeBackgroundComplete}
+          alt="background wave"
+        />
+      {:else if currentTheme == 'light'}
+        <img
+          class="background-wave wave-light"
+          src={homeBackgroundSmallLight}
+          alt="background wave"
+        />
+        <img
+          class="background-wave-2 wave-light"
+          src={homeBackgroundSmallLight}
+          alt="background wave"
+        />
       {:else}
-        <a href="/your-program">
-          {#if currentTheme == 'light'}
-            <img src={PlayButtonLight} alt="play button" />
-          {:else}
-            <img src={PlayButtonDark} alt="play button" />
-          {/if}
-        </a>
+        <img
+          class="background-wave wave-dark"
+          src={homeBackgroundSmallDark}
+          alt="background wave"
+        />
+        <img
+          class="background-wave-2 wave-dark"
+          src={homeBackgroundSmallDark}
+          alt="background wave"
+        />
       {/if}
     </div>
-  </div>
-  <div class="body-container">
-    <Streak
-      streakType="home"
-      streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak}
-      {streakDaysCompleted}
-      {overallStreak}
-    />
-    <div class="break" />
-    {#if !checkInCompleted}
-      <a class="checkin-cta-container" href="/check-in">
-        <div class="chickin-cta-text">
+    <div class="header-container">
+      <div class="cta-container">
+        <div class="cta-container-text">
+          <h2
+            style="font-family: {typography.fontFamily.heading}; font-size: {window.innerWidth >=
+            800
+              ? typography.fontSizes.h1
+              : typography.fontSizes.h2}; font-weight: {typography.fontWeights
+              .regular}; margin-bottom: 4px;"
+            on:resize={() => window.innerWidth}
+          >
+            Hi {userData.firstName}!
+          </h2>
           <p
             style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .regular}; font-weight: {typography.fontWeights.medium};"
+              .regular}; font-weight: {typography.fontWeights.regular}; margin-bottom: 12px;"
           >
-            Check in
-          </p>
-          <p
-            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-              .xsmall}; font-weight: {typography.fontWeights.medium};"
-          >
-            on your pain and mood today
+            {program.completed ? $text(programCompleteText) : $text(programCTAText)}
           </p>
         </div>
-        <RemixIcon name="arrow-right-s-line" />
-      </a>
-      <div class="break-small" />
-    {/if}
-    <div class="metrics-container">
-      <div class="metrics-header">
-        <p
-          style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-            .xsmall}; font-weight: {typography.fontWeights.medium};"
-        >
-          Weekly metrics
-        </p>
-        <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
-      </div>
-      <div class="chart-body">
-        {#if activeCheckInData && activeCheckInData.length > 0}
-          <LineChart
-            dataArr={activeCheckInData}
-            type={checkInChartType}
-            timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
-            title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
-          />
-          <div class="timeframe-selector">
-            <XAxisTimeFrameSelectors
-              selectedTimeFrame={checkInTimeFrame}
-              on:timeframeChange={handleCheckInTimeFrameChange}
-            />
-          </div>
+        {#if program.completed}
+          {#if currentTheme == 'light'}
+            <img src={ProgramCompletePlayButtonLightLarge} alt="play button" />
+          {:else}
+            <img src={ProgramCompletePlayButtonDarkLarge} alt="play button" />
+          {/if}
         {:else}
-          <div class="no-metrics-container">
-            <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+          <a href="/your-program">
+            {#if currentTheme == 'light'}
+              <img src={PlayButtonLight} alt="play button" />
+            {:else}
+              <img src={PlayButtonDark} alt="play button" />
+            {/if}
+          </a>
+        {/if}
+      </div>
+    </div>
+    <div class="body-container">
+      <Streak
+        streakType="home"
+        streakTotalDays={weeklyProgress.daysCompleted + weeklyProgress.daysNeededForStreak}
+        {streakDaysCompleted}
+        {overallStreak}
+      />
+      <div class="break" />
+      {#if !checkInCompleted}
+        <a class="checkin-cta-container" href="/check-in">
+          <div class="chickin-cta-text">
             <p
               style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
                 .regular}; font-weight: {typography.fontWeights.medium};"
             >
-              No metrics yet
+              Check in
             </p>
             <p
               style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
                 .xsmall}; font-weight: {typography.fontWeights.regular};"
             >
-              Complete your check in to see up-to-date data here
+              on your pain and mood today
             </p>
           </div>
-        {/if}
+          <RemixIcon name="arrow-right-s-line" />
+        </a>
+        <div class="break-small" />
+      {/if}
+      <div class="metrics-container">
+        <div class="metrics-header">
+          <p
+            style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+              .xsmall}; font-weight: {typography.fontWeights.medium};"
+          >
+            Weekly metrics
+          </p>
+          <PainMoodDropdown value={checkInChartType} on:change={handleCheckInChartTypeChange} />
+        </div>
+        <div class="chart-body">
+          {#if activeCheckInData && activeCheckInData.length > 0}
+            <LineChart
+              dataArr={activeCheckInData}
+              type={checkInChartType}
+              timeframe={convertTimeFrameToApiFormat(checkInTimeFrame)}
+              title={`${checkInChartType === 'pain' ? 'Pain' : 'Mood'} Levels - ${checkInTimeFrame}`}
+            />
+            <div class="timeframe-selector">
+              <XAxisTimeFrameSelectors
+                selectedTimeFrame={checkInTimeFrame}
+                on:timeframeChange={handleCheckInTimeFrameChange}
+              />
+            </div>
+          {:else}
+            <div class="no-metrics-container">
+              <RemixIcon name="indeterminate-circle-fill" color="var(--text-secondary)" />
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .regular}; font-weight: {typography.fontWeights.medium};"
+              >
+                No metrics yet
+              </p>
+              <p
+                style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
+                  .xsmall}; font-weight: {typography.fontWeights.regular};"
+              >
+                Complete your check in to see up-to-date data here
+              </p>
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
   </div>
@@ -362,9 +369,20 @@
 {/if}
 
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   :global(body) {
     overflow-x: hidden;
   }
+
+  .page-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   p {
     margin: 0;
   }
@@ -377,7 +395,8 @@
   }
   .break {
     position: relative;
-    width: 100vw;
+    width: 100%;
+    max-width: 100vw;
     height: 8px;
     background-color: var(--background-secondary);
   }
@@ -392,10 +411,9 @@
     top: calc(280px - 100vw);
     left: 50%;
     transform: translateX(-50%);
-    z-index: -1;
+    z-index: 1;
     height: 100vw;
-    overflow-x: hidden;
-    /* width: 562px; */
+    width: auto;
   }
   .background-wave-2 {
     position: absolute;
@@ -404,28 +422,35 @@
     transform: translateX(-50%);
     z-index: -1;
     height: 100vw;
-    overflow-x: hidden;
-    /* width: 562px; */
+    width: auto;
+  }
+  .wave-container {
+    width: 100%;
+    position: relative;
+    max-width: 100vw;
+    z-index: 0;
   }
   .header-container {
     position: relative;
     width: 100%;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    max-width: 100vw;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding-top: 40px;
+    z-index: 2;
   }
   .body-container {
     margin: 16px 16px 0 16px;
+    width: calc(100% - 32px);
+    max-width: calc(100vw - 32px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    align-items: center;
     row-gap: 8px;
   }
   .metrics-container {
@@ -461,9 +486,6 @@
     line-height: 150%;
     color: var(--color-grey-400);
   }
-  .wave-container {
-    overflow-x: hidden;
-  }
   .checkin-cta-container {
     box-sizing: border-box;
     display: flex;
@@ -479,6 +501,7 @@
     flex-direction: column;
     align-items: center;
   }
+
   @media (min-width: 800px) {
     .break {
       display: none;
@@ -498,9 +521,9 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      align-items: center;
       row-gap: 8px;
       max-width: 806px;
+      width: 100%;
     }
     .cta-container {
       display: flex;
@@ -531,8 +554,8 @@
       top: calc(400px - 100vw);
       left: 50%;
       transform: translateX(-50%);
-      z-index: -1;
       height: 100vw;
+      max-width: none;
     }
   }
   @media (min-width: 1200px) {
@@ -541,8 +564,8 @@
       top: calc(600px - 100vw);
       left: calc(50% + 500px);
       transform: translateX(-50%) rotate(15deg);
-      z-index: -1;
       height: 100vw;
+      max-width: none;
     }
   }
 
@@ -552,8 +575,8 @@
       top: calc(700px - 100vw);
       left: calc(50% + 500px);
       transform: translateX(-50%) rotate(15deg);
-      z-index: -1;
       height: 100vw;
+      max-width: none;
     }
   }
 </style>

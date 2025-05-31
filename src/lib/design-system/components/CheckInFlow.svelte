@@ -57,7 +57,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     margin: 0 24px;
     padding: 20px 0 34px 0;
     background-color: var(--background);
@@ -68,8 +68,12 @@
     overflow-x: visible;
   }
   .checkin-button {
-    width: 100%;
+    /* width: 100%;
+    margin: auto; */
+    width: calc(100% - 48px);
     margin: auto;
+    position: fixed;
+    bottom: 24px;
   }
   .reflection-button {
     width: calc(100% - 48px);
@@ -82,7 +86,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* justify-content: space-between; */
+    justify-content: space-between;
     margin: 0 24px;
     padding: 20px 0 34px 0;
     background-color: var(--background);
@@ -91,11 +95,22 @@
     max-width: 808px;
     overflow-x: visible;
   }
-  .step-content {
+  .checkin-container .step-content {
     width: 100%;
     max-width: 448px;
     overflow-x: visible;
     margin-bottom: 38px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    justify-content: center;
+  }
+  .reflection-container .step-content {
+    width: 100%;
+    max-width: 448px;
+    overflow-x: visible;
+    margin-bottom: 38px;
+    height: calc(100vh - 100px);
   }
   .step-copy {
     display: flex;

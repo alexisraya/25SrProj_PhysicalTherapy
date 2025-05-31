@@ -6,6 +6,7 @@ export const typography = {
   fontSizes: {
     special: '6.75rem',
     special02: '1.5rem',
+    special03: '4.5rem',
     h0: '3.5rem',
     h1: '3rem',
     h2: '2.5rem',

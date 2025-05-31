@@ -43,13 +43,13 @@
   <p
     class="rating-title"
     style="font-family: {typography.fontFamily.heading}; font-size: {typography.fontSizes
-      .special}; font-weight: {typography.fontWeights.medium}; color: var(--color-blue-110)"
+      .special}; font-weight: {typography.fontWeights.medium}; color: var(--color-blue-1100)"
   >
     {rating}
   </p>
   <p
     style="font-family: {typography.fontFamily.body}; font-size: {typography.fontSizes
-      .regular}; font-weight: {typography.fontWeights.medium}; color: var(--color-blue-110)"
+      .regular}; font-weight: {typography.fontWeights.medium}; color: var(--color-blue-1100)"
   >
     {itemDescription}
   </p>
@@ -57,7 +57,14 @@
 
 <style>
   button {
-    border: none;
+    all: unset;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+  }
+  button:visited p {
+    color: var(--color-blue-1100);
   }
   p {
     margin: 0;

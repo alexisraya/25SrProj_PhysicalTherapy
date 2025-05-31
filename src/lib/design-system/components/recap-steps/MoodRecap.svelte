@@ -83,10 +83,16 @@
   p,
   h3 {
     text-align: center;
+    padding: 0 0.5rem;
   }
   .pain {
-    position: fixed;
+    /* position: fixed;
     top: 40%;
+    z-index: 5; */
+    display: flex;
+    padding-top: 13vh;
     z-index: 5;
+    /* min-height: 100%; */
+    align-self: center;
   }
 </style>

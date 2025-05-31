@@ -78,6 +78,7 @@
   p,
   h3 {
     margin: 0;
+    padding: 0 0.5rem;
   }
   .month-recap-container {
     display: flex;

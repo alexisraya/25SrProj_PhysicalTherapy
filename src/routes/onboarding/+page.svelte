@@ -8,7 +8,7 @@
 
 <style>
   .onboarding-page-container {
-    box-sizing: border-boxß;
+    box-sizing: border-box;
     background-color: var(--background);
     display: flex;
     align-items: center;
