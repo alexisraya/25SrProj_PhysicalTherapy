@@ -47,6 +47,13 @@ export const isAuthenticated = derived(authStore, ($state) => !!$state.currentUs
 export const isTherapist = derived(authStore, ($state) => $state.isTherapist);
 export const authError = derived(authStore, ($state) => $state.error);
 
+export const initializationProgress = writable({
+  userCreated: false,
+  achievementsInitialized: false,
+  goalsAssigned: false,
+  demoDataLoaded: false
+});
+
 export const authHandlers = {
   login: async (email: string, password: string) => {
     try {
@@ -64,50 +71,42 @@ export const authHandlers = {
     }
   },
 
+  // Update signup function to track progress
   signup: async (email: string, password: string, firstName: string, lastName: string) => {
     try {
       authStore.update((state) => ({ ...state, isLoading: true, error: null }));
+      initializationProgress.set({
+        userCreated: false,
+        achievementsInitialized: false,
+        goalsAssigned: false,
+        demoDataLoaded: false
+      });
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log('Created Firebase auth user:', user.uid);
 
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-      console.log('Updated user profile');
-
       await createUser(user.uid, firstName, lastName, email);
-      console.log('Created user document in Firestore');
+      initializationProgress.update((p) => ({ ...p, userCreated: true }));
+
+      goto('/initializing');
 
       try {
         await initializeUserAchievements(user.uid);
-        console.log('Initialized achievements for new user');
+        initializationProgress.update((p) => ({ ...p, achievementsInitialized: true }));
       } catch (achieveError) {
-        console.error('Error initializing achievements for new user:', achieveError);
+        console.error('Error initializing achievements:', achieveError);
       }
-
-      // const therapistId = 'mY8JFfhiJvdFm54wG57ALJmVYit2';
-      // try {
-      //   await assignPatientToTherapist(user.uid, therapistId);
-      //   console.log(`Assigned patient ${user.uid} to therapist ${therapistId}`);
-      // } catch (err) {
-      //   console.error('Error assigning patient to therapist:', err);
-      // }
-
-      // Make the initialization synchronous instead of using setTimeout
 
       try {
         await assignGoalsToUser(user.uid);
-        console.log(`Assigned goals to user ${user.uid}`);
+        initializationProgress.update((p) => ({ ...p, goalsAssigned: true }));
 
         await initializeUserWithDemoData(user.uid);
-        console.log(`Initialized user ${user.uid} with demo data`);
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        initializationProgress.update((p) => ({ ...p, demoDataLoaded: true }));
       } catch (goalErr) {
-        console.error('Error in goal assignment or demo data initialization:', goalErr);
+        console.error('Error in goal assignment or demo data:', goalErr);
       }
-
-      goto('/onboarding');
 
       authStore.update((state) => ({ ...state, isLoading: false }));
     } catch (error) {
@@ -167,13 +166,33 @@ onAuthStateChanged(auth, async (user) => {
         isTherapist: isUserTherapist
       });
     } else {
-      console.warn('User document not found in Firestore.');
-      authStore.set({ ...initialState, isLoading: false });
+      // During signup, the user document might not exist yet - this is normal
+      console.log('User document not found - might be during signup process');
+      authStore.set({
+        userId: user.uid,
+        isLoading: false,
+        currentUser: user,
+        error: null,
+        isTherapist: false
+      });
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    authStore.set({ ...initialState, isLoading: false, error: errorMessage });
+
+    // During signup, permission errors are common - handle gracefully
+    if (error.code === 'permission-denied') {
+      console.log('Permission denied - likely during signup, setting basic user state');
+      authStore.set({
+        userId: user.uid,
+        isLoading: false,
+        currentUser: user,
+        error: null,
+        isTherapist: false
+      });
+    } else {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      authStore.set({ ...initialState, isLoading: false, error: errorMessage });
+    }
   }
 });
 
