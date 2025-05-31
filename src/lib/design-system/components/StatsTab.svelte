@@ -19,6 +19,7 @@
   import RomStrengthDropdown from '$lib/design-system/components/RomStrengthDropdown.svelte';
   import { typography } from '$lib/design-system/typography';
   import RemixIcon from './RemixIcon.svelte';
+  import LoadingSpinner from './LoadingSpinner.svelte';
 
   let program: Program | null = null;
   let stats: UserStats | null = null;
@@ -233,7 +234,9 @@
 
 <div class="stats-container">
   {#if loading}
-    <div class="loading-container"></div>
+    <div class="loading-container">
+      <LoadingSpinner />
+    </div>
   {:else if error}
     <div class="error-container">
       <p>Error loading data: {error}</p>
@@ -360,6 +363,15 @@
     row-gap: 8px;
     margin-top: 48px;
     max-width: 100%;
+  }
+
+  .loading-container {
+    align-self: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .stat-section {

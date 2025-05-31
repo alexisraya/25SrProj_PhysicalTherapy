@@ -5,6 +5,7 @@
   import { getUser } from '$firebase/services/userService';
   import { goto } from '$app/navigation';
   import type { User as FirebaseUser } from 'firebase/auth';
+  import LoadingSpinner from '$lib/design-system/components/LoadingSpinner.svelte';
 
   let therapist: FirebaseUser | null = null;
   let therapistData: Therapist | null = null;
@@ -106,7 +107,9 @@
 <h1>Therapist Dashboard</h1>
 
 {#if loading}
-  <p>Loading...</p>
+  <div class="loading-container">
+    <LoadingSpinner />
+  </div>
 {:else if therapist && therapistData}
   <h1>Welcome, {therapistData.firstName} {therapistData.lastName}!</h1>
 
@@ -179,6 +182,13 @@
 {/if}
 
 <style>
+  .loading-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   table {
     border-collapse: collapse;
     width: 100%;

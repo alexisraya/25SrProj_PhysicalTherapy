@@ -362,6 +362,9 @@
 {/if}
 
 <style>
+  :global(html) {
+    overflow-x: hidden;
+  }
   :global(body) {
     overflow-x: hidden;
   }
@@ -462,7 +465,7 @@
     color: var(--color-grey-400);
   }
   .wave-container {
-    overflow-x: hidden;
+    overflow: hidden;
   }
   .checkin-cta-container {
     box-sizing: border-box;

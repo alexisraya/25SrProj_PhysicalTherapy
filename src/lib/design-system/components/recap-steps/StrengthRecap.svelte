@@ -8,6 +8,7 @@
   import RecapBarChart from '../RecapBarChart.svelte';
   import RecapArrow from '$lib/assets/iconography/RecapArrow.svg';
   import RecapCheck from '$lib/assets/iconography/RecapCheck.svg';
+  import LoadingSpinner from '../LoadingSpinner.svelte';
 
   let recaps: (MonthlyRecap | null)[] = [];
   let userId = '';
@@ -21,7 +22,7 @@
   $: {
     if (recaps && recaps.length > 0 && $currentMonth > 0 && $currentMonth <= recaps.length) {
       metricsData = recaps[$currentMonth - 1]?.metrics;
-      
+
       // For Month 1, we need to manually set the baseline data
       if ($currentMonth === 1 && metricsData?.strength?.value !== undefined) {
         // Month 1 should show Month 0 (1) vs Month 1 (2)
@@ -81,7 +82,9 @@
 </script>
 
 {#if loading}
-  <p>Loading...</p>
+  <div class="loading-container">
+    <LoadingSpinner />
+  </div>
 {:else if error}
   <p>{error}</p>
 {:else if metricsData?.strength}
@@ -136,6 +139,13 @@
 {/if}
 
 <style>
+  .loading-container {
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .strength-recap-container {
     position: relative;
     margin: 16px auto;
