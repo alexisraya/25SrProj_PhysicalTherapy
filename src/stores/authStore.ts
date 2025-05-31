@@ -94,18 +94,22 @@ export const authHandlers = {
       // }
 
       // Make the initialization synchronous instead of using setTimeout
+
       try {
         await assignGoalsToUser(user.uid);
         console.log(`Assigned goals to user ${user.uid}`);
 
         await initializeUserWithDemoData(user.uid);
         console.log(`Initialized user ${user.uid} with demo data`);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (goalErr) {
         console.error('Error in goal assignment or demo data initialization:', goalErr);
       }
 
-      // Go to onboarding instead of dashboard
       goto('/onboarding');
+
+      authStore.update((state) => ({ ...state, isLoading: false }));
     } catch (error) {
       console.error('Signup error:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -226,34 +230,3 @@ async function checkUserRole(userId: string) {
     goto('/login');
   }
 }
-
-// COMMENTED OUT FOR NOW - NOT SURE IF WILL USE THIS YET
-// SINCE WE CANT BUY CLOUD FUNCTIONS, THIS COULD HELP WITH RESETTING PROGRAM
-// async function checkAndResetUserProgram(userId: string) {
-//     try {
-//       const program = await getCurrentProgram(userId);
-//       if (!program) return;
-
-//       // Check if any exercises are completed
-//       const hasCompletedExercises = program.exercises.some(ex => ex.completed || ex.skipped);
-
-//       if (hasCompletedExercises) {
-//         const lastCompletedDate = program.exercises
-//           .filter(ex => ex.completedAt)
-//           .sort((a, b) => new Date(b.completedAt!).getTime() - new Date(a.completedAt!).getTime())[0]?.completedAt;
-
-//         if (lastCompletedDate) {
-//           const lastDate = new Date(lastCompletedDate).toDateString();
-//           const today = new Date().toDateString();
-
-//           // If the last completion was not today, reset exercises
-//           if (lastDate !== today) {
-//             await resetDailyProgress(userId);
-//             console.log("Exercises automatically reset on login - new day detected");
-//           }
-//         }
-//       }
-//     } catch (error) {
-//       console.error("Error checking/resetting user program:", error);
-//     }
-//   }
