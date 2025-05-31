@@ -78,14 +78,20 @@
     margin: 0;
     padding-bottom: 34px;
     width: 100%;
-    height: 100%;
-    max-height: 785px;
+    min-height: 100%;
+    height: 785px;
+    max-width: 100vh;
     max-width: 808px;
   }
-  :global(body) {
+  @media screen and (max-width: 500px) {
+    .recap-container {
+      overflow: hidden;
+    }
+  }
+  /* :global(body) {
     overflow: hidden;
     max-height: 100vh;
-  }
+  } */
   .default-bg {
     background-color: var(--background);
   }
