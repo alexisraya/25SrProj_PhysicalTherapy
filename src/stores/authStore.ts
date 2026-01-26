@@ -16,7 +16,6 @@ import {
   initializeUserAchievements,
   checkAchievements
 } from '$firebase/services/milestoneService';
-import { initializeUserWithDemoData } from '$firebase/services/demoUserService';
 
 const db = getFirestore();
 
@@ -50,8 +49,7 @@ export const authError = derived(authStore, ($state) => $state.error);
 export const initializationProgress = writable({
   userCreated: false,
   achievementsInitialized: false,
-  goalsAssigned: false,
-  demoDataLoaded: false
+  goalsAssigned: false
 });
 
 export const authHandlers = {
@@ -78,8 +76,7 @@ export const authHandlers = {
       initializationProgress.set({
         userCreated: false,
         achievementsInitialized: false,
-        goalsAssigned: false,
-        demoDataLoaded: false
+        goalsAssigned: false
       });
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -101,9 +98,6 @@ export const authHandlers = {
       try {
         await assignGoalsToUser(user.uid);
         initializationProgress.update((p) => ({ ...p, goalsAssigned: true }));
-
-        await initializeUserWithDemoData(user.uid);
-        initializationProgress.update((p) => ({ ...p, demoDataLoaded: true }));
       } catch (goalErr) {
         console.error('Error in goal assignment or demo data:', goalErr);
       }

@@ -26,11 +26,11 @@
   let currentUserId: string | null = null;
   let initialTone: ToneType = 'kind';
 
-  //  For Goal Modal for Wizard of Oz RUN #3
-  let showGoalModal = false;
-  let goalModalId = 'goal-10'; // Default to goal-10 (laundry)
-  let goalModalName = 'Lift a Basket of Laundry';
-  let goalModalExtraInfo = '';
+  // //  For Goal Modal for Wizard of Oz RUN #3
+  // let showGoalModal = false;
+  // let goalModalId = 'goal-10'; // Default to goal-10 (laundry)
+  // let goalModalName = 'Lift a Basket of Laundry';
+  // let goalModalExtraInfo = '';
 
   let savedTheme: 'light' | 'dark' | null = null;
 
@@ -119,38 +119,11 @@
       }
     });
 
-    //  For Goal Modal for Wizard of Oz RUN #3
-    const userStoreUnsubscribe = userStore.subscribe(async ($userStore) => {
-      if ($userStore.user?.userId) {
-        try {
-          const userRef = doc(db, 'users', $userStore.user.userId);
-          const userDoc = await getDoc(userRef);
-          const userData = userDoc.data();
-
-          if (userData?.showGoalModal && userData?.showGoalModalId === 'goal-10') {
-            // Hardcode the goal data instead of trying to find it
-            goalModalId = 'goal-10';
-            goalModalName = 'Lift a Basket of Laundry';
-            showGoalModal = true;
-
-            // Reset the flag so it doesn't show again
-            await updateDoc(userRef, {
-              showGoalModal: false,
-              showGoalModalId: null
-            });
-          }
-        } catch (error) {
-          console.error('Error checking for goal modal:', error);
-        }
-      }
-    });
-
     // Return cleanup function that unsubscribes from both
     return () => {
       authUnsubscribe();
       toneUnsubscribe();
       pageUnsubscribe();
-      userStoreUnsubscribe();
     };
   });
 
@@ -169,9 +142,9 @@
     goto('/your-progress/goals');
   }
 
-  function goToHome() {
-    showGoalModal = false;
-  }
+  // function goToHome() {
+  //   showGoalModal = false;
+  // }
 </script>
 
 {#if shouldShowNav($page.url.pathname)}
@@ -237,10 +210,10 @@
           </div>
         </div>
       </div>
-      <div class="modal-actions">
+      <!-- <div class="modal-actions">
         <Button cta="View all goals" buttonType="secondary" onClickFunc={goToGoals} />
         <Button cta="Continue to home" buttonType="primary" onClickFunc={goToHome} />
-      </div>
+      </div> -->
     </div>
   </div>
 {/if}
@@ -285,7 +258,7 @@
     row-gap: 55px;
   }
 
-  .modal-actions {
+  /* .modal-actions {
     box-sizing: border-box;
     width: 100%;
     display: flex;
@@ -293,7 +266,7 @@
     align-items: center;
     text-align: center;
     row-gap: 16px;
-  }
+  } */
 
   .goal-container {
     position: relative;
